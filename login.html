@@ -283,19 +283,17 @@
 
   </main>
 
-  <script type="module" src="login.js"></script>
+  <!-- ÚNICO CAMBIO -->
+  <script type="module" src="login.js?v=5"></script>
 
   <script>
     const togglePassword = document.getElementById("togglePassword");
     const passwordInput = document.getElementById("password");
 
     togglePassword.addEventListener("click", () => {
-
       const visible = passwordInput.type === "text";
-
       passwordInput.type = visible ? "password" : "text";
       togglePassword.textContent = visible ? "Ver" : "Ocultar";
-
     });
   </script>
 
