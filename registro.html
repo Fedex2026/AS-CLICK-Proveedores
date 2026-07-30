@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta name="theme-color" content="#07111f" />
+
+  <title>Registro | AS CLICK Proveedores</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="login-body">
+
+  <main class="login-shell">
+
+    <section class="login-card">
+
+      <div class="brand">
+
+        <div class="brand-logo">
+          AS
+        </div>
+
+        <div>
+          <h1>AS CLICK</h1>
+          <p>Registro de proveedores</p>
+        </div>
+
+      </div>
+
+      <div class="login-heading">
+
+        <h2>Crear cuenta</h2>
+
+        <p>
+          Registra tus datos para solicitar acceso como proveedor.
+        </p>
+
+      </div>
+
+      <form id="registerForm" class="form-stack">
+
+        <label for="nombre">
+
+          Nombre o razón social
+
+          <input
+            id="nombre"
+            type="text"
+            placeholder="Nombre del proveedor"
+            required
+          />
+
+        </label>
+
+        <label for="telefono">
+
+          Teléfono
+
+          <input
+            id="telefono"
+            type="tel"
+            placeholder="5512345678"
+            required
+          />
+
+        </label>
+
+        <label for="correo">
+
+          Correo electrónico
+
+          <input
+            id="correo"
+            type="email"
+            autocomplete="email"
+            placeholder="proveedor@correo.com"
+            required
+          />
+
+        </label>
+
+        <label for="tipoProveedor">
+
+          Tipo de proveedor
+
+          <select
+            id="tipoProveedor"
+            class="form-select"
+            required
+          >
+            <option value="">
+              Selecciona una opción
+            </option>
+
+            <option value="grua">
+              Grúa
+            </option>
+
+            <option value="auxilio_vial">
+              Auxilio vial
+            </option>
+
+            <option value="ajustador">
+              Ajustador
+            </option>
+
+            <option value="abogado">
+              Abogado
+            </option>
+
+          </select>
+
+        </label>
+
+        <label for="estado">
+
+          Estado
+
+          <input
+            id="estado"
+            type="text"
+            placeholder="Estado de México"
+            required
+          />
+
+        </label>
+
+        <label for="municipio">
+
+          Municipio o alcaldía
+
+          <input
+            id="municipio"
+            type="text"
+            placeholder="Naucalpan"
+            required
+          />
+
+        </label>
+
+        <label for="password">
+
+          Contraseña
+
+          <input
+            id="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Mínimo 6 caracteres"
+            minlength="6"
+            required
+          />
+
+        </label>
+
+        <label for="confirmPassword">
+
+          Confirmar contraseña
+
+          <input
+            id="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Repite tu contraseña"
+            minlength="6"
+            required
+          />
+
+        </label>
+
+        <label class="terms-row">
+
+          <input
+            id="aceptaTerminos"
+            type="checkbox"
+            required
+          />
+
+          <span>
+            Acepto los términos y condiciones y el aviso de privacidad.
+          </span>
+
+        </label>
+
+        <button
+          id="registerButton"
+          class="btn btn-primary"
+          type="submit"
+        >
+          Crear cuenta
+        </button>
+
+        <p
+          id="registerMessage"
+          class="form-message"
+          aria-live="polite"
+        ></p>
+
+      </form>
+
+      <p class="login-help">
+        Tu cuenta quedará pendiente de autorización.
+      </p>
+
+      <a
+        class="login-link"
+        href="login.html"
+      >
+        Ya tengo cuenta
+      </a>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="registro.js"></script>
+
+</body>
+</html>
