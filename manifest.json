@@ -1,0 +1,10 @@
+{
+  "name": "AS CLICK Proveedores",
+  "short_name": "Proveedores",
+  "description": "Portal para proveedores de servicios AS CLICK",
+  "start_url": "./login.html",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "icons": []
+}
