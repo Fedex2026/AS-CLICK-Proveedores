@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta name="theme-color" content="#07111f" />
+
+  <title>AS CLICK Proveedores | Iniciar sesión</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="login-body">
+
+  <main class="login-shell">
+
+    <section class="login-card">
+
+      <div class="brand">
+
+        <div class="brand-logo">
+          AS
+        </div>
+
+        <div>
+          <h1>AS CLICK</h1>
+          <p>Portal de proveedores</p>
+        </div>
+
+      </div>
+
+      <div class="login-heading">
+
+        <h2>Iniciar sesión</h2>
+
+        <p>
+          Accede para recibir y administrar servicios.
+        </p>
+
+      </div>
+
+      <form id="loginForm" class="form-stack">
+
+        <label for="email">
+
+          Correo electrónico
+
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            placeholder="proveedor@asclick.mx"
+            required
+          />
+
+        </label>
+
+        <label for="password">
+
+          Contraseña
+
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Tu contraseña"
+            required
+          />
+
+        </label>
+
+        <button
+          id="loginButton"
+          class="btn btn-primary"
+          type="submit"
+        >
+          Entrar
+        </button>
+
+        <p
+          id="loginMessage"
+          class="form-message"
+          aria-live="polite"
+        ></p>
+
+      </form>
+
+      <p class="login-help">
+        El acceso debe ser autorizado previamente por administración.
+      </p>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="login.js"></script>
+
+</body>
+</html>
