@@ -10,95 +10,322 @@
 
   <meta name="theme-color" content="#07111f" />
 
-  <title>AS CLICK Proveedores | Iniciar sesión</title>
+  <title>AS CLICK Proveedores | Acceso</title>
 
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body class="login-body">
+<body class="provider-login-page">
 
-  <main class="login-shell">
+  <main class="provider-login-layout">
 
-    <section class="login-card">
+    <!-- LADO IZQUIERDO -->
 
-      <div class="brand">
+    <section class="provider-login-hero">
 
-        <div class="brand-logo">
-          AS
+      <div class="provider-login-overlay"></div>
+
+      <div class="provider-login-hero-content">
+
+        <div class="provider-brand">
+
+          <div class="provider-brand-icon">
+            <span>AS</span>
+          </div>
+
+          <div>
+            <h1>AS CLICK</h1>
+            <p>Proveedores</p>
+          </div>
+
         </div>
 
-        <div>
-          <h1>AS CLICK</h1>
-          <p>Portal de proveedores</p>
+        <div class="provider-hero-message">
+
+          <span class="provider-badge">
+            Plataforma de asistencia vial
+          </span>
+
+          <h2>
+            Recibe, administra y completa servicios desde un solo lugar.
+          </h2>
+
+          <p>
+            Mantén tu disponibilidad activa, recibe solicitudes cercanas y
+            actualiza el servicio en tiempo real.
+          </p>
+
+        </div>
+
+        <div class="provider-benefits">
+
+          <div class="provider-benefit">
+
+            <div class="provider-benefit-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>Servicios en tiempo real</strong>
+              <span>Recibe solicitudes asignadas o disponibles.</span>
+            </div>
+
+          </div>
+
+          <div class="provider-benefit">
+
+            <div class="provider-benefit-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>Ubicación y seguimiento</strong>
+              <span>Comparte tu posición mientras atiendes el servicio.</span>
+            </div>
+
+          </div>
+
+          <div class="provider-benefit">
+
+            <div class="provider-benefit-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>Control de ingresos</strong>
+              <span>Consulta historial, servicios y ganancias.</span>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
 
-      <div class="login-heading">
-
-        <h2>Iniciar sesión</h2>
-
-        <p>
-          Accede para recibir y administrar servicios.
-        </p>
-
+      <div class="provider-login-footer">
+        AS CLICK México · Portal exclusivo para proveedores autorizados
       </div>
 
-      <form id="loginForm" class="form-stack">
+    </section>
 
-        <label for="email">
+    <!-- LADO DERECHO -->
 
-          Correo electrónico
+    <section class="provider-login-form-section">
 
-          <input
-            id="email"
-            type="email"
-            autocomplete="email"
-            placeholder="proveedor@asclick.mx"
-            required
-          />
+      <div class="provider-login-card">
 
-        </label>
+        <div class="provider-login-mobile-brand">
 
-        <label for="password">
+          <div class="provider-brand-icon">
+            <span>AS</span>
+          </div>
 
-          Contraseña
+          <div>
+            <h1>AS CLICK</h1>
+            <p>Portal de proveedores</p>
+          </div>
 
-          <input
-            id="password"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Tu contraseña"
-            required
-          />
+        </div>
 
-        </label>
+        <div class="provider-login-heading">
 
-        <button
-          id="loginButton"
-          class="btn btn-primary"
-          type="submit"
+          <span class="provider-login-small-title">
+            ACCESO DE PROVEEDORES
+          </span>
+
+          <h2>Bienvenido de nuevo</h2>
+
+          <p>
+            Ingresa tus datos para administrar tus servicios.
+          </p>
+
+        </div>
+
+        <form id="loginForm" class="provider-login-form">
+
+          <div class="provider-input-group">
+
+            <label for="email">
+              Correo electrónico
+            </label>
+
+            <div class="provider-input-wrapper">
+
+              <div class="provider-input-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M4 6h16v12H4V6Zm0 1 8 6 8-6"
+                  />
+                </svg>
+
+              </div>
+
+              <input
+                id="email"
+                type="email"
+                autocomplete="email"
+                placeholder="correo@proveedor.com"
+                required
+              />
+
+            </div>
+
+          </div>
+
+          <div class="provider-input-group">
+
+            <div class="provider-label-row">
+
+              <label for="password">
+                Contraseña
+              </label>
+
+            </div>
+
+            <div class="provider-input-wrapper">
+
+              <div class="provider-input-icon">
+
+                <svg
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M7 10V8a5 5 0 0 1 10 0v2m-11 0h12v10H6V10Z"
+                  />
+                </svg>
+
+              </div>
+
+              <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Ingresa tu contraseña"
+                required
+              />
+
+              <button
+                id="togglePassword"
+                class="provider-password-toggle"
+                type="button"
+                aria-label="Mostrar contraseña"
+              >
+                Ver
+              </button>
+
+            </div>
+
+          </div>
+
+          <div class="provider-login-options">
+
+            <label class="provider-remember">
+
+              <input
+                id="rememberSession"
+                type="checkbox"
+              />
+
+              <span>Recordar sesión</span>
+
+            </label>
+
+            <button
+              class="provider-forgot-button"
+              type="button"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+
+          </div>
+
+          <button
+            id="loginButton"
+            class="provider-login-button"
+            type="submit"
+          >
+
+            <span>Iniciar sesión</span>
+
+            <svg
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="m9 5 7 7-7 7" />
+            </svg>
+
+          </button>
+
+          <p
+            id="loginMessage"
+            class="provider-login-message"
+            aria-live="polite"
+          ></p>
+
+        </form>
+
+        <div class="provider-login-divider">
+
+          <span></span>
+
+          <p>¿Quieres trabajar con AS CLICK?</p>
+
+          <span></span>
+
+        </div>
+
+        <a
+          class="provider-register-button"
+          href="registro.html"
         >
-          Entrar
-        </button>
+          Solicitar registro como proveedor
+        </a>
 
-        <p
-          id="loginMessage"
-          class="form-message"
-          aria-live="polite"
-        ></p>
+        <div class="provider-authorization-notice">
 
-      </form>
+          <div class="provider-notice-icon">
+            i
+          </div>
 
-      <p class="login-help">
-        El acceso debe ser autorizado previamente por administración.
-      </p>
+          <p>
+            Las cuentas nuevas deben ser revisadas y autorizadas por
+            administración antes de recibir servicios.
+          </p>
+
+        </div>
+
+      </div>
 
     </section>
 
   </main>
 
+  <script type="module" src="login.js"></script>
+
+  <script>
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      const showing = passwordInput.type === "text";
+
+      passwordInput.type = showing ? "password" : "text";
+      togglePassword.textContent = showing ? "Ver" : "Ocultar";
+      togglePassword.setAttribute(
+        "aria-label",
+        showing ? "Mostrar contraseña" : "Ocultar contraseña"
+      );
+    });
+  </script>
+
+</body>
+</html>
   <script type="module" src="login.js"></script>
 
 </body>
