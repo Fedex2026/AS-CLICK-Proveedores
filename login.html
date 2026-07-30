@@ -283,8 +283,10 @@
 
   </main>
 
-  <!-- ÚNICO CAMBIO -->
-  <script type="module" src="login.js?v=5"></script>
+  <script
+    type="module"
+    src="login-sin-autorizacion.js"
+  ></script>
 
   <script>
     const togglePassword = document.getElementById("togglePassword");
@@ -292,6 +294,7 @@
 
     togglePassword.addEventListener("click", () => {
       const visible = passwordInput.type === "text";
+
       passwordInput.type = visible ? "password" : "text";
       togglePassword.textContent = visible ? "Ver" : "Ocultar";
     });
