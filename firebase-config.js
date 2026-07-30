@@ -4,12 +4,13 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.5/firebas
 
 // Reemplaza estos datos por los del MISMO Firebase de AS CLICK clientes.
 const firebaseConfig = {
-  apiKey: "PON_AQUI_TU_API_KEY",
-  authDomain: "PON_AQUI_TU_AUTH_DOMAIN",
-  projectId: "PON_AQUI_TU_PROJECT_ID",
-  storageBucket: "PON_AQUI_TU_STORAGE_BUCKET",
-  messagingSenderId: "PON_AQUI_TU_MESSAGING_SENDER_ID",
-  appId: "PON_AQUI_TU_APP_ID"
+  apiKey: "AIzaSyDeuQxzRhfVB9rXKD1pnOrNMXbrZnDj4UU",
+  authDomain: "as-clicl-mexico.firebaseapp.com",
+  databaseURL: "https://as-clicl-mexico-default-rtdb.firebaseio.com",
+  projectId: "as-clicl-mexico",
+  storageBucket: "as-clicl-mexico.firebasestorage.app",
+  messagingSenderId: "908429271001",
+  appId: "1:908429271001:web:40149a91fb2eef3ab4c3c8"
 };
 
 const app = initializeApp(firebaseConfig);
