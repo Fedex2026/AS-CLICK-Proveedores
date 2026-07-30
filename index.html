@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta name="theme-color" content="#07111f" />
+
+  <title>AS CLICK Proveedores</title>
+
+  <link rel="manifest" href="manifest.json" />
+
+  <link rel="stylesheet" href="styles.css" />
+
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- MENÚ LATERAL -->
+
+    <aside class="sidebar">
+
+      <div class="brand sidebar-brand">
+
+        <div class="brand-logo">
+          AS
+        </div>
+
+        <div>
+
+          <h1>AS CLICK</h1>
+
+          <p>Proveedores</p>
+
+        </div>
+
+      </div>
+
+      <nav class="sidebar-nav">
+
+        <button
+          class="nav-item active"
+          data-view="dashboard"
+        >
+          Inicio
+        </button>
+
+        <button
+          class="nav-item"
+          data-view="servicios"
+        >
+          Servicios
+        </button>
+
+        <button
+          class="nav-item"
+          data-view="historial"
+        >
+          Historial
+        </button>
+
+        <button
+          class="nav-item"
+          data-view="ganancias"
+        >
+          Ganancias
+        </button>
+
+        <button
+          class="nav-item"
+          data-view="perfil"
+        >
+          Mi perfil
+        </button>
+
+      </nav>
+
+      <button
+        id="logoutButton"
+        class="btn btn-secondary sidebar-logout"
+        type="button"
+      >
+        Cerrar sesión
+      </button>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+
+    <main class="main-content">
+
+      <!-- ENCABEZADO -->
+
+      <header class="topbar">
+
+        <div>
+
+          <p class="eyebrow">
+            Panel del proveedor
+          </p>
+
+          <h2 id="welcomeTitle">
+            Bienvenido
+          </h2>
+
+        </div>
+
+        <div class="availability-box">
+
+          <span id="availabilityText">
+            No disponible
+          </span>
+
+          <button
+            id="availabilityToggle"
+            class="switch"
+            type="button"
+            aria-pressed="false"
+            aria-label="Cambiar disponibilidad"
+          >
+            <span></span>
+          </button>
+
+        </div>
+
+      </header>
+
+      <!-- ESTADÍSTICAS -->
+
+      <section class="stats-grid">
+
+        <article class="stat-card">
+
+          <span>
+            Servicios hoy
+          </span>
+
+          <strong id="todayServices">
+            0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Ganancias hoy
+          </span>
+
+          <strong id="todayIncome">
+            $0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Calificación
+          </span>
+
+          <strong id="providerRating">
+            5.0
+          </strong>
+
+        </article>
+
+        <article class="stat-card">
+
+          <span>
+            Estado
+          </span>
+
+          <strong id="providerStatus">
+            Desconectado
+          </strong>
+
+        </article>
+
+      </section>
+
+      <!-- MAPA Y SERVICIO -->
+
+      <section class="dashboard-grid">
+
+        <!-- MAPA -->
+
+        <article class="panel map-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <p class="eyebrow">
+                Ubicación
+              </p>
+
+              <h3>
+                Mapa en tiempo real
+              </h3>
+
+            </div>
+
+            <button
+              id="locationButton"
+              class="btn btn-secondary"
+              type="button"
+            >
+              Actualizar ubicación
+            </button>
+
+          </div>
+
+          <div
+            id="mapPlaceholder"
+            class="map-placeholder"
+          >
+
+            <div class="map-pin">
+              ●
+            </div>
+
+            <p id="locationText">
+              Activa tu disponibilidad para compartir ubicación.
+            </p>
+
+          </div>
+
+        </article>
+
+        <!-- SERVICIO NUEVO -->
+
+        <article class="panel service-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <p class="eyebrow">
+                Solicitud nueva
+              </p>
+
+              <h3>
+                Servicio disponible
+              </h3>
+
+            </div>
+
+            <span
+              id="serviceTimer"
+              class="timer"
+            >
+              --
+            </span>
+
+          </div>
+
+          <!-- SIN SERVICIO -->
+
+          <div
+            id="emptyService"
+            class="empty-state"
+          >
+
+            <div class="empty-icon">
+              ✓
+            </div>
+
+            <h4>
+              No hay servicios pendientes
+            </h4>
+
+            <p>
+              Cuando llegue una solicitud cercana aparecerá aquí.
+            </p>
+
+          </div>
+
+          <!-- TARJETA DEL SERVICIO -->
+
+          <div
+            id="serviceCard"
+            class="service-card hidden"
+          >
+
+            <div class="service-type-row">
+
+              <span
+                id="serviceType"
+                class="service-badge"
+              >
+                Grúa
+              </span>
+
+              <strong id="serviceDistance">
+                0 km
+              </strong>
+
+            </div>
+
+            <dl class="service-data">
+
+              <div>
+
+                <dt>
+                  Folio
+                </dt>
+
+                <dd id="serviceFolio">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Cliente
+                </dt>
+
+                <dd id="serviceClient">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Vehículo
+                </dt>
+
+                <dd id="serviceVehicle">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Origen
+                </dt>
+
+                <dd id="serviceOrigin">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Destino
+                </dt>
+
+                <dd id="serviceDestination">
+                  ---
+                </dd>
+
+              </div>
+
+            </dl>
+
+            <div class="service-actions">
+
+              <button
+                id="rejectServiceButton"
+                class="btn btn-danger"
+                type="button"
+              >
+                Rechazar
+              </button>
+
+              <button
+                id="acceptServiceButton"
+                class="btn btn-primary"
+                type="button"
+              >
+                Aceptar servicio
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      </section>
+
+      <!-- ACTIVIDAD -->
+
+      <section class="panel activity-panel">
+
+        <div class="panel-header">
+
+          <div>
+
+            <p class="eyebrow">
+              Actividad reciente
+            </p>
+
+            <h3>
+              Últimos movimientos
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div
+          id="activityList"
+          class="activity-list"
+        >
+
+          <div class="activity-item">
+
+            <span class="activity-dot"></span>
+
+            <div>
+
+              <strong>
+                Panel listo
+              </strong>
+
+              <p>
+                Activa tu disponibilidad para comenzar.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- MENSAJES EMERGENTES -->
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+  <script type="module" src="app.js"></script>
+
+</body>
+
+</html>
