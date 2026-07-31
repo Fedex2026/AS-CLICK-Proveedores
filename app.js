@@ -663,30 +663,53 @@ function showService(v) {
   const originElement =
     $("serviceOrigin");
 
-  const origin =
-    buildOriginText(v);
+  const latitude =
+    Number(v.ubicacion?.latitud);
 
-  if (origin.startsWith("http")) {
+  const longitude =
+    Number(v.ubicacion?.longitud);
+
+  const mapsUrl =
+    v.ubicacion?.enlaceGoogleMaps ||
+    (
+      Number.isFinite(latitude) &&
+      Number.isFinite(longitude)
+        ? `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`
+        : ""
+    );
+
+  if (mapsUrl) {
 
     originElement.innerHTML = `
-      <a href="${origin}"
-         target="_blank"
-         style="color:#38bdf8;font-weight:700;text-decoration:none;">
-         📍 Abrir en Google Maps
+      <a
+        href="${mapsUrl}"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="
+          display:inline-block;
+          color:#38bdf8;
+          font-weight:700;
+          text-decoration:none;
+          padding:8px 12px;
+          border:1px solid #38bdf8;
+          border-radius:10px;
+        "
+      >
+        📍 Abrir ubicación y ver ruta
       </a>
     `;
 
   } else {
 
     originElement.textContent =
-      origin;
+      buildOriginText(v);
 
   }
 
   $("serviceDestination").textContent =
     buildDestinationText(v);
 
-  startTimer(20);
+  startTimer(60);
 
 }
 
