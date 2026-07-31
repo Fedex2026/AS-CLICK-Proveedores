@@ -660,8 +660,28 @@ function showService(v) {
       .join(" · ") ||
     "Vehículo por confirmar";
 
-  $("serviceOrigin").textContent =
+  const originElement =
+    $("serviceOrigin");
+
+  const origin =
     buildOriginText(v);
+
+  if (origin.startsWith("http")) {
+
+    originElement.innerHTML = `
+      <a href="${origin}"
+         target="_blank"
+         style="color:#38bdf8;font-weight:700;text-decoration:none;">
+         📍 Abrir en Google Maps
+      </a>
+    `;
+
+  } else {
+
+    originElement.textContent =
+      origin;
+
+  }
 
   $("serviceDestination").textContent =
     buildDestinationText(v);
