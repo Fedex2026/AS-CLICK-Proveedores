@@ -693,6 +693,7 @@ function showService(v) {
           padding:8px 12px;
           border:1px solid #38bdf8;
           border-radius:10px;
+          cursor:pointer;
         "
       >
         📍 Abrir ubicación y ver ruta
@@ -709,7 +710,7 @@ function showService(v) {
   $("serviceDestination").textContent =
     buildDestinationText(v);
 
-  startTimer(60);
+  startTimer(90);
 
 }
 
@@ -1722,7 +1723,7 @@ if (
       navigator
         .serviceWorker
         .register(
-          "./service-worker.js"
+          "./service-worker.js?v=2"
         )
         .catch(
           console.error
