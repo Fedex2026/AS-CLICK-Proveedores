@@ -1731,3 +1731,52 @@ if (
   );
 
 }
+
+/* =========================================================
+   NAVEGACIÓN DEL MENÚ LATERAL
+========================================================= */
+
+const viewTitles = {
+  dashboard: "Panel del proveedor",
+  servicios: "Servicios",
+  historial: "Historial",
+  ganancias: "Ganancias",
+  perfil: "Mi perfil"
+};
+
+document.querySelectorAll(".nav-item").forEach(button => {
+  button.addEventListener("click", () => {
+    const viewName = button.dataset.view;
+
+    document.querySelectorAll(".nav-item").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    document.querySelectorAll(".app-view").forEach(view => {
+      view.hidden = true;
+      view.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const targetView = document.getElementById(`view-${viewName}`);
+
+    if (targetView) {
+      targetView.hidden = false;
+      targetView.classList.add("active");
+    }
+
+    const title = document.getElementById("currentViewTitle");
+
+    if (title) {
+      title.textContent =
+        viewTitles[viewName] ||
+        "Panel del proveedor";
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+});
