@@ -49,6 +49,7 @@
         <button
           class="nav-item active"
           data-view="dashboard"
+          type="button"
         >
           Inicio
         </button>
@@ -56,6 +57,7 @@
         <button
           class="nav-item"
           data-view="servicios"
+          type="button"
         >
           Servicios
         </button>
@@ -63,6 +65,7 @@
         <button
           class="nav-item"
           data-view="historial"
+          type="button"
         >
           Historial
         </button>
@@ -70,6 +73,7 @@
         <button
           class="nav-item"
           data-view="ganancias"
+          type="button"
         >
           Ganancias
         </button>
@@ -77,6 +81,7 @@
         <button
           class="nav-item"
           data-view="perfil"
+          type="button"
         >
           Mi perfil
         </button>
@@ -103,7 +108,10 @@
 
         <div>
 
-          <p class="eyebrow">
+          <p
+            id="currentViewTitle"
+            class="eyebrow"
+          >
             Panel del proveedor
           </p>
 
@@ -133,313 +141,564 @@
 
       </header>
 
-      <!-- ESTADÍSTICAS -->
+      <!-- VISTA INICIO -->
 
-      <section class="stats-grid">
+      <section
+        id="view-dashboard"
+        class="app-view active"
+      >
 
-        <article class="stat-card">
+        <!-- ESTADÍSTICAS -->
 
-          <span>
-            Servicios hoy
-          </span>
+        <section class="stats-grid">
 
-          <strong id="todayServices">
-            0
-          </strong>
+          <article class="stat-card">
 
-        </article>
+            <span>
+              Servicios hoy
+            </span>
 
-        <article class="stat-card">
+            <strong id="todayServices">
+              0
+            </strong>
 
-          <span>
-            Ganancias hoy
-          </span>
+          </article>
 
-          <strong id="todayIncome">
-            $0
-          </strong>
+          <article class="stat-card">
 
-        </article>
+            <span>
+              Ganancias hoy
+            </span>
 
-        <article class="stat-card">
+            <strong id="todayIncome">
+              $0
+            </strong>
 
-          <span>
-            Calificación
-          </span>
+          </article>
 
-          <strong id="providerRating">
-            5.0
-          </strong>
+          <article class="stat-card">
 
-        </article>
+            <span>
+              Calificación
+            </span>
 
-        <article class="stat-card">
+            <strong id="providerRating">
+              5.0
+            </strong>
 
-          <span>
-            Estado
-          </span>
+          </article>
 
-          <strong id="providerStatus">
-            Desconectado
-          </strong>
+          <article class="stat-card">
 
-        </article>
+            <span>
+              Estado
+            </span>
+
+            <strong id="providerStatus">
+              Desconectado
+            </strong>
+
+          </article>
+
+        </section>
+
+        <!-- MAPA Y SERVICIO -->
+
+        <section class="dashboard-grid">
+
+          <!-- MAPA -->
+
+          <article class="panel map-panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  Ubicación
+                </p>
+
+                <h3>
+                  Mapa en tiempo real
+                </h3>
+
+              </div>
+
+              <button
+                id="locationButton"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Actualizar ubicación
+              </button>
+
+            </div>
+
+            <div
+              id="mapPlaceholder"
+              class="map-placeholder"
+            >
+
+              <div class="map-pin">
+                ●
+              </div>
+
+              <p id="locationText">
+                Activa tu disponibilidad para compartir ubicación.
+              </p>
+
+            </div>
+
+          </article>
+
+          <!-- SERVICIO NUEVO -->
+
+          <article class="panel service-panel">
+
+            <div class="panel-header">
+
+              <div>
+
+                <p class="eyebrow">
+                  Solicitud nueva
+                </p>
+
+                <h3>
+                  Servicio disponible
+                </h3>
+
+              </div>
+
+              <span
+                id="serviceTimer"
+                class="timer"
+              >
+                --
+              </span>
+
+            </div>
+
+            <!-- SIN SERVICIO -->
+
+            <div
+              id="emptyService"
+              class="empty-state"
+            >
+
+              <div class="empty-icon">
+                ✓
+              </div>
+
+              <h4>
+                No hay servicios pendientes
+              </h4>
+
+              <p>
+                Cuando llegue una solicitud cercana aparecerá aquí.
+              </p>
+
+            </div>
+
+            <!-- TARJETA DEL SERVICIO -->
+
+            <div
+              id="serviceCard"
+              class="service-card hidden"
+            >
+
+              <div class="service-type-row">
+
+                <span
+                  id="serviceType"
+                  class="service-badge"
+                >
+                  Grúa
+                </span>
+
+                <strong id="serviceDistance">
+                  0 km
+                </strong>
+
+              </div>
+
+              <dl class="service-data">
+
+                <div>
+
+                  <dt>
+                    Folio
+                  </dt>
+
+                  <dd id="serviceFolio">
+                    ---
+                  </dd>
+
+                </div>
+
+                <div>
+
+                  <dt>
+                    Cliente
+                  </dt>
+
+                  <dd id="serviceClient">
+                    ---
+                  </dd>
+
+                </div>
+
+                <div>
+
+                  <dt>
+                    Vehículo
+                  </dt>
+
+                  <dd id="serviceVehicle">
+                    ---
+                  </dd>
+
+                </div>
+
+                <div>
+
+                  <dt>
+                    Origen
+                  </dt>
+
+                  <dd id="serviceOrigin">
+                    ---
+                  </dd>
+
+                </div>
+
+                <div>
+
+                  <dt>
+                    Destino
+                  </dt>
+
+                  <dd id="serviceDestination">
+                    ---
+                  </dd>
+
+                </div>
+
+              </dl>
+
+              <div class="service-actions">
+
+                <button
+                  id="rejectServiceButton"
+                  class="btn btn-danger"
+                  type="button"
+                >
+                  Rechazar
+                </button>
+
+                <button
+                  id="acceptServiceButton"
+                  class="btn btn-primary"
+                  type="button"
+                >
+                  Aceptar servicio
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+
+        </section>
+
+        <!-- ACTIVIDAD -->
+
+        <section class="panel activity-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <p class="eyebrow">
+                Actividad reciente
+              </p>
+
+              <h3>
+                Últimos movimientos
+              </h3>
+
+            </div>
+
+          </div>
+
+          <div
+            id="activityList"
+            class="activity-list"
+          >
+
+            <div class="activity-item">
+
+              <span class="activity-dot"></span>
+
+              <div>
+
+                <strong>
+                  Panel listo
+                </strong>
+
+                <p>
+                  Activa tu disponibilidad para comenzar.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
 
       </section>
 
-      <!-- MAPA Y SERVICIO -->
+      <!-- VISTA SERVICIOS -->
 
-      <section class="dashboard-grid">
+      <section
+        id="view-servicios"
+        class="app-view"
+        hidden
+      >
 
-        <!-- MAPA -->
-
-        <article class="panel map-panel">
-
-          <div class="panel-header">
-
-            <div>
-
-              <p class="eyebrow">
-                Ubicación
-              </p>
-
-              <h3>
-                Mapa en tiempo real
-              </h3>
-
-            </div>
-
-            <button
-              id="locationButton"
-              class="btn btn-secondary"
-              type="button"
-            >
-              Actualizar ubicación
-            </button>
-
-          </div>
-
-          <div
-            id="mapPlaceholder"
-            class="map-placeholder"
-          >
-
-            <div class="map-pin">
-              ●
-            </div>
-
-            <p id="locationText">
-              Activa tu disponibilidad para compartir ubicación.
-            </p>
-
-          </div>
-
-        </article>
-
-        <!-- SERVICIO NUEVO -->
-
-        <article class="panel service-panel">
+        <section class="panel activity-panel">
 
           <div class="panel-header">
 
             <div>
 
               <p class="eyebrow">
-                Solicitud nueva
+                Servicios
               </p>
 
               <h3>
-                Servicio disponible
+                Servicio actual
               </h3>
 
             </div>
 
-            <span
-              id="serviceTimer"
-              class="timer"
-            >
-              --
-            </span>
-
           </div>
 
-          <!-- SIN SERVICIO -->
-
-          <div
-            id="emptyService"
-            class="empty-state"
-          >
+          <div class="empty-state">
 
             <div class="empty-icon">
               ✓
             </div>
 
             <h4>
-              No hay servicios pendientes
+              No tienes un servicio activo
             </h4>
 
             <p>
-              Cuando llegue una solicitud cercana aparecerá aquí.
+              Cuando aceptes un servicio aparecerá en esta sección.
             </p>
 
           </div>
 
-          <!-- TARJETA DEL SERVICIO -->
-
-          <div
-            id="serviceCard"
-            class="service-card hidden"
-          >
-
-            <div class="service-type-row">
-
-              <span
-                id="serviceType"
-                class="service-badge"
-              >
-                Grúa
-              </span>
-
-              <strong id="serviceDistance">
-                0 km
-              </strong>
-
-            </div>
-
-            <dl class="service-data">
-
-              <div>
-
-                <dt>
-                  Folio
-                </dt>
-
-                <dd id="serviceFolio">
-                  ---
-                </dd>
-
-              </div>
-
-              <div>
-
-                <dt>
-                  Cliente
-                </dt>
-
-                <dd id="serviceClient">
-                  ---
-                </dd>
-
-              </div>
-
-              <div>
-
-                <dt>
-                  Vehículo
-                </dt>
-
-                <dd id="serviceVehicle">
-                  ---
-                </dd>
-
-              </div>
-
-              <div>
-
-                <dt>
-                  Origen
-                </dt>
-
-                <dd id="serviceOrigin">
-                  ---
-                </dd>
-
-              </div>
-
-              <div>
-
-                <dt>
-                  Destino
-                </dt>
-
-                <dd id="serviceDestination">
-                  ---
-                </dd>
-
-              </div>
-
-            </dl>
-
-            <div class="service-actions">
-
-              <button
-                id="rejectServiceButton"
-                class="btn btn-danger"
-                type="button"
-              >
-                Rechazar
-              </button>
-
-              <button
-                id="acceptServiceButton"
-                class="btn btn-primary"
-                type="button"
-              >
-                Aceptar servicio
-              </button>
-
-            </div>
-
-          </div>
-
-        </article>
+        </section>
 
       </section>
 
-      <!-- ACTIVIDAD -->
+      <!-- VISTA HISTORIAL -->
 
-      <section class="panel activity-panel">
+      <section
+        id="view-historial"
+        class="app-view"
+        hidden
+      >
 
-        <div class="panel-header">
+        <section class="panel activity-panel">
 
-          <div>
-
-            <p class="eyebrow">
-              Actividad reciente
-            </p>
-
-            <h3>
-              Últimos movimientos
-            </h3>
-
-          </div>
-
-        </div>
-
-        <div
-          id="activityList"
-          class="activity-list"
-        >
-
-          <div class="activity-item">
-
-            <span class="activity-dot"></span>
+          <div class="panel-header">
 
             <div>
 
-              <strong>
-                Panel listo
-              </strong>
-
-              <p>
-                Activa tu disponibilidad para comenzar.
+              <p class="eyebrow">
+                Historial
               </p>
+
+              <h3>
+                Servicios realizados
+              </h3>
 
             </div>
 
           </div>
 
-        </div>
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              ✓
+            </div>
+
+            <h4>
+              Aún no hay servicios en el historial
+            </h4>
+
+            <p>
+              Los servicios terminados aparecerán aquí.
+            </p>
+
+          </div>
+
+        </section>
+
+      </section>
+
+      <!-- VISTA GANANCIAS -->
+
+      <section
+        id="view-ganancias"
+        class="app-view"
+        hidden
+      >
+
+        <section class="stats-grid">
+
+          <article class="stat-card">
+
+            <span>
+              Ganancias hoy
+            </span>
+
+            <strong>
+              $0
+            </strong>
+
+          </article>
+
+          <article class="stat-card">
+
+            <span>
+              Esta semana
+            </span>
+
+            <strong>
+              $0
+            </strong>
+
+          </article>
+
+          <article class="stat-card">
+
+            <span>
+              Este mes
+            </span>
+
+            <strong>
+              $0
+            </strong>
+
+          </article>
+
+          <article class="stat-card">
+
+            <span>
+              Total
+            </span>
+
+            <strong>
+              $0
+            </strong>
+
+          </article>
+
+        </section>
+
+        <section class="panel activity-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <p class="eyebrow">
+                Ganancias
+              </p>
+
+              <h3>
+                Movimientos
+              </h3>
+
+            </div>
+
+          </div>
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              $
+            </div>
+
+            <h4>
+              No hay movimientos registrados
+            </h4>
+
+            <p>
+              Los cobros de tus servicios aparecerán aquí.
+            </p>
+
+          </div>
+
+        </section>
+
+      </section>
+
+      <!-- VISTA PERFIL -->
+
+      <section
+        id="view-perfil"
+        class="app-view"
+        hidden
+      >
+
+        <section class="panel activity-panel">
+
+          <div class="panel-header">
+
+            <div>
+
+              <p class="eyebrow">
+                Mi perfil
+              </p>
+
+              <h3>
+                Información del proveedor
+              </h3>
+
+            </div>
+
+          </div>
+
+          <div class="activity-list">
+
+            <div class="activity-item">
+
+              <span class="activity-dot"></span>
+
+              <div>
+
+                <strong>
+                  Perfil de proveedor
+                </strong>
+
+                <p>
+                  Tus datos, documentos y unidad se mostrarán en esta sección.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
 
       </section>
 
@@ -456,7 +715,10 @@
     aria-live="polite"
   ></div>
 
-  <script type="module" src="app.js"></script>
+  <script
+    type="module"
+    src="app.js?v=3"
+  ></script>
 
 </body>
 
