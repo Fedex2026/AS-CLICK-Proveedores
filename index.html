@@ -411,6 +411,43 @@
 
         </section>
 
+        <!-- RESUMEN DE SERVICIO ACTIVO -->
+
+        <section
+          id="dashboardActiveService"
+          class="panel activity-panel hidden"
+        >
+
+          <div class="panel-header">
+
+            <div>
+
+              <p class="eyebrow">
+                Servicio activo
+              </p>
+
+              <h3 id="dashboardActiveTitle">
+                Servicio
+              </h3>
+
+            </div>
+
+            <button
+              id="goToActiveServiceButton"
+              class="btn btn-primary"
+              type="button"
+            >
+              Ver seguimiento
+            </button>
+
+          </div>
+
+          <p id="dashboardActiveSummary">
+            Servicio asignado
+          </p>
+
+        </section>
+
         <!-- ACTIVIDAD -->
 
         <section class="panel activity-panel">
@@ -484,9 +521,19 @@
 
             </div>
 
+            <span
+              id="activeServiceStatusBadge"
+              class="service-badge"
+            >
+              Sin servicio
+            </span>
+
           </div>
 
-          <div class="empty-state">
+          <div
+            id="activeServiceEmpty"
+            class="empty-state"
+          >
 
             <div class="empty-icon">
               ✓
@@ -499,6 +546,165 @@
             <p>
               Cuando aceptes un servicio aparecerá en esta sección.
             </p>
+
+          </div>
+
+          <div
+            id="activeServiceCard"
+            class="service-card hidden"
+          >
+
+            <div class="service-type-row">
+
+              <span class="service-badge">
+                Servicio asignado
+              </span>
+
+              <strong id="activeServiceStatus">
+                Asignado
+              </strong>
+
+            </div>
+
+            <dl class="service-data">
+
+              <div>
+
+                <dt>
+                  Folio
+                </dt>
+
+                <dd id="activeServiceFolio">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Cliente
+                </dt>
+
+                <dd id="activeServiceClient">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Teléfono
+                </dt>
+
+                <dd id="activeServicePhone">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Vehículo
+                </dt>
+
+                <dd id="activeServiceVehicle">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Origen
+                </dt>
+
+                <dd id="activeServiceOrigin">
+                  ---
+                </dd>
+
+              </div>
+
+              <div>
+
+                <dt>
+                  Destino
+                </dt>
+
+                <dd id="activeServiceDestination">
+                  ---
+                </dd>
+
+              </div>
+
+            </dl>
+
+            <div class="service-actions">
+
+              <button
+                id="openOriginButton"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Abrir origen
+              </button>
+
+              <button
+                id="openDestinationButton"
+                class="btn btn-secondary"
+                type="button"
+              >
+                Abrir destino
+              </button>
+
+            </div>
+
+            <div class="service-actions">
+
+              <button
+                id="onTheWayButton"
+                class="btn btn-primary"
+                type="button"
+              >
+                En camino
+              </button>
+
+              <button
+                id="arrivalButton"
+                class="btn btn-primary"
+                type="button"
+              >
+                Arribo
+              </button>
+
+              <button
+                id="startTransferButton"
+                class="btn btn-primary"
+                type="button"
+              >
+                Iniciar traslado
+              </button>
+
+              <button
+                id="destinationArrivalButton"
+                class="btn btn-primary"
+                type="button"
+              >
+                Llegué al destino
+              </button>
+
+              <button
+                id="finishServiceButton"
+                class="btn btn-danger"
+                type="button"
+              >
+                Finalizar servicio
+              </button>
+
+            </div>
 
           </div>
 
@@ -717,7 +923,7 @@
 
   <script
     type="module"
-    src="app.js?v=3"
+    src="./app.js?v=10"
   ></script>
 
 </body>
