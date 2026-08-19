@@ -1,4 +1,4 @@
-import { auth, db } from "./firebase-config.js";
+import { auth, db, messaging } from "./firebase-config.js";
 
  
 
@@ -35,6 +35,11 @@ import {
   runTransaction
 
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+import {
+  getToken,
+  onMessage
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging.js";
 
  
 
