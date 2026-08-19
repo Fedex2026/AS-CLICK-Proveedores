@@ -6281,3 +6281,103 @@ body.login-body .login-link:hover {
 }
 
  
+
+/* ============================================================
+
+   FECHADOR DE MOVIMIENTOS EN GANANCIAS
+
+   Solo filtra la lista de movimientos.
+
+============================================================ */
+
+ 
+
+.income-toolbar {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: end;
+
+  gap: 12px;
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid var(--border);
+
+}
+
+ 
+
+.income-date-box {
+
+  min-width: 190px;
+
+  display: grid;
+
+  gap: 7px;
+
+  color: var(--muted);
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+}
+
+ 
+
+.income-date-box input {
+
+  min-height: 48px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 13px;
+
+  padding: 10px 14px;
+
+  color: var(--text);
+
+  color-scheme: dark;
+
+  background: rgba(51, 65, 85, 0.54);
+
+  outline: none;
+
+}
+
+ 
+
+.income-date-box input:focus {
+
+  border-color: rgba(52, 211, 153, 0.65);
+
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.08);
+
+}
+
+ 
+
+@media (max-width: 620px) {
+
+  .income-toolbar {
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+  }
+
+ 
+
+  .income-date-box {
+
+    min-width: 0;
+
+  }
+
+}
+
+ 
