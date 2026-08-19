@@ -92,7 +92,9 @@ const s = {
 
   historyServices: [],
 
-  historyDate: ""
+  historyDate: "",
+
+  incomeDate: ""
 
 };
 
@@ -297,6 +299,28 @@ bindClick("historyPreviousDay", () => changeHistoryDay(-1));
 bindClick("historyNextDay", () => changeHistoryDay(1));
 
 bindClick("historyToday", () => setHistoryDate(todayDateInputValue()));
+
+ 
+
+bindClick("incomePreviousDay", () => changeIncomeDay(-1));
+
+bindClick("incomeNextDay", () => changeIncomeDay(1));
+
+bindClick("incomeTodayButton", () => setIncomeDate(todayDateInputValue()));
+
+ 
+
+const incomeDateInput = $("incomeDate");
+
+if (incomeDateInput) {
+
+  incomeDateInput.addEventListener("change", event => {
+
+    setIncomeDate(event.target.value);
+
+  });
+
+}
 
  
 
@@ -3052,6 +3076,20 @@ function initializeHistory() {
 
  
 
+  if (!s.incomeDate) {
+
+    s.incomeDate = todayDateInputValue();
+
+  }
+
+ 
+
+  const incomeInput = $("incomeDate");
+
+  if (incomeInput) incomeInput.value = s.incomeDate;
+
+ 
+
   listenHistory();
 
 }
@@ -3183,6 +3221,48 @@ function changeHistoryDay(days) {
   date.setDate(date.getDate() + days);
 
   setHistoryDate(localDateInputValue(date));
+
+}
+
+ 
+
+function setIncomeDate(value) {
+
+  if (!value) return;
+
+ 
+
+  s.incomeDate = value;
+
+ 
+
+  const input = $("incomeDate");
+
+  if (input && input.value !== value) {
+
+    input.value = value;
+
+  }
+
+ 
+
+  renderIncome();
+
+}
+
+ 
+
+function changeIncomeDay(days) {
+
+  const base = s.incomeDate || todayDateInputValue();
+
+  const [year, month, day] = base.split("-").map(Number);
+
+  const date = new Date(year, month - 1, day);
+
+  date.setDate(date.getDate() + days);
+
+  setIncomeDate(localDateInputValue(date));
 
 }
 
@@ -3690,7 +3770,7 @@ function renderIncome() {
 
  
 
-  const movements = services
+  const allMovements = services
 
     .map(service => {
 
@@ -3718,7 +3798,7 @@ function renderIncome() {
 
  
 
-  movements.forEach(item => {
+  allMovements.forEach(item => {
 
     total += item.amount;
 
@@ -3757,6 +3837,20 @@ function renderIncome() {
   setText("incomeMonth", formatMoney(month));
 
   setText("incomeTotal", formatMoney(total));
+
+ 
+
+  const selectedIncomeDate =
+
+    s.incomeDate || todayDateInputValue();
+
+ 
+
+  const movements = allMovements.filter(item =>
+
+    localDateInputValue(item.date) === selectedIncomeDate
+
+  );
 
  
 
