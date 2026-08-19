@@ -230,6 +230,8 @@ onAuthStateChanged(auth, async user => {
 
  
 
+    renderProviderProfile();
+
     renderAvailability();
 
     listenServices();
@@ -294,6 +296,82 @@ bindClick("openDestinationButton", openActiveDestination);
 
 bindClick("goToActiveServiceButton", () => openView("servicios"));
 
+bindClick("requestVehicleChangeButton", () => {
+
+  toast("La solicitud de cambio requiere autorización del administrador.");
+
+});
+
+ 
+
+const profilePhotoInput = $("profilePhotoInput");
+
+if (profilePhotoInput) {
+
+  profilePhotoInput.addEventListener("change", event => {
+
+    const file = event.target.files?.[0];
+
+ 
+
+    if (!file) {
+
+      setText("profilePhotoStatus", "No se ha seleccionado una nueva foto.");
+
+      return;
+
+    }
+
+ 
+
+    setText(
+
+      "profilePhotoStatus",
+
+      `Foto seleccionada: ${file.name}. El cambio requiere autorización.`
+
+    );
+
+ 
+
+    const reader = new FileReader();
+
+ 
+
+    reader.onload = () => {
+
+      const image = $("profilePhoto");
+
+      const placeholder = $("profilePhotoPlaceholder");
+
+ 
+
+      if (image) {
+
+        image.src = reader.result;
+
+        image.classList.remove("hidden");
+
+      }
+
+ 
+
+      if (placeholder) {
+
+        placeholder.classList.add("hidden");
+
+      }
+
+    };
+
+ 
+
+    reader.readAsDataURL(file);
+
+  });
+
+}
+
 bindClick("historyPreviousDay", () => changeHistoryDay(-1));
 
 bindClick("historyNextDay", () => changeHistoryDay(1));
@@ -307,6 +385,8 @@ bindClick("incomePreviousDay", () => changeIncomeDay(-1));
 bindClick("incomeNextDay", () => changeIncomeDay(1));
 
 bindClick("incomeTodayButton", () => setIncomeDate(todayDateInputValue()));
+
+bindClick("downloadIncomeExcelButton", downloadIncomeExcel);
 
  
 
@@ -3734,6 +3814,210 @@ function formatMoney(value) {
 
  
 
+function downloadIncomeExcel() {
+
+  const selectedDate =
+
+    s.incomeDate || todayDateInputValue();
+
+ 
+
+  const movements = (Array.isArray(s.historyServices)
+
+    ? s.historyServices
+
+    : []
+
+  )
+
+    .map(service => {
+
+      const date = getServiceFinalizationDate(service);
+
+      const amount = getProviderEarning(service);
+
+ 
+
+      return {
+
+        service,
+
+        date,
+
+        amount
+
+      };
+
+    })
+
+    .filter(item =>
+
+      item.date &&
+
+      item.amount > 0 &&
+
+      localDateInputValue(item.date) === selectedDate
+
+    )
+
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+ 
+
+  if (!movements.length) {
+
+    toast("No hay movimientos para descargar en esta fecha.");
+
+    return;
+
+  }
+
+ 
+
+  const escapeCsv = value => {
+
+    const text = String(value ?? "");
+
+    return `"${text.replace(/"/g, '""')}"`;
+
+  };
+
+ 
+
+  const rows = [
+
+    [
+
+      "Fecha",
+
+      "Hora",
+
+      "Folio",
+
+      "Tipo de servicio",
+
+      "Tipo de vehículo",
+
+      "Ganancia"
+
+    ]
+
+  ];
+
+ 
+
+  movements.forEach(item => {
+
+    const service = item.service;
+
+ 
+
+    const folio =
+
+      service.folioOficial ||
+
+      service.folio ||
+
+      service.id;
+
+ 
+
+    const serviceType = formatServiceType(
+
+      service.servicio?.tipo ||
+
+      service.servicio?.nombre ||
+
+      service.tipoServicio ||
+
+      service.tipo
+
+    );
+
+ 
+
+    const vehicleClass = isPublicServiceVehicle(service)
+
+      ? "Servicio público"
+
+      : "Particular";
+
+ 
+
+    rows.push([
+
+      item.date.toLocaleDateString("es-MX"),
+
+      item.date.toLocaleTimeString("es-MX", {
+
+        hour: "2-digit",
+
+        minute: "2-digit"
+
+      }),
+
+      folio,
+
+      serviceType,
+
+      vehicleClass,
+
+      item.amount
+
+    ]);
+
+  });
+
+ 
+
+  const csv = rows
+
+    .map(row => row.map(escapeCsv).join(","))
+
+    .join("\r\n");
+
+ 
+
+  const blob = new Blob(
+
+    ["\uFEFF" + csv],
+
+    {
+
+      type: "text/csv;charset=utf-8;"
+
+    }
+
+  );
+
+ 
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+ 
+
+  link.href = url;
+
+  link.download = `ganancias-${selectedDate}.csv`;
+
+ 
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
+
+ 
+
+  URL.revokeObjectURL(url);
+
+}
+
+ 
+
 function renderIncome() {
 
   const services = Array.isArray(s.historyServices)
@@ -4099,6 +4383,258 @@ function estimateMinutes(distanceKm) {
     )
 
   );
+
+}
+
+ 
+
+function renderProviderProfile() {
+
+  if (!s.provider) return;
+
+ 
+
+  const provider = s.provider;
+
+ 
+
+  const name =
+
+    provider.nombreCompleto ||
+
+    provider.nombre ||
+
+    s.user?.displayName ||
+
+    "Proveedor AS CLICK";
+
+ 
+
+  const email =
+
+    provider.correo ||
+
+    provider.email ||
+
+    s.user?.email ||
+
+    "—";
+
+ 
+
+  const phone =
+
+    provider.telefono ||
+
+    provider.celular ||
+
+    provider.phone ||
+
+    "—";
+
+ 
+
+  const providerType = formatServiceType(
+
+    provider.tipoServicio ||
+
+    provider.tipo ||
+
+    provider.servicio ||
+
+    "Proveedor"
+
+  );
+
+ 
+
+  const rating = Number(
+
+    provider.calificacion ??
+
+    provider.rating ??
+
+    5
+
+  ).toFixed(1);
+
+ 
+
+  setText("profileName", name);
+
+  setText("profileServiceType", providerType);
+
+  setText("profileRating", rating);
+
+  setText("profileFullName", name);
+
+  setText("profilePhone", phone);
+
+  setText("profileEmail", email);
+
+  setText("profileProviderType", providerType);
+
+ 
+
+  const photo =
+
+    provider.foto ||
+
+    provider.fotoURL ||
+
+    provider.photoURL ||
+
+    "";
+
+ 
+
+  const image = $("profilePhoto");
+
+  const placeholder = $("profilePhotoPlaceholder");
+
+ 
+
+  if (photo && image) {
+
+    image.src = photo;
+
+    image.classList.remove("hidden");
+
+    placeholder?.classList.add("hidden");
+
+  } else {
+
+    image?.classList.add("hidden");
+
+    placeholder?.classList.remove("hidden");
+
+  }
+
+ 
+
+  const vehicle =
+
+    provider.unidad ||
+
+    provider.vehiculo ||
+
+    {};
+
+ 
+
+  const vehicleType =
+
+    vehicle.tipoUnidad ||
+
+    vehicle.tipo ||
+
+    provider.tipoUnidad ||
+
+    "—";
+
+ 
+
+  const brand =
+
+    vehicle.marca ||
+
+    provider.marcaUnidad ||
+
+    "";
+
+ 
+
+  const model =
+
+    vehicle.modelo ||
+
+    provider.modeloUnidad ||
+
+    "";
+
+ 
+
+  const brandModel =
+
+    [brand, model].filter(Boolean).join(" · ") ||
+
+    "—";
+
+ 
+
+  setText("profileVehicleType", vehicleType);
+
+  setText("profileVehicleModel", brandModel);
+
+  setText(
+
+    "profileVehicleColor",
+
+    vehicle.color ||
+
+    provider.colorUnidad ||
+
+    "—"
+
+  );
+
+  setText(
+
+    "profileVehiclePlates",
+
+    vehicle.placas ||
+
+    provider.placas ||
+
+    provider.placasUnidad ||
+
+    "—"
+
+  );
+
+  setText(
+
+    "profileVehicleEconomic",
+
+    vehicle.numeroEconomico ||
+
+    vehicle.economico ||
+
+    provider.numeroEconomico ||
+
+    provider.economico ||
+
+    "—"
+
+  );
+
+ 
+
+  const normalizedType = normalizeServiceType(
+
+    provider.tipoServicio ||
+
+    provider.tipo ||
+
+    provider.servicio ||
+
+    ""
+
+  );
+
+ 
+
+  const showVehicle =
+
+    normalizedType === "grua" ||
+
+    normalizedType === "auxilio_vial" ||
+
+    normalizedType === "ajustador";
+
+ 
+
+  setHidden("profileVehicleCard", !showVehicle);
 
 }
 
