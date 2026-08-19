@@ -43,6 +43,8 @@ import {
 
  
 
+const FCM_VAPID_KEY = "BKjE_5hK8UsbarozjPcX564dHqLGjzD0dV7QB1H6VUrd5Vgec6aejTvmsXuk8u9MHiDNK-4gZGDjWCusF6ThFS8";
+
 const CLOUDINARY_CLOUD_NAME = "dxcyy6jyv";
 
 const CLOUDINARY_UPLOAD_PRESET = "as_click_evidencias";
@@ -254,6 +256,7 @@ onAuthStateChanged(auth, async user => {
     listenActiveService();
 
     initializeHistory();
+    registerPushNotifications();
 
  
 
@@ -284,6 +287,60 @@ onAuthStateChanged(auth, async user => {
 });
 
  
+
+async function registerPushNotifications() {
+  if (!s.user || !messaging || !("Notification" in window) || !("serviceWorker" in navigator)) return;
+
+  try {
+    let permission = Notification.permission;
+
+    if (permission === "default") {
+      permission = await Notification.requestPermission();
+    }
+
+    if (permission !== "granted") {
+      console.log("Notificaciones no autorizadas por el usuario.");
+      return;
+    }
+
+    const token = await getToken(messaging, {
+      vapidKey: FCM_VAPID_KEY
+    });
+
+    if (!token) {
+      console.log("FCM no devolvió token para este dispositivo.");
+      return;
+    }
+
+    await updateDoc(doc(db, "proveedores", s.user.uid), {
+      fcmToken: token,
+      fcmTokenActualizadoEn: serverTimestamp()
+    });
+
+    if (s.provider) {
+      s.provider.fcmToken = token;
+    }
+
+    console.log("Dispositivo registrado para notificaciones push.");
+  } catch (error) {
+    console.error("Error registrando notificaciones push:", error);
+  }
+}
+
+onMessage(messaging, payload => {
+  const title = payload.notification?.title || "AS CLICK - Nuevo servicio";
+  const body = payload.notification?.body || "Tienes un nuevo servicio disponible.";
+
+  toast(`${title}: ${body}`);
+
+  if (Notification.permission === "granted") {
+    new Notification(title, {
+      body,
+      icon: "./icon-192.png",
+      data: payload.data || {}
+    });
+  }
+});
 
 bindClick("availabilityToggle", toggleAvailability);
 
