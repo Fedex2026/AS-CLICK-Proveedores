@@ -38,6 +38,16 @@ import {
 
  
 
+const CLOUDINARY_CLOUD_NAME = "dxcyy6jyv";
+
+const CLOUDINARY_UPLOAD_PRESET = "as_click_evidencias";
+
+const CLOUDINARY_PROFILE_UPLOAD_URL =
+
+  `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+ 
+
 const ACTIVE_STATES = [
 
   "asignado",
@@ -308,69 +318,11 @@ const profilePhotoInput = $("profilePhotoInput");
 
 if (profilePhotoInput) {
 
-  profilePhotoInput.addEventListener("change", event => {
-
-    const file = event.target.files?.[0];
-
- 
-
-    if (!file) {
-
-      setText("profilePhotoStatus", "No se ha seleccionado una nueva foto.");
-
-      return;
-
-    }
-
- 
-
-    setText(
-
-      "profilePhotoStatus",
-
-      `Foto seleccionada: ${file.name}. El cambio requiere autorización.`
-
-    );
-
- 
-
-    const reader = new FileReader();
-
- 
-
-    reader.onload = () => {
-
-      const image = $("profilePhoto");
-
-      const placeholder = $("profilePhotoPlaceholder");
-
- 
-
-      if (image) {
-
-        image.src = reader.result;
-
-        image.classList.remove("hidden");
-
-      }
-
- 
-
-      if (placeholder) {
-
-        placeholder.classList.add("hidden");
-
-      }
-
-    };
-
- 
-
-    reader.readAsDataURL(file);
-
-  });
+  profilePhotoInput.addEventListener("change", uploadProfilePhoto);
 
 }
+
+ 
 
 bindClick("historyPreviousDay", () => changeHistoryDay(-1));
 
@@ -413,6 +365,246 @@ if (historyDateInput) {
     setHistoryDate(event.target.value);
 
   });
+
+}
+
+ 
+
+async function uploadProfilePhoto(event) {
+
+  const file = event.target.files?.[0];
+
+ 
+
+  if (!file || !s.user || !s.provider) {
+
+    setText(
+
+      "profilePhotoStatus",
+
+      "No se ha seleccionado una nueva foto."
+
+    );
+
+    return;
+
+  }
+
+ 
+
+  const existingPhoto =
+
+    s.provider.fotoURL ||
+
+    s.provider.foto ||
+
+    s.provider.photoURL ||
+
+    "";
+
+ 
+
+  if (existingPhoto) {
+
+    event.target.value = "";
+
+    setText(
+
+      "profilePhotoStatus",
+
+      "Ya tienes una foto registrada. Para cambiarla se requiere autorización."
+
+    );
+
+    toast(
+
+      "Tu foto ya está registrada. Para cambiarla se requiere autorización."
+
+    );
+
+    return;
+
+  }
+
+ 
+
+  if (!file.type.startsWith("image/")) {
+
+    event.target.value = "";
+
+    toast("Selecciona un archivo de imagen válido.");
+
+    return;
+
+  }
+
+ 
+
+  if (file.size > 10 * 1024 * 1024) {
+
+    event.target.value = "";
+
+    toast("La foto no puede pesar más de 10 MB.");
+
+    return;
+
+  }
+
+ 
+
+  profilePhotoInput.disabled = true;
+
+ 
+
+  setText(
+
+    "profilePhotoStatus",
+
+    "Subiendo foto a Cloudinary..."
+
+  );
+
+ 
+
+  try {
+
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    formData.append(
+
+      "upload_preset",
+
+      CLOUDINARY_UPLOAD_PRESET
+
+    );
+
+    formData.append(
+
+      "tags",
+
+      `as_click_proveedor,proveedor_${s.user.uid}`
+
+    );
+
+ 
+
+    const response = await fetch(
+
+      CLOUDINARY_PROFILE_UPLOAD_URL,
+
+      {
+
+        method: "POST",
+
+        body: formData
+
+      }
+
+    );
+
+ 
+
+    const data = await response.json();
+
+ 
+
+    if (!response.ok || !data.secure_url) {
+
+      throw new Error(
+
+        data?.error?.message ||
+
+        "Cloudinary no pudo guardar la foto."
+
+      );
+
+    }
+
+ 
+
+    const photoUrl = String(data.secure_url);
+
+ 
+
+    await updateDoc(
+
+      doc(db, "proveedores", s.user.uid),
+
+      {
+
+        foto: photoUrl,
+
+        fotoURL: photoUrl,
+
+        ultimaActualizacion: serverTimestamp()
+
+      }
+
+    );
+
+ 
+
+    s.provider.foto = photoUrl;
+
+    s.provider.fotoURL = photoUrl;
+
+ 
+
+    renderProviderProfile();
+
+ 
+
+    setText(
+
+      "profilePhotoStatus",
+
+      "Foto guardada correctamente."
+
+    );
+
+ 
+
+    toast("Foto de perfil guardada correctamente.");
+
+  } catch (error) {
+
+    console.error(
+
+      "Error subiendo foto de perfil:",
+
+      error
+
+    );
+
+ 
+
+    setText(
+
+      "profilePhotoStatus",
+
+      "No fue posible guardar la foto."
+
+    );
+
+ 
+
+    toast(
+
+      error?.message ||
+
+      "No fue posible guardar la foto."
+
+    );
+
+  } finally {
+
+    profilePhotoInput.disabled = false;
+
+    profilePhotoInput.value = "";
+
+  }
 
 }
 
@@ -4496,11 +4688,27 @@ function renderProviderProfile() {
 
   if (photo && image) {
 
+    image.onerror = () => {
+
+      image.classList.add("hidden");
+
+      placeholder?.classList.remove("hidden");
+
+    };
+
+ 
+
+    image.onload = () => {
+
+      image.classList.remove("hidden");
+
+      placeholder?.classList.add("hidden");
+
+    };
+
+ 
+
     image.src = photo;
-
-    image.classList.remove("hidden");
-
-    placeholder?.classList.add("hidden");
 
   } else {
 
