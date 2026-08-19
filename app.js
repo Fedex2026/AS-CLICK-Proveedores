@@ -1,1669 +1,3443 @@
 import { auth, db } from "./firebase-config.js";
 
+ 
+
 import {
+
   onAuthStateChanged,
+
   signOut
+
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
+ 
+
 import {
+
   collection,
+
   doc,
+
   getDoc,
+
   onSnapshot,
+
   query,
+
   where,
+
   updateDoc,
+
   setDoc,
+
   serverTimestamp,
+
   runTransaction
+
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+ 
+
 const ACTIVE_STATES = [
+
   "asignado",
+
   "en_camino",
+
   "arribo",
+
   "en_traslado",
+
   "destino"
+
 ];
 
+ 
+
 const s = {
+
   user: null,
+
   provider: null,
+
   available: false,
+
   current: null,
+
   activeService: null,
+
   timer: null,
+
   seconds: 0,
+
   watch: null,
+
   latitude: null,
+
   longitude: null,
+
   accuracy: null,
+
   solicitudes: [],
+
   rejected: new Set(),
+
   refreshRadiusTimer: null,
+
   unsubscribeActiveService: null,
+
   unsubscribeRequests: null
+
 };
+
+ 
 
 const $ = id => document.getElementById(id);
 
+ 
+
 function setText(id, value) {
+
   const element = $(id);
+
   if (element) element.textContent = value;
+
 }
+
+ 
 
 function setHidden(id, hidden) {
+
   const element = $(id);
+
   if (element) element.classList.toggle("hidden", hidden);
+
 }
 
+ 
+
 onAuthStateChanged(auth, async user => {
+
   clearRealtimeListeners();
 
+ 
+
   if (!user) {
+
     location.replace("login.html");
+
     return;
+
   }
+
+ 
 
   s.user = user;
 
+ 
+
   try {
+
     const providerSnap = await getDoc(doc(db, "proveedores", user.uid));
 
+ 
+
     if (!providerSnap.exists()) {
+
       await signOut(auth);
+
       location.replace("login.html");
+
       return;
+
     }
 
+ 
+
     s.provider = {
+
       id: providerSnap.id,
+
       ...providerSnap.data()
+
     };
+
+ 
 
     s.available = s.provider.disponible === true;
 
+ 
+
     setText(
+
       "welcomeTitle",
+
       `Hola, ${
+
         s.provider.nombre ||
+
         s.provider.nombreCompleto ||
+
         user.email ||
+
         "Proveedor"
+
       }`
+
     );
 
+ 
+
     setText(
+
       "providerRating",
+
       Number(s.provider.calificacion ?? 5).toFixed(1)
+
     );
 
+ 
+
     setText(
+
       "todayServices",
+
       s.provider.serviciosHoy ??
+
       s.provider.serviciosRealizadosHoy ??
+
       0
+
     );
 
+ 
+
     setText(
+
       "todayIncome",
+
       `$${Number(s.provider.gananciasHoy ?? 0).toLocaleString("es-MX")}`
+
     );
+
+ 
 
     renderAvailability();
+
     listenServices();
+
     listenActiveService();
 
+ 
+
     if (s.available || s.provider.servicioActualId) {
+
       startLocation();
+
     }
 
+ 
+
     s.refreshRadiusTimer = setInterval(
+
       evaluateAvailableServices,
+
       10000
+
     );
+
   } catch (error) {
+
     console.error("Error cargando proveedor:", error);
+
     toast("No fue posible cargar el perfil del proveedor.");
+
   }
+
 });
 
+ 
+
 bindClick("availabilityToggle", toggleAvailability);
+
 bindClick("locationButton", getLocationOnce);
+
 bindClick("logoutButton", logout);
+
 bindClick("acceptServiceButton", acceptService);
+
 bindClick("rejectServiceButton", rejectService);
+
 bindClick("onTheWayButton", () => updateActiveServiceStatus("en_camino"));
+
 bindClick("arrivalButton", () => updateActiveServiceStatus("arribo"));
+
 bindClick("startTransferButton", () => updateActiveServiceStatus("en_traslado"));
+
 bindClick("destinationArrivalButton", () => updateActiveServiceStatus("destino"));
+
 bindClick("finishServiceButton", finishActiveService);
+
 bindClick("openOriginButton", openActiveOrigin);
+
 bindClick("openDestinationButton", openActiveDestination);
+
 bindClick("goToActiveServiceButton", () => openView("servicios"));
 
+ 
+
 function bindClick(id, handler) {
+
   const element = $(id);
+
   if (element) element.addEventListener("click", handler);
+
 }
 
+ 
+
 async function toggleAvailability() {
+
   if (!s.user) return;
 
+ 
+
   if (s.activeService || s.provider?.servicioActualId) {
+
     toast("Tienes un servicio activo. Finalízalo antes de cambiar tu disponibilidad.");
+
     return;
+
   }
 
+ 
+
   const button = $("availabilityToggle");
+
   const next = !s.available;
+
+ 
 
   if (button) button.disabled = true;
 
+ 
+
   try {
+
     await updateDoc(doc(db, "proveedores", s.user.uid), {
+
       disponible: next,
+
       estadoConexion: next ? "disponible" : "desconectado",
+
       ultimaActualizacion: serverTimestamp()
+
     });
 
+ 
+
     s.available = next;
+
     s.provider.disponible = next;
+
     renderAvailability();
 
+ 
+
     if (next) {
+
       startLocation();
+
       activity("Disponibilidad activada", "Ya puedes recibir servicios.");
+
       toast("Ahora estás disponible para recibir servicios.");
+
       evaluateAvailableServices();
+
     } else {
+
       stopLocation();
 
+ 
+
       await setDoc(
+
         doc(db, "ubicacionesProveedores", s.user.uid),
+
         {
+
           proveedorId: s.user.uid,
+
           disponible: false,
+
           servicioActualId: null,
+
           actualizadoEn: serverTimestamp()
+
         },
+
         { merge: true }
+
       );
+
+ 
 
       setText(
+
         "locationText",
+
         "Activa tu disponibilidad para compartir ubicación."
+
       );
+
+ 
 
       activity(
+
         "Disponibilidad desactivada",
+
         "Dejaste de recibir servicios nuevos."
+
       );
 
+ 
+
       toast("Ahora apareces como no disponible.");
+
       hideService();
+
     }
+
   } catch (error) {
+
     console.error("Error al cambiar disponibilidad:", error);
+
     toast("Firebase no permitió cambiar la disponibilidad.");
+
   } finally {
+
     if (button) button.disabled = false;
+
   }
+
 }
 
+ 
+
 function renderAvailability() {
+
   const occupied = Boolean(
+
     s.activeService ||
+
     s.provider?.servicioActualId
+
   );
+
+ 
 
   const toggle = $("availabilityToggle");
 
+ 
+
   if (toggle) {
+
     toggle.classList.toggle("on", s.available && !occupied);
+
     toggle.classList.toggle("is-on", s.available && !occupied);
+
     toggle.setAttribute(
+
       "aria-pressed",
+
       String(s.available && !occupied)
+
     );
+
     toggle.disabled = occupied;
+
   }
 
-  setText(
-    "availabilityText",
-    occupied
-      ? "Ocupado"
-      : s.available
-        ? "Disponible"
-        : "No disponible"
-  );
+ 
 
   setText(
-    "providerStatus",
+
+    "availabilityText",
+
     occupied
+
       ? "Ocupado"
+
       : s.available
+
         ? "Disponible"
-        : "Desconectado"
+
+        : "No disponible"
+
   );
+
+ 
+
+  setText(
+
+    "providerStatus",
+
+    occupied
+
+      ? "Ocupado"
+
+      : s.available
+
+        ? "Disponible"
+
+        : "Desconectado"
+
+  );
+
 }
+
+ 
 
 function listenServices() {
+
   if (s.unsubscribeRequests) {
+
     s.unsubscribeRequests();
+
   }
+
+ 
 
   const requestsQuery = query(
+
     collection(db, "solicitudes"),
+
     where("estado", "==", "pendiente_cabina")
+
   );
+
+ 
 
   s.unsubscribeRequests = onSnapshot(
+
     requestsQuery,
+
     snapshot => {
+
       s.solicitudes = snapshot.docs.map(requestDoc => ({
+
         id: requestDoc.id,
+
         ...requestDoc.data()
+
       }));
 
+ 
+
       evaluateAvailableServices();
+
     },
+
     error => {
+
       console.error("Error escuchando solicitudes:", error);
+
       toast("Firebase no permitió consultar las solicitudes.");
+
     }
+
   );
+
 }
 
+ 
+
 function listenActiveService() {
+
   if (s.unsubscribeActiveService) {
+
     s.unsubscribeActiveService();
+
   }
 
+ 
+
   const activeQuery = query(
+
     collection(db, "solicitudes"),
+
     where("asignacion.uidProveedor", "==", s.user.uid),
+
     where("estado", "in", ACTIVE_STATES)
+
   );
 
+ 
+
   s.unsubscribeActiveService = onSnapshot(
+
     activeQuery,
+
     snapshot => {
+
       const activeDoc = snapshot.docs[0];
 
+ 
+
       if (!activeDoc) {
+
         s.activeService = null;
 
+ 
+
         if (s.provider) {
+
           s.provider.servicioActualId = null;
+
         }
 
+ 
+
         renderActiveService();
+
         renderAvailability();
+
         return;
+
       }
 
+ 
+
       s.activeService = {
+
         id: activeDoc.id,
+
         ...activeDoc.data()
+
       };
+
+ 
 
       s.available = false;
 
+ 
+
       if (s.provider) {
+
         s.provider.servicioActualId = activeDoc.id;
+
       }
+
+ 
 
       renderAvailability();
+
       renderActiveService();
+
       startLocation();
+
     },
+
     error => {
+
       console.error("Error escuchando servicio activo:", error);
+
       toast("No fue posible cargar el servicio en curso.");
+
     }
+
   );
+
 }
 
+ 
+
 function evaluateAvailableServices() {
+
   if (s.activeService || !s.available) {
+
     hideService();
+
     return;
+
   }
+
+ 
 
   if (
+
     !Number.isFinite(s.latitude) ||
+
     !Number.isFinite(s.longitude)
+
   ) {
+
     hideService();
+
     return;
+
   }
 
+ 
+
   const providerType = normalizeServiceType(
+
     s.provider?.tipoProveedor ||
+
     s.provider?.tipo ||
+
     ""
+
   );
 
+ 
+
   const availableRequests = s.solicitudes
+
     .filter(request => {
+
       if (s.rejected.has(request.id)) return false;
 
+ 
+
       const requestType = normalizeServiceType(
+
         request.servicio?.tipo ||
+
         request.servicio?.nombre ||
+
         request.tipoServicio ||
+
         request.tipo ||
+
         ""
+
       );
+
+ 
 
       if (providerType && requestType !== providerType) {
+
         return false;
+
       }
+
+ 
 
       const assignedProvider =
+
         request.asignacion?.uidProveedor ||
+
         request.proveedorId;
 
+ 
+
       if (
+
         assignedProvider &&
+
         String(assignedProvider).trim()
+
       ) {
+
         return false;
+
       }
+
+ 
 
       const latitude = Number(
+
         request.ubicacion?.latitud ??
+
         request.ubicacion?.latitude ??
+
         request.latitud ??
+
         request.latitude
+
       );
+
+ 
 
       const longitude = Number(
+
         request.ubicacion?.longitud ??
+
         request.ubicacion?.longitude ??
+
         request.longitud ??
+
         request.longitude
+
       );
+
+ 
 
       if (
+
         !Number.isFinite(latitude) ||
+
         !Number.isFinite(longitude)
+
       ) {
+
         return false;
+
       }
 
+ 
+
       const distance = calculateDistanceKm(
+
         s.latitude,
+
         s.longitude,
+
         latitude,
+
         longitude
+
       );
+
+ 
 
       const allowedRadius = getAllowedRadiusKm(request);
 
+ 
+
       request.__distanceKm = distance;
+
       request.__allowedRadiusKm = allowedRadius;
 
+ 
+
       return (
+
         distance <= allowedRadius &&
+
         distance <= 70
+
       );
+
     })
+
     .sort(
+
       (a, b) =>
+
         Number(a.__distanceKm) -
+
         Number(b.__distanceKm)
+
     );
 
+ 
+
   if (!availableRequests.length) {
+
     hideService();
+
     return;
+
   }
+
+ 
 
   const nearest = availableRequests[0];
 
+ 
+
   if (s.current?.id === nearest.id) {
+
     updateDistanceDisplay(nearest);
+
     return;
+
   }
 
+ 
+
   showService(nearest);
+
 }
 
+ 
+
 function getAllowedRadiusKm(request) {
+
   const createdAtMs = getRequestCreatedTime(request);
+
+ 
 
   if (!createdAtMs) return 70;
 
+ 
+
   const ageSeconds = Math.max(
+
     0,
+
     Math.floor(
+
       (Date.now() - createdAtMs) / 1000
+
     )
+
   );
 
+ 
+
   if (ageSeconds < 20) return 10;
+
   if (ageSeconds < 40) return 25;
+
   if (ageSeconds < 60) return 40;
 
+ 
+
   return 70;
+
 }
 
+ 
+
 function getRequestCreatedTime(request) {
+
   const created =
+
     request.creadoEn ||
+
     request.fechaCreacion ||
+
     request.creadaEn ||
+
     request.createdAt;
+
+ 
 
   if (!created) return null;
 
+ 
+
   if (typeof created.toMillis === "function") {
+
     return created.toMillis();
+
   }
 
+ 
+
   if (created.seconds) {
+
     return created.seconds * 1000;
+
   }
+
+ 
 
   const parsed = new Date(created).getTime();
 
+ 
+
   return Number.isFinite(parsed)
+
     ? parsed
+
     : null;
+
 }
 
+ 
+
 function showService(request) {
+
   s.current = request;
 
+ 
+
   setHidden("emptyService", true);
+
   setHidden("serviceCard", false);
 
+ 
+
   setText(
+
     "serviceType",
+
     request.servicio?.nombre ||
+
     formatServiceType(
+
       request.servicio?.tipo ||
+
       request.tipoServicio ||
+
       request.tipo
+
     )
+
   );
+
+ 
 
   updateDistanceDisplay(request);
 
+ 
+
   setText(
+
     "serviceFolio",
+
     request.folioOficial ||
+
     request.folio ||
+
     request.id
+
   );
 
+ 
+
   setText(
+
     "serviceClient",
+
     request.cliente?.nombre ||
+
     request.clienteNombre ||
+
     request.nombreCliente ||
+
     "Cliente AS CLICK"
+
   );
 
+ 
+
   setText(
+
     "serviceVehicle",
+
     vehicleText(request)
+
   );
+
+ 
 
   const originElement = $("serviceOrigin");
+
   const originMapsUrl = buildOriginMapsUrl(request);
 
+ 
+
   if (originElement) {
+
     if (originMapsUrl) {
+
       originElement.innerHTML = `
+
         <a
+
           href="${escapeAttribute(originMapsUrl)}"
+
           target="_blank"
+
           rel="noopener noreferrer"
+
           style="
+
             display:inline-block;
+
             color:#38bdf8;
+
             font-weight:700;
+
             text-decoration:none;
+
             padding:8px 12px;
+
             border:1px solid #38bdf8;
+
             border-radius:10px;
+
             cursor:pointer;
+
           "
+
         >
+
           📍 Abrir ubicación y ver ruta
+
         </a>
+
       `;
+
     } else {
+
       originElement.textContent = buildOriginText(request);
+
     }
+
   }
 
+ 
+
   setText(
+
     "serviceDestination",
+
     buildDestinationText(request)
+
   );
+
+ 
 
   startTimer(90);
+
 }
+
+ 
 
 function updateDistanceDisplay(request) {
+
   const distance = Number(request.__distanceKm);
 
+ 
+
   if (!Number.isFinite(distance)) {
+
     setText("serviceDistance", "Cercano");
+
     return;
+
   }
+
+ 
 
   setText(
+
     "serviceDistance",
+
     `${distance.toFixed(1)} km · ${estimateMinutes(distance)} min`
+
   );
+
 }
+
+ 
 
 function vehicleText(request) {
+
   return [
+
     request.vehiculo?.marca ?? request.marca,
+
     request.vehiculo?.subMarca ??
+
       request.vehiculo?.submarca ??
+
       request.submarca,
+
     request.vehiculo?.color ?? request.color,
+
     request.vehiculo?.placas ?? request.placas
+
   ]
+
     .filter(Boolean)
+
     .join(" · ") ||
+
     "Vehículo por confirmar";
+
 }
+
+ 
 
 function buildOriginText(request) {
+
   const originText =
+
     request.ubicacion?.direccion ||
+
     request.ubicacion?.domicilio ||
+
     request.origenTexto ||
+
     request.origen;
 
+ 
+
   if (typeof originText === "string" && originText.trim()) {
+
     return originText;
+
   }
+
+ 
 
   const latitude = Number(
+
     request.ubicacion?.latitud ??
+
     request.ubicacion?.latitude ??
+
     request.latitud ??
+
     request.latitude
+
   );
+
+ 
 
   const longitude = Number(
+
     request.ubicacion?.longitud ??
+
     request.ubicacion?.longitude ??
+
     request.longitud ??
+
     request.longitude
+
   );
 
+ 
+
   if (
+
     Number.isFinite(latitude) &&
+
     Number.isFinite(longitude)
+
   ) {
+
     return `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+
   }
+
+ 
 
   return "Ubicación compartida";
+
 }
+
+ 
 
 function buildDestinationText(request) {
+
   if (
+
     typeof request.destino === "string" &&
+
     request.destino.trim()
+
   ) {
+
     return request.destino;
+
   }
+
+ 
 
   return (
+
     request.destino?.direccion ||
+
     request.destinoTexto ||
+
     request.servicio?.destino ||
+
     "Por confirmar"
+
   );
+
 }
+
+ 
 
 function buildOriginMapsUrl(request) {
+
   if (request.ubicacion?.enlaceGoogleMaps) {
+
     return request.ubicacion.enlaceGoogleMaps;
+
   }
+
+ 
 
   const latitude = Number(
+
     request.ubicacion?.latitud ??
+
     request.ubicacion?.latitude ??
+
     request.latitud ??
+
     request.latitude
+
   );
+
+ 
 
   const longitude = Number(
+
     request.ubicacion?.longitud ??
+
     request.ubicacion?.longitude ??
+
     request.longitud ??
+
     request.longitude
+
   );
 
+ 
+
   if (
+
     Number.isFinite(latitude) &&
+
     Number.isFinite(longitude)
+
   ) {
+
     return `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
+
   }
+
+ 
 
   return "";
+
 }
+
+ 
 
 function buildDestinationMapsUrl(request) {
+
   const destination = buildDestinationText(request);
 
+ 
+
   if (
+
     !destination ||
+
     destination === "Por confirmar"
+
   ) {
+
     return "";
+
   }
 
+ 
+
   return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+
 }
+
+ 
 
 function hideService() {
+
   s.current = null;
+
   stopTimer();
 
+ 
+
   setHidden("emptyService", false);
+
   setHidden("serviceCard", true);
+
   setText("serviceTimer", "--");
+
 }
 
+ 
+
 async function acceptService() {
+
   if (!s.current || !s.user) return;
 
+ 
+
   const currentRequest = s.current;
+
   const id = currentRequest.id;
+
   const acceptButton = $("acceptServiceButton");
+
   const rejectButton = $("rejectServiceButton");
 
+ 
+
   if (acceptButton) acceptButton.disabled = true;
+
   if (rejectButton) rejectButton.disabled = true;
 
+ 
+
   try {
+
     const requestRef = doc(db, "solicitudes", id);
 
+ 
+
     await runTransaction(
+
       db,
+
       async transaction => {
+
         const requestSnap =
+
           await transaction.get(requestRef);
 
+ 
+
         if (!requestSnap.exists()) {
+
           throw new Error(
+
             "La solicitud ya no existe."
+
           );
+
         }
+
+ 
 
         const requestData = requestSnap.data();
+
         const assignedUid =
+
           requestData.asignacion?.uidProveedor ||
+
           requestData.proveedorId;
 
-        if (
-          requestData.estado !== "pendiente_cabina"
-        ) {
-          throw new Error(
-            "Este servicio ya no está disponible."
-          );
-        }
+ 
 
         if (
-          assignedUid &&
-          String(assignedUid).trim()
+
+          requestData.estado !== "pendiente_cabina"
+
         ) {
+
           throw new Error(
-            "Otro proveedor aceptó el servicio primero."
+
+            "Este servicio ya no está disponible."
+
           );
+
         }
+
+ 
+
+        if (
+
+          assignedUid &&
+
+          String(assignedUid).trim()
+
+        ) {
+
+          throw new Error(
+
+            "Otro proveedor aceptó el servicio primero."
+
+          );
+
+        }
+
+ 
 
         const distance = Number(
+
           currentRequest.__distanceKm
+
         );
+
+ 
 
         const eta = estimateMinutes(distance);
 
+ 
+
         transaction.update(requestRef, {
+
           estado: "asignado",
+
           "asignacion.uidProveedor": s.user.uid,
+
           "asignacion.nombreProveedor":
+
             s.provider.nombre ||
+
             s.provider.nombreCompleto ||
+
             s.user.email,
+
           "asignacion.telefonoProveedor":
+
             s.provider.telefono || "",
+
           "asignacion.fotoProveedor":
+
             s.provider.foto ||
+
             s.provider.fotoURL ||
+
             "",
+
           "asignacion.tiempoEstimadoMinutos":
+
             eta,
+
           distanciaProveedorKm:
+
             Number.isFinite(distance)
+
               ? Number(distance.toFixed(2))
+
               : null,
+
           fechaAsignacion:
+
             serverTimestamp(),
+
           actualizadoEn:
+
             serverTimestamp()
+
         });
+
       }
+
     );
+
+ 
 
     await updateDoc(
+
       doc(db, "proveedores", s.user.uid),
+
       {
+
         disponible: false,
+
         estadoConexion: "ocupado",
+
         servicioActualId: id,
+
         ultimaActualizacion:
+
           serverTimestamp()
+
       }
+
     );
+
+ 
 
     await setDoc(
+
       doc(
+
         db,
+
         "ubicacionesProveedores",
+
         s.user.uid
+
       ),
+
       {
+
         proveedorId: s.user.uid,
+
         disponible: false,
+
         servicioActualId: id,
+
         actualizadoEn:
+
           serverTimestamp()
+
       },
+
       { merge: true }
+
     );
+
+ 
 
     s.available = false;
+
     s.provider.servicioActualId = id;
+
     s.activeService = {
+
       ...currentRequest,
+
       id,
+
       estado: "asignado",
+
       asignacion: {
+
         ...(currentRequest.asignacion || {}),
+
         uidProveedor: s.user.uid
+
       }
+
     };
 
+ 
+
     renderAvailability();
+
     renderActiveService();
+
     startLocation();
+
     stopTimer();
+
     hideService();
 
+ 
+
     activity(
+
       "Servicio aceptado",
+
       `Folio ${
+
         currentRequest.folioOficial ||
+
         currentRequest.folio ||
+
         id
+
       }`
+
     );
 
+ 
+
     toast(
+
       "Servicio asignado correctamente. Abre Servicios para darle seguimiento."
+
     );
+
+ 
 
     openView("servicios");
+
   } catch (error) {
+
     console.error("Error aceptando servicio:", error);
+
     toast(
+
       error.message ||
+
       "No fue posible aceptar el servicio."
+
     );
+
     evaluateAvailableServices();
+
   } finally {
+
     if (acceptButton) acceptButton.disabled = false;
+
     if (rejectButton) rejectButton.disabled = false;
+
   }
+
 }
 
+ 
+
 async function rejectService() {
+
   if (!s.current || !s.user) return;
 
+ 
+
   const currentRequest = s.current;
+
   const id = currentRequest.id;
+
+ 
 
   s.rejected.add(id);
 
+ 
+
   try {
+
     await setDoc(
+
       doc(
+
         db,
+
         "solicitudes",
+
         id,
+
         "rechazos",
+
         s.user.uid
+
       ),
+
       {
+
         proveedorId: s.user.uid,
+
         proveedorNombre:
+
           s.provider?.nombre ||
+
           s.provider?.nombreCompleto ||
+
           s.user.email,
+
         fecha: serverTimestamp()
+
       }
+
     );
+
   } catch (error) {
+
     console.error(
+
       "No se pudo guardar el rechazo:",
+
       error
+
     );
+
   }
+
+ 
 
   activity(
+
     "Servicio rechazado",
+
     `Folio ${
+
       currentRequest.folioOficial ||
+
       currentRequest.folio ||
+
       id
+
     }`
+
   );
+
+ 
 
   toast("Servicio rechazado.");
+
   hideService();
 
+ 
+
   setTimeout(
+
     evaluateAvailableServices,
+
     300
+
   );
+
 }
 
+ 
+
 function renderActiveService() {
+
   const request = s.activeService;
+
   const hasActive = Boolean(request);
 
+ 
+
   setHidden("activeServiceEmpty", hasActive);
+
   setHidden("activeServiceCard", !hasActive);
+
   setHidden("dashboardActiveService", !hasActive);
 
+ 
+
   if (!request) {
+
     setText("activeServiceStatusBadge", "Sin servicio");
+
+    setHidden("startTransferButton", false);
+
+    setHidden("destinationArrivalButton", false);
+
+    setHidden("openDestinationButton", false);
+
     return;
+
   }
 
+ 
+
   const folio =
+
     request.folioOficial ||
+
     request.folio ||
+
     request.id;
 
+ 
+
   const statusName =
+
     formatStatus(request.estado);
+
+ 
 
   setText("activeServiceFolio", folio);
 
+ 
+
   setText(
+
     "activeServiceClient",
+
     request.cliente?.nombre ||
+
     request.clienteNombre ||
+
     "Cliente AS CLICK"
+
   );
 
+ 
+
   setText(
+
     "activeServicePhone",
+
     request.cliente?.telefono ||
+
     request.telefonoCliente ||
+
     "No disponible"
+
   );
 
+ 
+
   setText(
+
     "activeServiceVehicle",
+
     vehicleText(request)
+
   );
 
+ 
+
   setText(
+
     "activeServiceOrigin",
+
     buildOriginText(request)
+
   );
 
+ 
+
   setText(
+
     "activeServiceDestination",
+
     buildDestinationText(request)
+
   );
 
+ 
+
   setText(
+
     "activeServiceStatus",
+
     statusName
+
   );
 
+ 
+
   setText(
+
     "activeServiceStatusBadge",
+
     statusName
+
   );
 
+ 
+
   setText(
+
     "dashboardActiveTitle",
+
     `Servicio ${folio}`
+
   );
+
+ 
 
   setText(
+
     "dashboardActiveSummary",
+
     `${statusName} · ${buildOriginText(request)}`
+
   );
 
-  updateProgressButtons(request.estado);
+ 
+
+  const finishButton = $("finishServiceButton");
+
+  if (finishButton) {
+
+    finishButton.textContent =
+
+      getRequestServiceType(request) === "grua"
+
+        ? "Finalizar servicio"
+
+        : "Terminar servicio";
+
+  }
+
+ 
+
+  updateProgressButtons(request);
+
 }
 
-function updateProgressButtons(status) {
-  const order = [
-    "asignado",
-    "en_camino",
-    "arribo",
-    "en_traslado",
-    "destino"
-  ];
+ 
 
-  const currentIndex = order.indexOf(status);
+function getRequestServiceType(request) {
 
-  setButtonDisabled(
-    "onTheWayButton",
-    currentIndex !== 0
+  return normalizeServiceType(
+
+    request?.servicio?.tipo ||
+
+    request?.servicio?.nombre ||
+
+    request?.tipoServicio ||
+
+    request?.tipo ||
+
+    ""
+
   );
 
-  setButtonDisabled(
-    "arrivalButton",
-    currentIndex !== 1
-  );
-
-  setButtonDisabled(
-    "startTransferButton",
-    currentIndex !== 2
-  );
-
-  setButtonDisabled(
-    "destinationArrivalButton",
-    currentIndex !== 3
-  );
-
-  setButtonDisabled(
-    "finishServiceButton",
-    currentIndex !== 4
-  );
 }
 
-function setButtonDisabled(id, disabled) {
-  const button = $(id);
-  if (button) button.disabled = disabled;
-}
+ 
 
-async function updateActiveServiceStatus(nextStatus) {
-  if (!s.activeService || !s.user) return;
+function updateProgressButtons(request) {
 
-  try {
-    const updates = {
-      estado: nextStatus,
-      actualizadoEn: serverTimestamp()
-    };
+  const status = request?.estado;
 
-    const dateFields = {
-      en_camino: "fechaEnCamino",
-      arribo: "fechaArribo",
-      en_traslado: "fechaInicioTraslado",
-      destino: "fechaLlegadaDestino"
-    };
+  const serviceType = getRequestServiceType(request);
 
-    if (dateFields[nextStatus]) {
-      updates[dateFields[nextStatus]] =
-        serverTimestamp();
-    }
+  const isTowTruck = serviceType === "grua";
 
-    await updateDoc(
-      doc(
-        db,
-        "solicitudes",
-        s.activeService.id
-      ),
-      updates
+ 
+
+  // Grúa conserva el flujo completo:
+
+  // Aceptar -> En camino -> Arribo -> Iniciar traslado ->
+
+  // Llegué al destino -> Finalizar servicio
+
+  setHidden("startTransferButton", !isTowTruck);
+
+  setHidden("destinationArrivalButton", !isTowTruck);
+
+  setHidden("openDestinationButton", !isTowTruck);
+
+ 
+
+  if (isTowTruck) {
+
+    const order = [
+
+      "asignado",
+
+      "en_camino",
+
+      "arribo",
+
+      "en_traslado",
+
+      "destino"
+
+    ];
+
+ 
+
+    const currentIndex = order.indexOf(status);
+
+ 
+
+    setButtonDisabled(
+
+      "onTheWayButton",
+
+      currentIndex !== 0
+
     );
 
-    s.activeService = {
-      ...s.activeService,
-      estado: nextStatus
+ 
+
+    setButtonDisabled(
+
+      "arrivalButton",
+
+      currentIndex !== 1
+
+    );
+
+ 
+
+    setButtonDisabled(
+
+      "startTransferButton",
+
+      currentIndex !== 2
+
+    );
+
+ 
+
+    setButtonDisabled(
+
+      "destinationArrivalButton",
+
+      currentIndex !== 3
+
+    );
+
+ 
+
+    setButtonDisabled(
+
+      "finishServiceButton",
+
+      currentIndex !== 4
+
+    );
+
+ 
+
+    return;
+
+  }
+
+ 
+
+  // Ajustador, Abogado y Auxilio vial:
+
+  // Aceptar -> En camino -> Arribo -> Terminar servicio
+
+  setButtonDisabled(
+
+    "onTheWayButton",
+
+    status !== "asignado"
+
+  );
+
+ 
+
+  setButtonDisabled(
+
+    "arrivalButton",
+
+    status !== "en_camino"
+
+  );
+
+ 
+
+  setButtonDisabled(
+
+    "finishServiceButton",
+
+    status !== "arribo"
+
+  );
+
+}
+
+ 
+
+function setButtonDisabled(id, disabled) {
+
+  const button = $(id);
+
+  if (button) button.disabled = disabled;
+
+}
+
+ 
+
+async function updateActiveServiceStatus(nextStatus) {
+
+  if (!s.activeService || !s.user) return;
+
+ 
+
+  try {
+
+    const updates = {
+
+      estado: nextStatus,
+
+      actualizadoEn: serverTimestamp()
+
     };
+
+ 
+
+    const dateFields = {
+
+      en_camino: "fechaEnCamino",
+
+      arribo: "fechaArribo",
+
+      en_traslado: "fechaInicioTraslado",
+
+      destino: "fechaLlegadaDestino"
+
+    };
+
+ 
+
+    if (dateFields[nextStatus]) {
+
+      updates[dateFields[nextStatus]] =
+
+        serverTimestamp();
+
+    }
+
+ 
+
+    await updateDoc(
+
+      doc(
+
+        db,
+
+        "solicitudes",
+
+        s.activeService.id
+
+      ),
+
+      updates
+
+    );
+
+ 
+
+    s.activeService = {
+
+      ...s.activeService,
+
+      estado: nextStatus
+
+    };
+
+ 
 
     renderActiveService();
 
+ 
+
     activity(
+
       formatStatus(nextStatus),
+
       `Folio ${
+
         s.activeService.folioOficial ||
+
         s.activeService.folio ||
+
         s.activeService.id
+
       }`
+
     );
 
+ 
+
     toast(
+
       `Estado actualizado: ${formatStatus(nextStatus)}.`
-    );
-  } catch (error) {
-    console.error(
-      "Error actualizando estado:",
-      error
+
     );
 
-    toast(
-      "No fue posible actualizar el estado del servicio."
+  } catch (error) {
+
+    console.error(
+
+      "Error actualizando estado:",
+
+      error
+
     );
+
+ 
+
+    toast(
+
+      "No fue posible actualizar el estado del servicio."
+
+    );
+
   }
+
 }
 
+ 
+
 async function finishActiveService() {
+
   if (!s.activeService || !s.user) return;
+
+ 
 
   const id = s.activeService.id;
 
+ 
+
   try {
-    await updateDoc(
-      doc(db, "solicitudes", id),
-      {
-        estado: "finalizado",
-        fechaFinalizacion:
-          serverTimestamp(),
-        actualizadoEn:
-          serverTimestamp()
-      }
-    );
 
     await updateDoc(
-      doc(db, "proveedores", s.user.uid),
+
+      doc(db, "solicitudes", id),
+
       {
-        disponible: true,
-        estadoConexion: "disponible",
-        servicioActualId: null,
-        ultimaActualizacion:
+
+        estado: "finalizado",
+
+        fechaFinalizacion:
+
+          serverTimestamp(),
+
+        actualizadoEn:
+
           serverTimestamp()
+
       }
+
     );
+
+ 
+
+    await updateDoc(
+
+      doc(db, "proveedores", s.user.uid),
+
+      {
+
+        disponible: true,
+
+        estadoConexion: "disponible",
+
+        servicioActualId: null,
+
+        ultimaActualizacion:
+
+          serverTimestamp()
+
+      }
+
+    );
+
+ 
 
     await setDoc(
+
       doc(
+
         db,
+
         "ubicacionesProveedores",
+
         s.user.uid
+
       ),
+
       {
+
         proveedorId: s.user.uid,
+
         disponible: true,
+
         servicioActualId: null,
+
         actualizadoEn:
+
           serverTimestamp()
+
       },
+
       { merge: true }
+
     );
+
+ 
 
     s.activeService = null;
+
     s.available = true;
+
     s.provider.servicioActualId = null;
 
+ 
+
     renderAvailability();
+
     renderActiveService();
+
     startLocation();
 
+ 
+
     activity(
+
       "Servicio finalizado",
+
       `Folio ${id}`
+
     );
 
+ 
+
     toast(
+
       "Servicio finalizado. Ya estás disponible nuevamente."
+
     );
+
+ 
 
     openView("dashboard");
+
     evaluateAvailableServices();
+
   } catch (error) {
+
     console.error(
+
       "Error finalizando servicio:",
+
       error
+
     );
 
+ 
+
     toast(
+
       "No fue posible finalizar el servicio."
+
     );
+
   }
+
 }
+
+ 
 
 function openActiveOrigin() {
+
   if (!s.activeService) return;
 
+ 
+
   const url =
+
     buildOriginMapsUrl(s.activeService);
 
+ 
+
   if (url) {
+
     window.open(
+
       url,
+
       "_blank",
+
       "noopener,noreferrer"
+
     );
+
   } else {
+
     toast(
+
       "El servicio no tiene una ubicación de origen válida."
+
     );
+
   }
+
 }
+
+ 
 
 function openActiveDestination() {
+
   if (!s.activeService) return;
 
+ 
+
   const url =
+
     buildDestinationMapsUrl(s.activeService);
 
+ 
+
   if (url) {
+
     window.open(
+
       url,
+
       "_blank",
+
       "noopener,noreferrer"
+
     );
+
   } else {
+
     toast(
+
       "El destino todavía no está confirmado."
+
     );
+
   }
+
 }
+
+ 
 
 function formatStatus(value) {
+
   const statuses = {
+
     asignado: "Asignado",
+
     en_camino: "En camino",
+
     arribo: "Arribo",
+
     en_traslado: "En traslado",
+
     destino: "En destino",
+
     finalizado: "Finalizado"
+
   };
+
+ 
 
   return statuses[value] ||
+
     "Servicio activo";
+
 }
+
+ 
 
 function startTimer(seconds) {
+
   stopTimer();
+
+ 
 
   s.seconds = seconds;
+
   setText(
+
     "serviceTimer",
+
     `${seconds}s`
+
   );
+
+ 
 
   s.timer = setInterval(() => {
+
     s.seconds -= 1;
 
+ 
+
     setText(
+
       "serviceTimer",
+
       `${s.seconds}s`
+
     );
+
+ 
 
     if (s.seconds <= 0) {
+
       stopTimer();
+
       rejectService();
+
     }
+
   }, 1000);
+
 }
+
+ 
 
 function stopTimer() {
+
   if (s.timer) {
+
     clearInterval(s.timer);
+
     s.timer = null;
+
   }
+
 }
+
+ 
 
 function startLocation() {
+
   if (
+
     !navigator.geolocation ||
+
     s.watch !== null
+
   ) {
+
     return;
+
   }
 
+ 
+
   setText(
+
     "locationText",
+
     "Obteniendo ubicación en tiempo real..."
+
   );
+
+ 
 
   s.watch =
+
     navigator.geolocation.watchPosition(
+
       saveLocation,
+
       locationError,
+
       {
+
         enableHighAccuracy: true,
+
         maximumAge: 5000,
+
         timeout: 15000
+
       }
+
     );
+
 }
+
+ 
 
 function stopLocation() {
+
   if (s.watch !== null) {
+
     navigator.geolocation.clearWatch(s.watch);
+
     s.watch = null;
+
   }
+
 }
+
+ 
 
 function getLocationOnce() {
+
   if (!navigator.geolocation) {
+
     toast(
+
       "Este dispositivo no permite ubicación."
+
     );
+
     return;
+
   }
 
+ 
+
   setText(
+
     "locationText",
+
     "Obteniendo ubicación..."
+
   );
+
+ 
 
   navigator.geolocation.getCurrentPosition(
+
     saveLocation,
+
     locationError,
+
     {
+
       enableHighAccuracy: true,
+
       maximumAge: 5000,
+
       timeout: 15000
+
     }
+
   );
+
 }
+
+ 
 
 async function saveLocation(position) {
+
   if (!s.user) return;
 
+ 
+
   const {
+
     latitude,
+
     longitude,
+
     accuracy
+
   } = position.coords;
 
+ 
+
   s.latitude = latitude;
+
   s.longitude = longitude;
+
   s.accuracy = accuracy;
 
+ 
+
   setText(
+
     "locationText",
+
     `Latitud ${latitude.toFixed(6)} · Longitud ${longitude.toFixed(6)} · Precisión ${Math.round(accuracy)} m`
+
   );
 
+ 
+
   try {
+
     await setDoc(
+
       doc(
+
         db,
+
         "ubicacionesProveedores",
+
         s.user.uid
+
       ),
+
       {
+
         proveedorId: s.user.uid,
+
         latitude,
+
         longitude,
+
         latitud: latitude,
+
         longitud: longitude,
+
         accuracy,
+
         disponible:
+
           s.available &&
+
           !s.activeService,
+
         servicioActualId:
+
           s.activeService?.id ||
+
           s.provider?.servicioActualId ||
+
           null,
+
         tipoProveedor:
+
           normalizeServiceType(
+
             s.provider?.tipoProveedor ||
+
             s.provider?.tipo ||
+
             ""
+
           ),
+
         actualizadoEn:
+
           serverTimestamp()
+
       },
+
       { merge: true }
+
     );
+
+ 
 
     if (s.activeService) {
+
       await setDoc(
+
         doc(
+
           db,
+
           "solicitudes",
+
           s.activeService.id,
+
           "seguimiento",
+
           "ubicacionProveedor"
+
         ),
+
         {
+
           proveedorId: s.user.uid,
+
           latitude,
+
           longitude,
+
           latitud: latitude,
+
           longitud: longitude,
+
           accuracy,
+
           estado:
+
             s.activeService.estado,
+
           actualizadoEn:
+
             serverTimestamp()
+
         },
+
         { merge: true }
+
       );
+
     }
+
+ 
 
     evaluateAvailableServices();
+
   } catch (error) {
+
     console.error(
+
       "No se pudo guardar la ubicación:",
+
       error
+
     );
+
+ 
 
     toast(
+
       "Firebase no permitió guardar la ubicación."
+
     );
+
   }
+
 }
+
+ 
 
 function locationError(error) {
+
   const messages = {
+
     1: "Permiso de ubicación rechazado.",
+
     2: "No fue posible detectar la ubicación.",
+
     3: "La ubicación tardó demasiado."
+
   };
+
+ 
 
   setText(
+
     "locationText",
+
     messages[error.code] ||
+
     "Error al obtener ubicación."
+
   );
+
 }
+
+ 
 
 async function logout() {
+
   stopLocation();
+
   stopTimer();
+
   clearRealtimeListeners();
 
+ 
+
   try {
+
     if (s.user) {
+
       await updateDoc(
+
         doc(db, "proveedores", s.user.uid),
+
         {
+
           disponible: false,
+
           estadoConexion:
+
             s.activeService
+
               ? "ocupado"
+
               : "desconectado",
+
           ultimaActualizacion:
+
             serverTimestamp()
+
         }
+
       );
+
+ 
 
       await setDoc(
+
         doc(
+
           db,
+
           "ubicacionesProveedores",
+
           s.user.uid
+
         ),
+
         {
+
           proveedorId: s.user.uid,
+
           disponible: false,
+
           servicioActualId:
+
             s.activeService?.id || null,
+
           actualizadoEn:
+
             serverTimestamp()
+
         },
+
         { merge: true }
+
       );
+
     }
+
   } catch (error) {
+
     console.error(
+
       "Error cerrando sesión:",
+
       error
+
     );
+
   }
+
+ 
 
   await signOut(auth);
+
   location.replace("login.html");
+
 }
+
+ 
 
 function clearRealtimeListeners() {
+
   if (s.refreshRadiusTimer) {
+
     clearInterval(s.refreshRadiusTimer);
+
     s.refreshRadiusTimer = null;
+
   }
+
+ 
 
   if (s.unsubscribeRequests) {
+
     s.unsubscribeRequests();
+
     s.unsubscribeRequests = null;
+
   }
+
+ 
 
   if (s.unsubscribeActiveService) {
+
     s.unsubscribeActiveService();
+
     s.unsubscribeActiveService = null;
+
   }
+
 }
+
+ 
 
 function calculateDistanceKm(
+
   latitude1,
+
   longitude1,
+
   latitude2,
+
   longitude2
+
 ) {
+
   const earthRadiusKm = 6371;
 
+ 
+
   const latitudeDifference =
+
     degreesToRadians(
+
       latitude2 - latitude1
+
     );
+
+ 
 
   const longitudeDifference =
+
     degreesToRadians(
+
       longitude2 - longitude1
+
     );
+
+ 
 
   const firstLatitude =
+
     degreesToRadians(latitude1);
 
+ 
+
   const secondLatitude =
+
     degreesToRadians(latitude2);
 
+ 
+
   const haversine =
+
     Math.sin(latitudeDifference / 2) ** 2 +
+
     Math.cos(firstLatitude) *
+
     Math.cos(secondLatitude) *
+
     Math.sin(longitudeDifference / 2) ** 2;
 
+ 
+
   const angularDistance =
+
     2 *
+
     Math.atan2(
+
       Math.sqrt(haversine),
+
       Math.sqrt(1 - haversine)
+
     );
 
+ 
+
   return earthRadiusKm *
+
     angularDistance;
+
 }
+
+ 
 
 function degreesToRadians(value) {
+
   return value *
+
     Math.PI /
+
     180;
+
 }
+
+ 
 
 function estimateMinutes(distanceKm) {
+
   if (!Number.isFinite(distanceKm)) {
+
     return null;
+
   }
 
+ 
+
   return Math.max(
+
     5,
+
     Math.round(
+
       (distanceKm / 35) * 60
+
     )
+
   );
+
 }
+
+ 
 
 function normalizeServiceType(value) {
+
   const normalized =
+
     String(value || "")
+
       .trim()
+
       .toLowerCase()
+
       .normalize("NFD")
+
       .replace(
+
         /[\u0300-\u036f]/g,
+
         ""
+
       )
+
       .replace(
+
         /[\s-]+/g,
+
         "_"
+
       );
 
+ 
+
   const types = {
+
     grua: "grua",
+
     gruas: "grua",
+
     auxilio: "auxilio_vial",
+
     auxilio_vial: "auxilio_vial",
+
     ajustador: "ajustador",
+
     ajustadores: "ajustador",
+
     abogado: "abogado",
+
     abogados: "abogado"
+
   };
+
+ 
 
   return types[normalized] ||
+
     normalized;
+
 }
+
+ 
 
 function formatServiceType(value) {
+
   const names = {
+
     grua: "Grúa",
+
     auxilio_vial: "Auxilio vial",
+
     ajustador: "Ajustador",
+
     abogado: "Abogado"
+
   };
 
+ 
+
   return names[
+
     normalizeServiceType(value)
+
   ] || "Servicio";
+
 }
 
+ 
+
 function activity(title, description) {
+
   const list = $("activityList");
+
+ 
 
   if (!list) return;
 
+ 
+
   const element =
+
     document.createElement("div");
 
+ 
+
   element.className =
+
     "activity-item";
 
+ 
+
   element.innerHTML =
+
     `<span></span>` +
+
     `<div>` +
+
     `<strong>${escapeHtml(title)}</strong>` +
+
     `<p>${escapeHtml(description)}</p>` +
+
     `</div>`;
 
+ 
+
   list.prepend(element);
+
 }
 
+ 
+
 function toast(message) {
+
   const element = $("toast");
 
+ 
+
   if (!element) {
+
     console.log(message);
+
     return;
+
   }
 
+ 
+
   element.textContent = message;
+
   element.classList.add("show");
+
+ 
 
   clearTimeout(toast.timer);
 
+ 
+
   toast.timer = setTimeout(
+
     () =>
+
       element.classList.remove("show"),
+
     2800
+
   );
+
 }
+
+ 
 
 function escapeHtml(value) {
+
   return String(value ?? "")
+
     .replaceAll("&", "&amp;")
+
     .replaceAll("<", "&lt;")
+
     .replaceAll(">", "&gt;")
+
     .replaceAll('"', "&quot;")
+
     .replaceAll("'", "&#039;");
+
 }
+
+ 
 
 function escapeAttribute(value) {
+
   return escapeHtml(value);
+
 }
+
+ 
 
 const viewTitles = {
+
   dashboard: "Panel del proveedor",
+
   servicios: "Servicios",
+
   historial: "Historial",
+
   ganancias: "Ganancias",
+
   perfil: "Mi perfil"
+
 };
 
+ 
+
 function openView(viewName) {
-  document
-    .querySelectorAll(".nav-item")
-    .forEach(item => {
-      item.classList.toggle(
-        "active",
-        item.dataset.view === viewName
-      );
-    });
 
   document
+
+    .querySelectorAll(".nav-item")
+
+    .forEach(item => {
+
+      item.classList.toggle(
+
+        "active",
+
+        item.dataset.view === viewName
+
+      );
+
+    });
+
+ 
+
+  document
+
     .querySelectorAll(".app-view")
+
     .forEach(view => {
+
       const active =
+
         view.id === `view-${viewName}`;
 
+ 
+
       view.hidden = !active;
+
       view.classList.toggle(
+
         "active",
+
         active
+
       );
+
     });
 
+ 
+
   const title =
+
     $("currentViewTitle");
 
+ 
+
   if (title) {
+
     title.textContent =
+
       viewTitles[viewName] ||
+
       "Panel del proveedor";
+
   }
 
+ 
+
   window.scrollTo({
+
     top: 0,
+
     behavior: "smooth"
+
   });
+
 }
 
+ 
+
 document
+
   .querySelectorAll(".nav-item")
+
   .forEach(button => {
+
     button.addEventListener(
+
       "click",
+
       () =>
+
         openView(
+
           button.dataset.view
+
         )
+
     );
+
   });
 
+ 
+
 if ("serviceWorker" in navigator) {
+
   addEventListener(
+
     "load",
+
     () =>
+
       navigator.serviceWorker
+
         .register("./service-worker.js?v=4")
+
         .catch(console.error)
+
   );
+
 }
