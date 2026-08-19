@@ -76,9 +76,11 @@ import {
 
 import {
 
-  getToken,
+  onMessage,
 
-  onMessage
+  onRegistered,
+
+  register
 
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
 
@@ -608,43 +610,49 @@ async function registerPushNotifications() {
 
  
 
-    const token = await getToken(messaging, {
+    onRegistered(messaging, async installationId => {
+
+      if (!installationId || !s.user) return;
+
+ 
+
+      try {
+
+        await updateDoc(doc(db, "proveedores", s.user.uid), {
+
+          fcmToken: installationId,
+
+          fcmTokenActualizadoEn: serverTimestamp()
+
+        });
+
+ 
+
+        if (s.provider) {
+
+          s.provider.fcmToken = installationId;
+
+        }
+
+ 
+
+        console.log("Dispositivo registrado para notificaciones push.");
+
+      } catch (error) {
+
+        console.error("Error guardando registro FCM:", error);
+
+      }
+
+    });
+
+ 
+
+    await register(messaging, {
 
       vapidKey: FCM_VAPID_KEY
 
     });
-
- 
-
-    if (!token) {
-
-      console.log("FCM no devolvió token para este dispositivo.");
-
-      return;
-
-    }
-
- 
-
-    await updateDoc(doc(db, "proveedores", s.user.uid), {
-
-      fcmToken: token,
-
-      fcmTokenActualizadoEn: serverTimestamp()
-
-    });
-
- 
-
-    if (s.provider) {
-
-      s.provider.fcmToken = token;
-
-    }
-
- 
-
-    console.log("Dispositivo registrado para notificaciones push.");
 
   } catch (error) {
 
