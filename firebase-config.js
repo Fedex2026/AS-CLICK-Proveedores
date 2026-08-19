@@ -1,7 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-import { getMessaging } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-messaging.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+import { getMessaging } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
 
 // Reemplaza estos datos por los del MISMO Firebase de AS CLICK clientes.
 const firebaseConfig = {
