@@ -3412,6 +3412,24 @@ function renderHistory() {
 
  
 
+function normalizeText(value) {
+
+  return String(value || "")
+
+    .trim()
+
+    .toLowerCase()
+
+    .normalize("NFD")
+
+    .replace(/[\u0300-\u036f]/g, "")
+
+    .replace(/[_-]+/g, " ");
+
+}
+
+ 
+
 function getServiceVehicleClass(service) {
 
   return normalizeText(
@@ -3422,6 +3440,10 @@ function getServiceVehicleClass(service) {
 
     service.vehiculo?.servicio ||
 
+    service.servicio?.modalidad ||
+
+    service.servicio?.tipoVehiculo ||
+
     service.tipoVehiculo ||
 
     service.tipoUsoVehiculo ||
@@ -3429,6 +3451,10 @@ function getServiceVehicleClass(service) {
     service.modalidadVehiculo ||
 
     service.modalidad ||
+
+    service.tipoCliente ||
+
+    service.cliente?.tipo ||
 
     ""
 
@@ -3458,9 +3484,9 @@ function isPublicServiceVehicle(service) {
 
  
 
-function getProviderEarning(service) {
+function getIncomeServiceType(service) {
 
-  const type = normalizeServiceType(
+  const value = normalizeText(
 
     service.servicio?.tipo ||
 
@@ -3475,6 +3501,60 @@ function getProviderEarning(service) {
   );
 
  
+
+  if (value.includes("ajustador")) {
+
+    return "ajustador";
+
+  }
+
+ 
+
+  if (value.includes("abogado")) {
+
+    return "abogado";
+
+  }
+
+ 
+
+  if (
+
+    value.includes("auxilio") ||
+
+    value.includes("paso de corriente") ||
+
+    value.includes("cambio de llanta") ||
+
+    value.includes("surtir gasolina") ||
+
+    value.includes("gasolina")
+
+  ) {
+
+    return "auxilio_vial";
+
+  }
+
+ 
+
+  if (value.includes("grua")) {
+
+    return "grua";
+
+  }
+
+ 
+
+  return normalizeServiceType(value);
+
+}
+
+ 
+
+function getProviderEarning(service) {
+
+  const type = getIncomeServiceType(service);
 
   const isPublic = isPublicServiceVehicle(service);
 
