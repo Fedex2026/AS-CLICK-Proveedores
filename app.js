@@ -648,9 +648,23 @@ async function registerPushNotifications() {
 
  
 
+    const messagingSW = await navigator.serviceWorker.register(
+
+      "./firebase-messaging-sw.js"
+
+    );
+
+ 
+
+    await navigator.serviceWorker.ready;
+
+ 
+
     await register(messaging, {
 
-      vapidKey: FCM_VAPID_KEY
+      vapidKey: FCM_VAPID_KEY,
+
+      serviceWorkerRegistration: messagingSW
 
     });
 
