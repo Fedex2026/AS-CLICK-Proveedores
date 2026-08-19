@@ -1832,6 +1832,22 @@
 
  
 
+            <button
+
+              id="downloadIncomeExcelButton"
+
+              class="btn btn-primary"
+
+              type="button"
+
+            >
+
+              Descargar Excel
+
+            </button>
+
+ 
+
           </div>
 
  
@@ -1944,43 +1960,275 @@
 
  
 
-          <div class="activity-list">
+          <div class="provider-profile">
 
  
 
-            <div class="activity-item">
+            <div class="provider-profile-hero">
 
  
 
-              <span class="activity-dot"></span>
+              <div class="provider-photo-wrap">
+
+                <img
+
+                  id="profilePhoto"
+
+                  class="provider-photo hidden"
+
+                  alt="Foto del proveedor"
+
+                />
 
  
 
-              <div>
+                <div
+
+                  id="profilePhotoPlaceholder"
+
+                  class="provider-photo-placeholder"
+
+                >
+
+                  AS
+
+                </div>
+
+              </div>
 
  
 
-                <strong>
+              <div class="provider-profile-main">
 
-                  Perfil de proveedor
+                <h4 id="profileName">Proveedor AS CLICK</h4>
 
-                </strong>
-
- 
-
-                <p>
-
-                  Tus datos, documentos y unidad se mostrarán en esta sección.
-
-                </p>
+                <p id="profileServiceType">Proveedor</p>
 
  
+
+                <div class="provider-rating">
+
+                  <span>★</span>
+
+                  <strong id="profileRating">5.0</strong>
+
+                  <small>Calificación de clientes</small>
+
+                </div>
 
               </div>
 
  
 
             </div>
+
+ 
+
+            <div class="profile-grid">
+
+ 
+
+              <section class="profile-card">
+
+                <p class="eyebrow">Datos</p>
+
+                <h4>Datos del proveedor</h4>
+
+ 
+
+                <div class="profile-data-list">
+
+                  <div>
+
+                    <span>Nombre</span>
+
+                    <strong id="profileFullName">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>Teléfono</span>
+
+                    <strong id="profilePhone">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>Correo</span>
+
+                    <strong id="profileEmail">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>Tipo de proveedor</span>
+
+                    <strong id="profileProviderType">—</strong>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+ 
+
+              <section
+
+                id="profileVehicleCard"
+
+                class="profile-card"
+
+              >
+
+                <p class="eyebrow">Unidad</p>
+
+                <h4>Unidad registrada</h4>
+
+ 
+
+                <div class="profile-data-list">
+
+                  <div>
+
+                    <span>Tipo de unidad</span>
+
+                    <strong id="profileVehicleType">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>Marca / modelo</span>
+
+                    <strong id="profileVehicleModel">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>Color</span>
+
+                    <strong id="profileVehicleColor">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>Placas</span>
+
+                    <strong id="profileVehiclePlates">—</strong>
+
+                  </div>
+
+ 
+
+                  <div>
+
+                    <span>No. económico</span>
+
+                    <strong id="profileVehicleEconomic">—</strong>
+
+                  </div>
+
+                </div>
+
+ 
+
+                <div class="profile-locked-note">
+
+                  Los datos de la unidad quedan protegidos después de su autorización.
+
+                  Para modificarlos se requiere aprobación de AS CLICK.
+
+                </div>
+
+ 
+
+                <button
+
+                  id="requestVehicleChangeButton"
+
+                  class="btn btn-secondary"
+
+                  type="button"
+
+                >
+
+                  Solicitar cambio de unidad o datos
+
+                </button>
+
+              </section>
+
+ 
+
+            </div>
+
+ 
+
+            <section class="profile-card profile-photo-card">
+
+              <p class="eyebrow">Foto</p>
+
+              <h4>Foto de perfil</h4>
+
+ 
+
+              <p class="profile-help">
+
+                La foto se registra una vez. Después, cualquier cambio requiere autorización.
+
+              </p>
+
+ 
+
+              <label class="profile-file-label">
+
+                <span>Seleccionar foto</span>
+
+                <input
+
+                  id="profilePhotoInput"
+
+                  type="file"
+
+                  accept="image/*"
+
+                />
+
+              </label>
+
+ 
+
+              <p
+
+                id="profilePhotoStatus"
+
+                class="profile-help"
+
+              >
+
+                No se ha seleccionado una nueva foto.
+
+              </p>
+
+            </section>
 
  
 
@@ -2026,7 +2274,7 @@
 
     type="module"
 
-    src="./app.js?v=13"
+    src="./app.js?v=15"
 
   ></script>
 
