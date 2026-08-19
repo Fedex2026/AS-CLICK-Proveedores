@@ -1,932 +1,1951 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
+ 
+
   
+
   <head>
+
+ 
 
   <meta charset="UTF-8" />
 
+ 
+
   <meta
+
     name="viewport"
+
     content="width=device-width, initial-scale=1.0"
+
   />
+
+ 
 
   <meta name="theme-color" content="#07111f" />
 
+ 
+
   <title>AS CLICK Proveedores</title>
+
+ 
 
   <link rel="manifest" href="manifest.json" />
 
+ 
+
   <link rel="stylesheet" href="styles.css" />
+
+ 
 
 </head>
 
+ 
+
 <body>
+
+ 
 
   <div class="app-shell">
 
+ 
+
     <!-- MENÚ LATERAL -->
+
+ 
 
     <aside class="sidebar">
 
+ 
+
       <div class="brand sidebar-brand">
 
+ 
+
         <div class="brand-logo">
+
           AS
+
         </div>
 
+ 
+
         <div>
+
+ 
 
           <h1>AS CLICK</h1>
 
+ 
+
           <p>Proveedores</p>
 
+ 
+
         </div>
+
+ 
 
       </div>
 
+ 
+
       <nav class="sidebar-nav">
 
+ 
+
         <button
+
           class="nav-item active"
+
           data-view="dashboard"
+
           type="button"
+
         >
+
           Inicio
+
         </button>
 
+ 
+
         <button
+
           class="nav-item"
+
           data-view="servicios"
+
           type="button"
+
         >
+
           Servicios
+
         </button>
 
+ 
+
         <button
+
           class="nav-item"
+
           data-view="historial"
+
           type="button"
+
         >
+
           Historial
+
         </button>
 
+ 
+
         <button
+
           class="nav-item"
+
           data-view="ganancias"
+
           type="button"
+
         >
+
           Ganancias
+
         </button>
 
+ 
+
         <button
+
           class="nav-item"
+
           data-view="perfil"
+
           type="button"
+
         >
+
           Mi perfil
+
         </button>
+
+ 
 
       </nav>
 
+ 
+
       <button
+
         id="logoutButton"
+
         class="btn btn-secondary sidebar-logout"
+
         type="button"
+
       >
+
         Cerrar sesión
+
       </button>
+
+ 
 
     </aside>
 
+ 
+
     <!-- CONTENIDO PRINCIPAL -->
+
+ 
 
     <main class="main-content">
 
+ 
+
       <!-- ENCABEZADO -->
+
+ 
 
       <header class="topbar">
 
+ 
+
         <div>
 
+ 
+
           <p
+
             id="currentViewTitle"
+
             class="eyebrow"
+
           >
+
             Panel del proveedor
+
           </p>
 
+ 
+
           <h2 id="welcomeTitle">
+
             Bienvenido
+
           </h2>
 
+ 
+
         </div>
+
+ 
 
         <div class="availability-box">
 
+ 
+
           <span id="availabilityText">
+
             No disponible
+
           </span>
 
+ 
+
           <button
+
             id="availabilityToggle"
+
             class="switch"
+
             type="button"
+
             aria-pressed="false"
+
             aria-label="Cambiar disponibilidad"
+
           >
+
             <span></span>
+
           </button>
+
+ 
 
         </div>
 
+ 
+
       </header>
+
+ 
 
       <!-- VISTA INICIO -->
 
+ 
+
       <section
+
         id="view-dashboard"
+
         class="app-view active"
+
       >
+
+ 
 
         <!-- ESTADÍSTICAS -->
 
+ 
+
         <section class="stats-grid">
 
+ 
+
           <article class="stat-card">
 
+ 
+
             <span>
+
               Servicios hoy
+
             </span>
+
+ 
 
             <strong id="todayServices">
+
               0
+
             </strong>
+
+ 
 
           </article>
 
+ 
+
           <article class="stat-card">
 
+ 
+
             <span>
+
               Ganancias hoy
+
             </span>
+
+ 
 
             <strong id="todayIncome">
+
               $0
+
             </strong>
+
+ 
 
           </article>
 
+ 
+
           <article class="stat-card">
 
+ 
+
             <span>
+
               Calificación
+
             </span>
+
+ 
 
             <strong id="providerRating">
+
               5.0
+
             </strong>
 
+ 
+
           </article>
+
+ 
 
           <article class="stat-card">
 
+ 
+
             <span>
+
               Estado
+
             </span>
 
+ 
+
             <strong id="providerStatus">
+
               Desconectado
+
             </strong>
+
+ 
 
           </article>
 
+ 
+
         </section>
+
+ 
 
         <!-- MAPA Y SERVICIO -->
 
+ 
+
         <section class="dashboard-grid">
+
+ 
 
           <!-- MAPA -->
 
+ 
+
           <article class="panel map-panel">
+
+ 
 
             <div class="panel-header">
 
+ 
+
               <div>
 
+ 
+
                 <p class="eyebrow">
+
                   Ubicación
+
                 </p>
 
+ 
+
                 <h3>
+
                   Mapa en tiempo real
+
                 </h3>
 
+ 
+
               </div>
+
+ 
 
               <button
+
                 id="locationButton"
+
                 class="btn btn-secondary"
+
                 type="button"
+
               >
+
                 Actualizar ubicación
+
               </button>
 
+ 
+
             </div>
+
+ 
 
             <div
+
               id="mapPlaceholder"
+
               class="map-placeholder"
+
             >
 
+ 
+
               <div class="map-pin">
+
                 ●
+
               </div>
 
+ 
+
               <p id="locationText">
+
                 Activa tu disponibilidad para compartir ubicación.
+
               </p>
+
+ 
 
             </div>
 
+ 
+
           </article>
+
+ 
 
           <!-- SERVICIO NUEVO -->
 
+ 
+
           <article class="panel service-panel">
+
+ 
 
             <div class="panel-header">
 
+ 
+
               <div>
 
+ 
+
                 <p class="eyebrow">
+
                   Solicitud nueva
+
                 </p>
 
+ 
+
                 <h3>
+
                   Servicio disponible
+
                 </h3>
+
+ 
 
               </div>
 
+ 
+
               <span
+
                 id="serviceTimer"
+
                 class="timer"
+
               >
+
                 --
+
               </span>
 
+ 
+
             </div>
+
+ 
 
             <!-- SIN SERVICIO -->
 
+ 
+
             <div
+
               id="emptyService"
+
               class="empty-state"
+
             >
 
+ 
+
               <div class="empty-icon">
+
                 ✓
+
               </div>
 
+ 
+
               <h4>
+
                 No hay servicios pendientes
+
               </h4>
 
+ 
+
               <p>
+
                 Cuando llegue una solicitud cercana aparecerá aquí.
+
               </p>
 
+ 
+
             </div>
+
+ 
 
             <!-- TARJETA DEL SERVICIO -->
 
+ 
+
             <div
+
               id="serviceCard"
+
               class="service-card hidden"
+
             >
+
+ 
 
               <div class="service-type-row">
 
+ 
+
                 <span
+
                   id="serviceType"
+
                   class="service-badge"
+
                 >
+
                   Grúa
+
                 </span>
 
+ 
+
                 <strong id="serviceDistance">
+
                   0 km
+
                 </strong>
 
+ 
+
               </div>
+
+ 
 
               <dl class="service-data">
 
+ 
+
                 <div>
 
+ 
+
                   <dt>
+
                     Folio
+
                   </dt>
+
+ 
 
                   <dd id="serviceFolio">
+
                     ---
+
                   </dd>
+
+ 
 
                 </div>
 
+ 
+
                 <div>
 
+ 
+
                   <dt>
+
                     Cliente
+
                   </dt>
+
+ 
 
                   <dd id="serviceClient">
+
                     ---
+
                   </dd>
+
+ 
 
                 </div>
 
+ 
+
                 <div>
 
+ 
+
                   <dt>
+
                     Vehículo
+
                   </dt>
+
+ 
 
                   <dd id="serviceVehicle">
+
                     ---
+
                   </dd>
+
+ 
 
                 </div>
 
+ 
+
                 <div>
 
+ 
+
                   <dt>
+
                     Origen
+
                   </dt>
+
+ 
 
                   <dd id="serviceOrigin">
+
                     ---
+
                   </dd>
 
+ 
+
                 </div>
+
+ 
 
                 <div>
 
+ 
+
                   <dt>
+
                     Destino
+
                   </dt>
 
+ 
+
                   <dd id="serviceDestination">
+
                     ---
+
                   </dd>
 
+ 
+
                 </div>
+
+ 
 
               </dl>
 
+ 
+
               <div class="service-actions">
 
-                <button
-                  id="rejectServiceButton"
-                  class="btn btn-danger"
-                  type="button"
-                >
-                  Rechazar
-                </button>
+ 
 
                 <button
-                  id="acceptServiceButton"
-                  class="btn btn-primary"
+
+                  id="rejectServiceButton"
+
+                  class="btn btn-danger"
+
                   type="button"
+
                 >
-                  Aceptar servicio
+
+                  Rechazar
+
                 </button>
+
+ 
+
+                <button
+
+                  id="acceptServiceButton"
+
+                  class="btn btn-primary"
+
+                  type="button"
+
+                >
+
+                  Aceptar servicio
+
+                </button>
+
+ 
 
               </div>
 
+ 
+
             </div>
+
+ 
 
           </article>
 
+ 
+
         </section>
+
+ 
 
         <!-- RESUMEN DE SERVICIO ACTIVO -->
 
+ 
+
         <section
+
           id="dashboardActiveService"
+
           class="panel activity-panel hidden"
+
         >
+
+ 
 
           <div class="panel-header">
 
+ 
+
             <div>
 
+ 
+
               <p class="eyebrow">
+
                 Servicio activo
+
               </p>
 
+ 
+
               <h3 id="dashboardActiveTitle">
+
                 Servicio
+
               </h3>
+
+ 
 
             </div>
 
+ 
+
             <button
+
               id="goToActiveServiceButton"
+
               class="btn btn-primary"
+
               type="button"
+
             >
+
               Ver seguimiento
+
             </button>
+
+ 
 
           </div>
 
+ 
+
           <p id="dashboardActiveSummary">
+
             Servicio asignado
+
           </p>
 
+ 
+
         </section>
+
+ 
 
         <!-- ACTIVIDAD -->
 
+ 
+
         <section class="panel activity-panel">
+
+ 
 
           <div class="panel-header">
 
+ 
+
             <div>
 
+ 
+
               <p class="eyebrow">
+
                 Actividad reciente
+
               </p>
 
+ 
+
               <h3>
+
                 Últimos movimientos
+
               </h3>
+
+ 
 
             </div>
 
+ 
+
           </div>
 
+ 
+
           <div
+
             id="activityList"
+
             class="activity-list"
+
           >
+
+ 
 
             <div class="activity-item">
 
+ 
+
               <span class="activity-dot"></span>
+
+ 
 
               <div>
 
+ 
+
                 <strong>
+
                   Panel listo
+
                 </strong>
 
+ 
+
                 <p>
+
                   Activa tu disponibilidad para comenzar.
+
                 </p>
+
+ 
 
               </div>
 
+ 
+
             </div>
+
+ 
 
           </div>
 
+ 
+
         </section>
 
+ 
+
       </section>
+
+ 
 
       <!-- VISTA SERVICIOS -->
 
+ 
+
       <section
+
         id="view-servicios"
+
         class="app-view"
+
         hidden
+
       >
+
+ 
 
         <section class="panel activity-panel">
 
+ 
+
           <div class="panel-header">
+
+ 
 
             <div>
 
+ 
+
               <p class="eyebrow">
+
                 Servicios
+
               </p>
 
+ 
+
               <h3>
+
                 Servicio actual
+
               </h3>
 
+ 
+
             </div>
+
+ 
 
             <span
+
               id="activeServiceStatusBadge"
+
               class="service-badge"
+
             >
+
               Sin servicio
+
             </span>
 
+ 
+
           </div>
 
+ 
+
           <div
+
             id="activeServiceEmpty"
+
             class="empty-state"
+
           >
+
+ 
 
             <div class="empty-icon">
+
               ✓
+
             </div>
 
+ 
+
             <h4>
+
               No tienes un servicio activo
+
             </h4>
 
+ 
+
             <p>
+
               Cuando aceptes un servicio aparecerá en esta sección.
+
             </p>
+
+ 
 
           </div>
 
+ 
+
           <div
+
             id="activeServiceCard"
+
             class="service-card hidden"
+
           >
+
+ 
 
             <div class="service-type-row">
 
+ 
+
               <span class="service-badge">
+
                 Servicio asignado
+
               </span>
 
+ 
+
               <strong id="activeServiceStatus">
+
                 Asignado
+
               </strong>
 
+ 
+
             </div>
+
+ 
 
             <dl class="service-data">
 
+ 
+
               <div>
 
+ 
+
                 <dt>
+
                   Folio
+
                 </dt>
+
+ 
 
                 <dd id="activeServiceFolio">
+
                   ---
+
                 </dd>
+
+ 
 
               </div>
 
+ 
+
               <div>
 
+ 
+
                 <dt>
+
                   Cliente
+
                 </dt>
+
+ 
 
                 <dd id="activeServiceClient">
+
                   ---
+
                 </dd>
+
+ 
 
               </div>
 
+ 
+
               <div>
 
+ 
+
                 <dt>
+
                   Teléfono
+
                 </dt>
+
+ 
 
                 <dd id="activeServicePhone">
+
                   ---
+
                 </dd>
+
+ 
 
               </div>
 
+ 
+
               <div>
 
+ 
+
                 <dt>
+
                   Vehículo
+
                 </dt>
+
+ 
 
                 <dd id="activeServiceVehicle">
+
                   ---
+
                 </dd>
+
+ 
 
               </div>
 
+ 
+
               <div>
 
+ 
+
                 <dt>
+
                   Origen
+
                 </dt>
+
+ 
 
                 <dd id="activeServiceOrigin">
+
                   ---
+
                 </dd>
 
+ 
+
               </div>
+
+ 
 
               <div>
 
+ 
+
                 <dt>
+
                   Destino
+
                 </dt>
 
+ 
+
                 <dd id="activeServiceDestination">
+
                   ---
+
                 </dd>
 
+ 
+
               </div>
+
+ 
 
             </dl>
 
+ 
+
             <div class="service-actions">
 
+ 
+
               <button
+
                 id="openOriginButton"
+
                 class="btn btn-secondary"
+
                 type="button"
+
               >
+
                 Abrir origen
+
               </button>
+
+ 
 
               <button
+
                 id="openDestinationButton"
+
                 class="btn btn-secondary"
+
                 type="button"
+
               >
+
                 Abrir destino
+
               </button>
 
+ 
+
             </div>
+
+ 
 
             <div class="service-actions">
 
+ 
+
               <button
+
                 id="onTheWayButton"
+
                 class="btn btn-primary"
+
                 type="button"
+
               >
+
                 En camino
+
               </button>
 
+ 
+
               <button
+
                 id="arrivalButton"
+
                 class="btn btn-primary"
+
                 type="button"
+
               >
+
                 Arribo
+
               </button>
 
+ 
+
               <button
+
                 id="startTransferButton"
+
                 class="btn btn-primary"
+
                 type="button"
+
               >
+
                 Iniciar traslado
+
               </button>
 
+ 
+
               <button
+
                 id="destinationArrivalButton"
+
                 class="btn btn-primary"
+
                 type="button"
+
               >
+
                 Llegué al destino
+
               </button>
 
+ 
+
               <button
+
                 id="finishServiceButton"
+
                 class="btn btn-danger"
+
                 type="button"
+
               >
+
                 Finalizar servicio
+
               </button>
+
+ 
 
             </div>
+
+ 
 
           </div>
 
+ 
+
         </section>
 
+ 
+
       </section>
+
+ 
 
       <!-- VISTA HISTORIAL -->
 
+ 
+
       <section
+
         id="view-historial"
+
         class="app-view"
+
         hidden
+
       >
+
+ 
 
         <section class="panel activity-panel">
 
+ 
+
           <div class="panel-header">
+
+ 
 
             <div>
 
+ 
+
               <p class="eyebrow">
+
                 Historial
+
               </p>
 
+ 
+
               <h3>
+
                 Servicios realizados
+
               </h3>
 
+ 
+
             </div>
+
+ 
 
           </div>
 
-          <div class="empty-state">
+ 
+
+          <div class="history-toolbar">
+
+ 
+
+            <button
+
+              id="historyPreviousDay"
+
+              class="btn btn-secondary"
+
+              type="button"
+
+            >
+
+              ← Día anterior
+
+            </button>
+
+ 
+
+            <label class="history-date-box">
+
+              <span>Fecha</span>
+
+              <input
+
+                id="historyDate"
+
+                type="date"
+
+              />
+
+            </label>
+
+ 
+
+            <button
+
+              id="historyToday"
+
+              class="btn btn-secondary"
+
+              type="button"
+
+            >
+
+              Hoy
+
+            </button>
+
+ 
+
+            <button
+
+              id="historyNextDay"
+
+              class="btn btn-secondary"
+
+              type="button"
+
+            >
+
+              Día siguiente →
+
+            </button>
+
+ 
+
+          </div>
+
+ 
+
+          <div
+
+            id="historyEmpty"
+
+            class="empty-state"
+
+          >
+
+ 
 
             <div class="empty-icon">
+
               ✓
+
             </div>
 
+ 
+
             <h4>
-              Aún no hay servicios en el historial
+
+              No hay servicios en esta fecha
+
             </h4>
 
+ 
+
             <p>
-              Los servicios terminados aparecerán aquí.
+
+              Los servicios terminados del día seleccionado aparecerán aquí.
+
             </p>
 
+ 
+
           </div>
+
+ 
+
+          <div
+
+            id="historyList"
+
+            class="history-list hidden"
+
+          ></div>
+
+ 
 
         </section>
 
+ 
+
       </section>
+
+ 
 
       <!-- VISTA GANANCIAS -->
 
+ 
+
       <section
+
         id="view-ganancias"
+
         class="app-view"
+
         hidden
+
       >
+
+ 
 
         <section class="stats-grid">
 
+ 
+
           <article class="stat-card">
 
+ 
+
             <span>
+
               Ganancias hoy
+
             </span>
 
+ 
+
             <strong>
+
               $0
+
             </strong>
+
+ 
 
           </article>
 
+ 
+
           <article class="stat-card">
 
+ 
+
             <span>
+
               Esta semana
+
             </span>
 
+ 
+
             <strong>
+
               $0
+
             </strong>
+
+ 
 
           </article>
 
+ 
+
           <article class="stat-card">
 
+ 
+
             <span>
+
               Este mes
+
             </span>
 
+ 
+
             <strong>
+
               $0
+
             </strong>
 
+ 
+
           </article>
+
+ 
 
           <article class="stat-card">
 
+ 
+
             <span>
+
               Total
+
             </span>
 
+ 
+
             <strong>
+
               $0
+
             </strong>
 
+ 
+
           </article>
+
+ 
 
         </section>
 
+ 
+
         <section class="panel activity-panel">
+
+ 
 
           <div class="panel-header">
 
+ 
+
             <div>
 
+ 
+
               <p class="eyebrow">
+
                 Ganancias
+
               </p>
 
+ 
+
               <h3>
+
                 Movimientos
+
               </h3>
+
+ 
 
             </div>
 
+ 
+
           </div>
+
+ 
 
           <div class="empty-state">
 
+ 
+
             <div class="empty-icon">
+
               $
+
             </div>
 
+ 
+
             <h4>
+
               No hay movimientos registrados
+
             </h4>
 
+ 
+
             <p>
+
               Los cobros de tus servicios aparecerán aquí.
+
             </p>
+
+ 
 
           </div>
 
+ 
+
         </section>
 
+ 
+
       </section>
+
+ 
 
       <!-- VISTA PERFIL -->
 
+ 
+
       <section
+
         id="view-perfil"
+
         class="app-view"
+
         hidden
+
       >
+
+ 
 
         <section class="panel activity-panel">
 
+ 
+
           <div class="panel-header">
+
+ 
 
             <div>
 
+ 
+
               <p class="eyebrow">
+
                 Mi perfil
+
               </p>
 
+ 
+
               <h3>
+
                 Información del proveedor
+
               </h3>
+
+ 
 
             </div>
 
+ 
+
           </div>
+
+ 
 
           <div class="activity-list">
 
+ 
+
             <div class="activity-item">
+
+ 
 
               <span class="activity-dot"></span>
 
+ 
+
               <div>
 
+ 
+
                 <strong>
+
                   Perfil de proveedor
+
                 </strong>
 
+ 
+
                 <p>
+
                   Tus datos, documentos y unidad se mostrarán en esta sección.
+
                 </p>
+
+ 
 
               </div>
 
+ 
+
             </div>
+
+ 
 
           </div>
 
+ 
+
         </section>
+
+ 
 
       </section>
 
+ 
+
     </main>
+
+ 
 
   </div>
 
+ 
+
   <!-- MENSAJES EMERGENTES -->
 
+ 
+
   <div
+
     id="toast"
+
     class="toast"
+
     role="status"
+
     aria-live="polite"
+
   ></div>
 
+ 
+
   <script
+
     type="module"
-    src="./app.js?v=10"
+
+    src="./app.js?v=11"
+
   ></script>
 
+ 
+
 </body>
+
+ 
 
 </html>
