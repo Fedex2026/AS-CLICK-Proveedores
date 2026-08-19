@@ -86,7 +86,13 @@ const s = {
 
   unsubscribeActiveService: null,
 
-  unsubscribeRequests: null
+  unsubscribeRequests: null,
+
+  unsubscribeHistory: null,
+
+  historyServices: [],
+
+  historyDate: ""
 
 };
 
@@ -228,6 +234,8 @@ onAuthStateChanged(auth, async user => {
 
     listenActiveService();
 
+    initializeHistory();
+
  
 
     if (s.available || s.provider.servicioActualId) {
@@ -283,6 +291,26 @@ bindClick("openOriginButton", openActiveOrigin);
 bindClick("openDestinationButton", openActiveDestination);
 
 bindClick("goToActiveServiceButton", () => openView("servicios"));
+
+bindClick("historyPreviousDay", () => changeHistoryDay(-1));
+
+bindClick("historyNextDay", () => changeHistoryDay(1));
+
+bindClick("historyToday", () => setHistoryDate(todayDateInputValue()));
+
+ 
+
+const historyDateInput = $("historyDate");
+
+if (historyDateInput) {
+
+  historyDateInput.addEventListener("change", event => {
+
+    setHistoryDate(event.target.value);
+
+  });
+
+}
 
  
 
@@ -2989,6 +3017,394 @@ function clearRealtimeListeners() {
     s.unsubscribeActiveService = null;
 
   }
+
+ 
+
+  if (s.unsubscribeHistory) {
+
+    s.unsubscribeHistory();
+
+    s.unsubscribeHistory = null;
+
+  }
+
+}
+
+ 
+
+function initializeHistory() {
+
+  if (!s.user) return;
+
+ 
+
+  if (!s.historyDate) {
+
+    s.historyDate = todayDateInputValue();
+
+  }
+
+ 
+
+  const input = $("historyDate");
+
+  if (input) input.value = s.historyDate;
+
+ 
+
+  listenHistory();
+
+}
+
+ 
+
+function listenHistory() {
+
+  if (!s.user) return;
+
+ 
+
+  if (s.unsubscribeHistory) {
+
+    s.unsubscribeHistory();
+
+  }
+
+ 
+
+  const historyQuery = query(
+
+    collection(db, "solicitudes"),
+
+    where("asignacion.uidProveedor", "==", s.user.uid)
+
+  );
+
+ 
+
+  s.unsubscribeHistory = onSnapshot(
+
+    historyQuery,
+
+    snapshot => {
+
+      s.historyServices = snapshot.docs
+
+        .map(historyDoc => ({
+
+          id: historyDoc.id,
+
+          ...historyDoc.data()
+
+        }))
+
+        .filter(service => service.estado === "finalizado");
+
+ 
+
+      renderHistory();
+
+    },
+
+    error => {
+
+      console.error("Error cargando historial:", error);
+
+      toast("No fue posible cargar el historial.");
+
+    }
+
+  );
+
+}
+
+ 
+
+function todayDateInputValue() {
+
+  const now = new Date();
+
+  return localDateInputValue(now);
+
+}
+
+ 
+
+function localDateInputValue(date) {
+
+  const year = date.getFullYear();
+
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+
+}
+
+ 
+
+function setHistoryDate(value) {
+
+  if (!value) return;
+
+ 
+
+  s.historyDate = value;
+
+ 
+
+  const input = $("historyDate");
+
+  if (input && input.value !== value) {
+
+    input.value = value;
+
+  }
+
+ 
+
+  renderHistory();
+
+}
+
+ 
+
+function changeHistoryDay(days) {
+
+  const base = s.historyDate || todayDateInputValue();
+
+  const [year, month, day] = base.split("-").map(Number);
+
+  const date = new Date(year, month - 1, day);
+
+  date.setDate(date.getDate() + days);
+
+  setHistoryDate(localDateInputValue(date));
+
+}
+
+ 
+
+function getServiceFinalizationDate(service) {
+
+  const value =
+
+    service.fechaFinalizacion ||
+
+    service.finalizadoEn ||
+
+    service.actualizadoEn;
+
+ 
+
+  if (!value) return null;
+
+ 
+
+  if (typeof value.toDate === "function") {
+
+    return value.toDate();
+
+  }
+
+ 
+
+  if (value.seconds) {
+
+    return new Date(value.seconds * 1000);
+
+  }
+
+ 
+
+  const parsed = new Date(value);
+
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+
+}
+
+ 
+
+function renderHistory() {
+
+  const list = $("historyList");
+
+  const empty = $("historyEmpty");
+
+ 
+
+  if (!list || !empty) return;
+
+ 
+
+  const selectedDate =
+
+    s.historyDate || todayDateInputValue();
+
+ 
+
+  const services = s.historyServices
+
+    .filter(service => {
+
+      const date = getServiceFinalizationDate(service);
+
+      return date && localDateInputValue(date) === selectedDate;
+
+    })
+
+    .sort((a, b) => {
+
+      const dateA = getServiceFinalizationDate(a);
+
+      const dateB = getServiceFinalizationDate(b);
+
+      return (dateB?.getTime() || 0) - (dateA?.getTime() || 0);
+
+    });
+
+ 
+
+  setHidden("historyEmpty", services.length > 0);
+
+  setHidden("historyList", services.length === 0);
+
+ 
+
+  if (!services.length) {
+
+    list.innerHTML = "";
+
+    return;
+
+  }
+
+ 
+
+  list.innerHTML = services
+
+    .map(service => {
+
+      const folio =
+
+        service.folioOficial ||
+
+        service.folio ||
+
+        service.id;
+
+ 
+
+      const serviceType = formatServiceType(
+
+        service.servicio?.tipo ||
+
+        service.servicio?.nombre ||
+
+        service.tipoServicio ||
+
+        service.tipo
+
+      );
+
+ 
+
+      const client =
+
+        service.cliente?.nombre ||
+
+        service.clienteNombre ||
+
+        service.nombreCliente ||
+
+        "Cliente AS CLICK";
+
+ 
+
+      const vehicle = vehicleText(service);
+
+      const finishedAt = getServiceFinalizationDate(service);
+
+ 
+
+      const time = finishedAt
+
+        ? finishedAt.toLocaleTimeString("es-MX", {
+
+            hour: "2-digit",
+
+            minute: "2-digit"
+
+          })
+
+        : "--:--";
+
+ 
+
+      return `
+
+        <article class="history-item">
+
+          <div class="history-item-main">
+
+            <span class="service-badge">${escapeHtml(serviceType)}</span>
+
+            <strong>${escapeHtml(folio)}</strong>
+
+          </div>
+
+ 
+
+          <div class="history-item-data">
+
+            <div>
+
+              <span>Cliente</span>
+
+              <strong>${escapeHtml(client)}</strong>
+
+            </div>
+
+ 
+
+            <div>
+
+              <span>Vehículo</span>
+
+              <strong>${escapeHtml(vehicle)}</strong>
+
+            </div>
+
+ 
+
+            <div>
+
+              <span>Finalizado</span>
+
+              <strong>${escapeHtml(time)}</strong>
+
+            </div>
+
+ 
+
+            <div>
+
+              <span>Estado</span>
+
+              <strong>Finalizado</strong>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      `;
+
+    })
+
+    .join("");
 
 }
 
