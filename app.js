@@ -3104,6 +3104,8 @@ function listenHistory() {
 
       renderHistory();
 
+      renderIncome();
+
     },
 
     error => {
@@ -3395,6 +3397,404 @@ function renderHistory() {
               <strong>Finalizado</strong>
 
             </div>
+
+          </div>
+
+        </article>
+
+      `;
+
+    })
+
+    .join("");
+
+}
+
+ 
+
+function getServiceVehicleClass(service) {
+
+  return normalizeText(
+
+    service.vehiculo?.tipoServicio ||
+
+    service.vehiculo?.tipoUso ||
+
+    service.vehiculo?.servicio ||
+
+    service.tipoVehiculo ||
+
+    service.tipoUsoVehiculo ||
+
+    service.modalidadVehiculo ||
+
+    service.modalidad ||
+
+    ""
+
+  );
+
+}
+
+ 
+
+function isPublicServiceVehicle(service) {
+
+  const value = getServiceVehicleClass(service);
+
+ 
+
+  return (
+
+    value.includes("servicio publico") ||
+
+    value.includes("publico") ||
+
+    value.includes("transporte publico")
+
+  );
+
+}
+
+ 
+
+function getProviderEarning(service) {
+
+  const type = normalizeServiceType(
+
+    service.servicio?.tipo ||
+
+    service.servicio?.nombre ||
+
+    service.tipoServicio ||
+
+    service.tipo ||
+
+    ""
+
+  );
+
+ 
+
+  const isPublic = isPublicServiceVehicle(service);
+
+ 
+
+  if (type === "ajustador") {
+
+    return isPublic ? 250 : 300;
+
+  }
+
+ 
+
+  if (type === "abogado") {
+
+    return isPublic ? 350 : 500;
+
+  }
+
+ 
+
+  if (type === "auxilio_vial") {
+
+    return 100;
+
+  }
+
+ 
+
+  // Grúa no tiene tarifa fija aquí.
+
+  return 0;
+
+}
+
+ 
+
+function isSameLocalDay(dateA, dateB) {
+
+  return (
+
+    dateA.getFullYear() === dateB.getFullYear() &&
+
+    dateA.getMonth() === dateB.getMonth() &&
+
+    dateA.getDate() === dateB.getDate()
+
+  );
+
+}
+
+ 
+
+function startOfCurrentWeek(date) {
+
+  const result = new Date(
+
+    date.getFullYear(),
+
+    date.getMonth(),
+
+    date.getDate()
+
+  );
+
+ 
+
+  const day = result.getDay();
+
+  const diff = day === 0 ? 6 : day - 1;
+
+  result.setDate(result.getDate() - diff);
+
+  result.setHours(0, 0, 0, 0);
+
+ 
+
+  return result;
+
+}
+
+ 
+
+function formatMoney(value) {
+
+  return new Intl.NumberFormat("es-MX", {
+
+    style: "currency",
+
+    currency: "MXN",
+
+    maximumFractionDigits: 0
+
+  }).format(value || 0);
+
+}
+
+ 
+
+function renderIncome() {
+
+  const services = Array.isArray(s.historyServices)
+
+    ? s.historyServices
+
+    : [];
+
+ 
+
+  const now = new Date();
+
+  const weekStart = startOfCurrentWeek(now);
+
+  const monthStart = new Date(
+
+    now.getFullYear(),
+
+    now.getMonth(),
+
+    1
+
+  );
+
+ 
+
+  let today = 0;
+
+  let week = 0;
+
+  let month = 0;
+
+  let total = 0;
+
+ 
+
+  const movements = services
+
+    .map(service => {
+
+      const date = getServiceFinalizationDate(service);
+
+      const amount = getProviderEarning(service);
+
+ 
+
+      return {
+
+        service,
+
+        date,
+
+        amount
+
+      };
+
+    })
+
+    .filter(item => item.date && item.amount > 0)
+
+    .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+ 
+
+  movements.forEach(item => {
+
+    total += item.amount;
+
+ 
+
+    if (isSameLocalDay(item.date, now)) {
+
+      today += item.amount;
+
+    }
+
+ 
+
+    if (item.date >= weekStart && item.date <= now) {
+
+      week += item.amount;
+
+    }
+
+ 
+
+    if (item.date >= monthStart && item.date <= now) {
+
+      month += item.amount;
+
+    }
+
+  });
+
+ 
+
+  setText("incomeToday", formatMoney(today));
+
+  setText("incomeWeek", formatMoney(week));
+
+  setText("incomeMonth", formatMoney(month));
+
+  setText("incomeTotal", formatMoney(total));
+
+ 
+
+  const list = $("incomeMovements");
+
+  const empty = $("incomeEmpty");
+
+ 
+
+  if (!list || !empty) return;
+
+ 
+
+  setHidden("incomeEmpty", movements.length > 0);
+
+  setHidden("incomeMovements", movements.length === 0);
+
+ 
+
+  if (!movements.length) {
+
+    list.innerHTML = "";
+
+    return;
+
+  }
+
+ 
+
+  list.innerHTML = movements
+
+    .map(item => {
+
+      const service = item.service;
+
+ 
+
+      const folio =
+
+        service.folioOficial ||
+
+        service.folio ||
+
+        service.id;
+
+ 
+
+      const serviceType = formatServiceType(
+
+        service.servicio?.tipo ||
+
+        service.servicio?.nombre ||
+
+        service.tipoServicio ||
+
+        service.tipo
+
+      );
+
+ 
+
+      const vehicleClass = isPublicServiceVehicle(service)
+
+        ? "Servicio público"
+
+        : "Particular";
+
+ 
+
+      const dateText = item.date.toLocaleDateString("es-MX", {
+
+        day: "2-digit",
+
+        month: "2-digit",
+
+        year: "numeric"
+
+      });
+
+ 
+
+      const timeText = item.date.toLocaleTimeString("es-MX", {
+
+        hour: "2-digit",
+
+        minute: "2-digit"
+
+      });
+
+ 
+
+      return `
+
+        <article class="income-item">
+
+          <div class="income-item-main">
+
+            <div>
+
+              <span class="service-badge">${escapeHtml(serviceType)}</span>
+
+              <strong>${escapeHtml(folio)}</strong>
+
+            </div>
+
+ 
+
+            <strong class="income-amount">${escapeHtml(formatMoney(item.amount))}</strong>
+
+          </div>
+
+ 
+
+          <div class="income-item-data">
+
+            <span>${escapeHtml(vehicleClass)}</span>
+
+            <span>${escapeHtml(dateText)} · ${escapeHtml(timeText)}</span>
 
           </div>
 
