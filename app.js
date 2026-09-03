@@ -423,6 +423,9 @@ const s = {
  
 
   unsubscribeRequests: null,
+  unsubscribeQuoteRequests: null,
+  solicitudesCotizacion: [],
+  quoted: new Set(),
 
  
 
@@ -1015,6 +1018,7 @@ onAuthStateChanged(auth, async user => {
  
 
     listenServices();
+    listenTowQuotes();
 
  
 
@@ -3759,6 +3763,18 @@ function listenServices() {
  
 
 }
+function listenTowQuotes() {
+  if (s.unsubscribeQuoteRequests) s.unsubscribeQuoteRequests();
+  const quoteQuery = query(collection(db, "solicitudes"), where("estado", "==", "pendiente_cotizacion"));
+  s.unsubscribeQuoteRequests = onSnapshot(quoteQuery, snapshot => {
+    s.solicitudesCotizacion = snapshot.docs.map(requestDoc => ({ id: requestDoc.id, ...requestDoc.data(), __isQuoteRequest: true }));
+    evaluateAvailableServices();
+  }, error => {
+    console.error("Error escuchando cotizaciones de grúa:", error);
+  });
+}
+
+
 
  
 
@@ -4334,7 +4350,9 @@ function evaluateAvailableServices() {
 
  
 
-  const availableRequests = s.solicitudes
+  const solicitudesBase = providerType === "grua" ? [...s.solicitudes, ...s.solicitudesCotizacion] : s.solicitudes;
+
+  const availableRequests = solicitudesBase
 
  
 
@@ -4350,7 +4368,8 @@ function evaluateAvailableServices() {
 
  
 
-      if (s.rejected.has(request.id)) return false;
+      if (s.rejected.has(request.id) || s.quoted.has(request.id)) return false;
+      if (request.__isQuoteRequest && (s.provider?.activo !== true || s.provider?.autorizado !== true)) return false;
 
  
 
@@ -5366,6 +5385,49 @@ function getRequestCreatedTime(request) {
 
  
 
+
+function escapeHtml(value) {
+  return String(value ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+function formatQuoteCondition(v){ return v === "siniestro" ? "Siniestro / chocado" : v === "descompuesto" ? "Descompuesto" : (v || "Sin dato"); }
+function formatReleaseStatus(v){ return v === "liberado" ? "Liberado" : v === "pendiente_liberacion" ? "Pendiente de liberación" : v === "no_aplica" ? "No aplica" : (v || "Sin dato"); }
+function formatLoadStatus(v){ return v === "con_carga" ? "Con carga" : v === "vacio" ? "Vacío" : (v || "Sin dato"); }
+
+async function submitTowQuote(currentRequest) {
+  if (!s.user || !s.provider) return;
+  const priceText = window.prompt("Importe total de tu cotización (MXN):", "");
+  if (priceText === null) return;
+  const precio = Number(String(priceText).replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(precio) || precio <= 0) { toast("Ingresa un precio válido."); return; }
+  const etaText = window.prompt("Tiempo estimado de llegada en minutos:", "30");
+  if (etaText === null) return;
+  const eta = Math.max(1, Math.round(Number(String(etaText).replace(/[^0-9.]/g, "")) || 0));
+  if (!eta) { toast("Ingresa un tiempo estimado válido."); return; }
+  const observaciones = window.prompt("Observaciones de la cotización (opcional):", "Incluye maniobras y traslado") ?? "";
+
+  const quoteRef = doc(db, "solicitudes", currentRequest.id, "cotizaciones", s.user.uid);
+  await setDoc(quoteRef, {
+    proveedorUid: s.user.uid,
+    nombreProveedor: s.provider.nombre || s.provider.nombreCompleto || s.user.email || "Proveedor",
+    telefonoProveedor: s.provider.telefono || s.provider.celular || "",
+    fotoProveedor: s.provider.fotoProveedor || s.provider.foto || s.provider.fotoURL || s.provider.photoURL || "",
+    calificacion: Number(s.provider.calificacion ?? 5),
+    precio,
+    tiempoEstimadoMinutos: eta,
+    observaciones: String(observaciones).trim(),
+    categoriaGrua: currentRequest.grua?.categoria || "",
+    estado: "enviada",
+    creadoEn: serverTimestamp(),
+    actualizadoEn: serverTimestamp()
+  }, { merge: true });
+
+  s.quoted.add(currentRequest.id);
+  activity("Cotización enviada", `Folio ${currentRequest.folio || currentRequest.id} · $${precio.toLocaleString("es-MX")}`);
+  toast("Cotización enviada. El cliente decidirá qué propuesta autorizar.");
+  hideService();
+  setTimeout(evaluateAvailableServices, 300);
+}
+
 function showService(request) {
 
  
@@ -5399,6 +5461,31 @@ function showService(request) {
  
 
   setHidden("serviceCard", false);
+
+  const esCotizacionGrua = request.__isQuoteRequest === true || request.estado === "pendiente_cotizacion";
+  const quoteDetails = $("quoteRequestDetails");
+  const acceptButton = $("acceptServiceButton");
+  const rejectButton = $("rejectServiceButton");
+  if (acceptButton) acceptButton.textContent = esCotizacionGrua ? "Enviar cotización" : "Aceptar servicio";
+  if (rejectButton) rejectButton.textContent = esCotizacionGrua ? "Omitir" : "Rechazar";
+  if (quoteDetails) {
+    quoteDetails.classList.toggle("hidden", !esCotizacionGrua);
+    if (esCotizacionGrua) {
+      const g = request.grua || {};
+      quoteDetails.innerHTML = `
+        <h4>Datos para cotizar</h4>
+        <div class="quote-request-grid">
+          <div class="quote-request-item"><span>Categoría</span><b>Grúa ${escapeHtml(g.categoria || "Sin definir")}</b></div>
+          <div class="quote-request-item"><span>Condición</span><b>${escapeHtml(formatQuoteCondition(g.condicion))}</b></div>
+          <div class="quote-request-item"><span>Liberación</span><b>${escapeHtml(formatReleaseStatus(g.liberacion))}</b></div>
+          <div class="quote-request-item"><span>Vehículo de carga</span><b>${g.esVehiculoCarga ? "Sí" : "No"}</b></div>
+          ${g.esVehiculoCarga ? `<div class="quote-request-item"><span>Carga</span><b>${escapeHtml(formatLoadStatus(g.estadoCarga))}</b></div>` : ""}
+          ${g.estadoCarga === "con_carga" ? `<div class="quote-request-item"><span>Tipo / peso</span><b>${escapeHtml(`${g.tipoCarga || "Sin dato"} · ${g.pesoCargaAproximado || "Sin dato"}`)}</b></div>` : ""}
+          ${g.comentarios ? `<div class="quote-request-item quote-request-note"><span>Comentarios</span><b>${escapeHtml(g.comentarios)}</b></div>` : ""}
+        </div>`;
+    }
+  }
+
 
  
 
@@ -7032,6 +7119,11 @@ async function acceptService() {
 
   const currentRequest = s.current;
 
+  if (currentRequest.__isQuoteRequest === true || currentRequest.estado === "pendiente_cotizacion") {
+    try { await submitTowQuote(currentRequest); } catch (error) { console.error("Error enviando cotización:", error); toast(error?.message || "No fue posible enviar la cotización."); }
+    return;
+  }
+
  
 
  
@@ -8255,6 +8347,14 @@ async function rejectService() {
  
 
   const currentRequest = s.current;
+
+  if (currentRequest.__isQuoteRequest === true || currentRequest.estado === "pendiente_cotizacion") {
+    s.rejected.add(currentRequest.id);
+    toast("Cotización omitida.");
+    hideService();
+    setTimeout(evaluateAvailableServices, 300);
+    return;
+  }
 
  
 
