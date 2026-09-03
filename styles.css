@@ -13669,3 +13669,9 @@ body.login-body .registro-section-title span {
   }
 
 }
+
+
+/* COTIZACIONES DE GRÚA */
+.quote-request-details{margin:0 0 18px;padding:16px;border:1px solid rgba(56,189,248,.2);border-radius:16px;background:rgba(56,189,248,.06)}
+.quote-request-details h4{margin:0 0 12px;color:#7dd3fc;font-size:15px}.quote-request-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quote-request-item{padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:rgba(7,17,31,.45)}.quote-request-item span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}.quote-request-item b{font-size:13px}.quote-request-note{grid-column:1/-1}.quote-price-badge{color:#fbbf24!important;border-color:rgba(245,158,11,.35)!important;background:rgba(245,158,11,.1)!important}
+@media(max-width:620px){.quote-request-grid{grid-template-columns:1fr}.quote-request-note{grid-column:auto}}
