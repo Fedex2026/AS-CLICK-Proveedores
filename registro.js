@@ -2,14 +2,15 @@ import { auth, db } from "./firebase-config.js";
 
 import {
   createUserWithEmailAndPassword,
+  deleteUser,
   signOut
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 import {
   doc,
   setDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
 const registerForm = document.getElementById("registerForm");
@@ -100,6 +101,8 @@ registerForm.addEventListener("submit", async (event) => {
   registerButton.disabled = true;
   registerButton.textContent = "Creando cuenta...";
 
+  let usuarioCreado = null;
+
 
   try {
 
@@ -110,6 +113,8 @@ registerForm.addEventListener("submit", async (event) => {
         password
       );
 
+
+    usuarioCreado = credential.user;
 
     const uid = credential.user.uid;
 
@@ -136,6 +141,12 @@ registerForm.addEventListener("submit", async (event) => {
         municipio: municipio,
 
         activo: false,
+
+        autorizado: false,
+
+        bajaAdmin: false,
+
+        suspendido: false,
 
         disponible: false,
 
@@ -185,6 +196,29 @@ registerForm.addEventListener("submit", async (event) => {
 
     console.error("Error registrando proveedor:", error);
 
+    /*
+      Si Authentication alcanzó a crear el usuario pero Firestore
+      rechazó guardar proveedores/{uid}, eliminamos esa cuenta para
+      que no quede un correo huérfano en Authentication.
+    */
+    if (usuarioCreado) {
+
+      try {
+
+        await deleteUser(usuarioCreado);
+
+      } catch (deleteError) {
+
+        console.error(
+          "No fue posible limpiar la cuenta creada en Authentication:",
+          deleteError
+        );
+
+      }
+
+    }
+
+
     registerMessage.style.color = "#ff8c96";
     registerMessage.textContent = traducirError(error);
 
@@ -229,9 +263,12 @@ function traducirError(error) {
   }
 
 
-  if (code === "permission-denied") {
+  if (
+    code === "permission-denied" ||
+    code === "firestore/permission-denied"
+  ) {
 
-    return "Firebase no permitió guardar el registro.";
+    return "Firebase no permitió guardar el registro del proveedor.";
 
   }
 
