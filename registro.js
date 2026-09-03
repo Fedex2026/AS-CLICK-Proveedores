@@ -2,15 +2,14 @@ import { auth, db } from "./firebase-config.js";
 
 import {
   createUserWithEmailAndPassword,
-  deleteUser,
   signOut
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
 import {
   doc,
   setDoc,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 
 const registerForm = document.getElementById("registerForm");
@@ -101,8 +100,6 @@ registerForm.addEventListener("submit", async (event) => {
   registerButton.disabled = true;
   registerButton.textContent = "Creando cuenta...";
 
-  let usuarioCreado = null;
-
 
   try {
 
@@ -113,8 +110,6 @@ registerForm.addEventListener("submit", async (event) => {
         password
       );
 
-
-    usuarioCreado = credential.user;
 
     const uid = credential.user.uid;
 
@@ -195,32 +190,18 @@ registerForm.addEventListener("submit", async (event) => {
   } catch (error) {
 
     console.error("Error registrando proveedor:", error);
-
-    /*
-      Si Authentication alcanzó a crear el usuario pero Firestore
-      rechazó guardar proveedores/{uid}, eliminamos esa cuenta para
-      que no quede un correo huérfano en Authentication.
-    */
-    if (usuarioCreado) {
-
-      try {
-
-        await deleteUser(usuarioCreado);
-
-      } catch (deleteError) {
-
-        console.error(
-          "No fue posible limpiar la cuenta creada en Authentication:",
-          deleteError
-        );
-
-      }
-
-    }
-
+    console.error("Código Firebase:", error?.code);
+    console.error("Mensaje Firebase:", error?.message);
 
     registerMessage.style.color = "#ff8c96";
-    registerMessage.textContent = traducirError(error);
+
+    registerMessage.textContent =
+      traducirError(error) +
+      (
+        error?.code
+          ? ` (${error.code})`
+          : ""
+      );
 
     registerButton.disabled = false;
     registerButton.textContent = "Crear cuenta";
@@ -268,11 +249,12 @@ function traducirError(error) {
     code === "firestore/permission-denied"
   ) {
 
-    return "Firebase no permitió guardar el registro del proveedor.";
+    return "La cuenta sí se creó en Authentication, pero Firestore no permitió guardar el proveedor.";
 
   }
 
 
-  return "No fue posible crear la cuenta. Inténtalo nuevamente.";
+  return error?.message ||
+    "No fue posible crear la cuenta. Inténtalo nuevamente.";
 
 }
