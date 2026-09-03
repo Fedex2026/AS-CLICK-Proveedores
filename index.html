@@ -1,12 +1,25 @@
+
 <!DOCTYPE html>
+
+ 
 
 <html lang="es">
 
  
 
+ 
+
+ 
+
   
 
+ 
+
   <head>
+
+ 
+
+ 
 
  
 
@@ -14,13 +27,27 @@
 
  
 
+ 
+
+ 
+
   <meta
+
+ 
 
     name="viewport"
 
+ 
+
     content="width=device-width, initial-scale=1.0"
 
+ 
+
   />
+
+ 
+
+ 
 
  
 
@@ -28,7 +55,15 @@
 
  
 
+ 
+
+ 
+
   <title>AS CLICK Proveedores</title>
+
+ 
+
+ 
 
  
 
@@ -36,7 +71,15 @@
 
  
 
+ 
+
+ 
+
   <link rel="stylesheet" href="styles.css" />
+
+ 
+
+ 
 
  
 
@@ -44,7 +87,15 @@
 
  
 
+ 
+
+ 
+
 <body>
+
+ 
+
+ 
 
  
 
@@ -52,7 +103,15 @@
 
  
 
+ 
+
+ 
+
     <!-- MENÚ LATERAL -->
+
+ 
+
+ 
 
  
 
@@ -60,19 +119,39 @@
 
  
 
+ 
+
+ 
+
       <div class="brand sidebar-brand">
+
+ 
+
+ 
 
  
 
         <div class="brand-logo">
 
+ 
+
           AS
+
+ 
 
         </div>
 
  
 
+ 
+
+ 
+
         <div>
+
+ 
+
+ 
 
  
 
@@ -80,11 +159,23 @@
 
  
 
+ 
+
+ 
+
           <p>Proveedores</p>
 
  
 
+ 
+
+ 
+
         </div>
+
+ 
+
+ 
 
  
 
@@ -92,87 +183,175 @@
 
  
 
+ 
+
+ 
+
       <nav class="sidebar-nav">
 
  
 
+ 
+
+ 
+
         <button
+
+ 
 
           class="nav-item active"
 
+ 
+
           data-view="dashboard"
+
+ 
 
           type="button"
 
+ 
+
         >
+
+ 
 
           Inicio
 
+ 
+
         </button>
+
+ 
+
+ 
 
  
 
         <button
 
+ 
+
           class="nav-item"
+
+ 
 
           data-view="servicios"
 
+ 
+
           type="button"
 
+ 
+
         >
+
+ 
 
           Servicios
 
+ 
+
         </button>
+
+ 
+
+ 
 
  
 
         <button
 
+ 
+
           class="nav-item"
+
+ 
 
           data-view="historial"
 
+ 
+
           type="button"
 
+ 
+
         >
+
+ 
 
           Historial
 
+ 
+
         </button>
+
+ 
+
+ 
 
  
 
         <button
 
+ 
+
           class="nav-item"
+
+ 
 
           data-view="ganancias"
 
+ 
+
           type="button"
+
+ 
 
         >
 
+ 
+
           Ganancias
+
+ 
 
         </button>
 
  
 
+ 
+
+ 
+
         <button
+
+ 
 
           class="nav-item"
 
+ 
+
           data-view="perfil"
+
+ 
 
           type="button"
 
+ 
+
         >
+
+ 
 
           Mi perfil
 
+ 
+
         </button>
+
+ 
+
+ 
 
  
 
@@ -180,19 +359,39 @@
 
  
 
+ 
+
+ 
+
       <button
+
+ 
 
         id="logoutButton"
 
+ 
+
         class="btn btn-secondary sidebar-logout"
+
+ 
 
         type="button"
 
+ 
+
       >
+
+ 
 
         Cerrar sesión
 
+ 
+
       </button>
+
+ 
+
+ 
 
  
 
@@ -200,7 +399,15 @@
 
  
 
+ 
+
+ 
+
     <!-- CONTENIDO PRINCIPAL -->
+
+ 
+
+ 
 
  
 
@@ -208,7 +415,15 @@
 
  
 
+ 
+
+ 
+
       <!-- ENCABEZADO -->
+
+ 
+
+ 
 
  
 
@@ -216,33 +431,67 @@
 
  
 
+ 
+
+ 
+
         <div>
+
+ 
+
+ 
 
  
 
           <p
 
+ 
+
             id="currentViewTitle"
+
+ 
 
             class="eyebrow"
 
+ 
+
           >
 
+ 
+
             Panel del proveedor
+
+ 
 
           </p>
 
  
 
+ 
+
+ 
+
           <h2 id="welcomeTitle">
 
+ 
+
             Bienvenido
+
+ 
 
           </h2>
 
  
 
+ 
+
+ 
+
         </div>
+
+ 
+
+ 
 
  
 
@@ -250,31 +499,63 @@
 
  
 
+ 
+
+ 
+
           <span id="availabilityText">
 
+ 
+
             No disponible
+
+ 
 
           </span>
 
  
 
+ 
+
+ 
+
           <button
+
+ 
 
             id="availabilityToggle"
 
+ 
+
             class="switch"
+
+ 
 
             type="button"
 
+ 
+
             aria-pressed="false"
+
+ 
 
             aria-label="Cambiar disponibilidad"
 
+ 
+
           >
+
+ 
 
             <span></span>
 
+ 
+
           </button>
+
+ 
+
+ 
 
  
 
@@ -282,7 +563,15 @@
 
  
 
+ 
+
+ 
+
       </header>
+
+ 
+
+ 
 
  
 
@@ -290,13 +579,27 @@
 
  
 
+ 
+
+ 
+
       <section
+
+ 
 
         id="view-dashboard"
 
+ 
+
         class="app-view active"
 
+ 
+
       >
+
+ 
+
+ 
 
  
 
@@ -304,7 +607,15 @@
 
  
 
+ 
+
+ 
+
         <section class="stats-grid">
+
+ 
+
+ 
 
  
 
@@ -312,19 +623,39 @@
 
  
 
+ 
+
+ 
+
             <span>
+
+ 
 
               Servicios hoy
 
+ 
+
             </span>
+
+ 
+
+ 
 
  
 
             <strong id="todayServices">
 
+ 
+
               0
 
+ 
+
             </strong>
+
+ 
+
+ 
 
  
 
@@ -332,23 +663,47 @@
 
  
 
+ 
+
+ 
+
           <article class="stat-card">
+
+ 
+
+ 
 
  
 
             <span>
 
+ 
+
               Ganancias hoy
 
+ 
+
             </span>
+
+ 
+
+ 
 
  
 
             <strong id="todayIncome">
 
+ 
+
               $0
 
+ 
+
             </strong>
+
+ 
+
+ 
 
  
 
@@ -356,27 +711,55 @@
 
  
 
+ 
+
+ 
+
           <article class="stat-card">
+
+ 
+
+ 
 
  
 
             <span>
 
+ 
+
               Calificación
 
+ 
+
             </span>
+
+ 
+
+ 
 
  
 
             <strong id="providerRating">
 
+ 
+
               5.0
+
+ 
 
             </strong>
 
  
 
+ 
+
+ 
+
           </article>
+
+ 
+
+ 
 
  
 
@@ -384,19 +767,39 @@
 
  
 
+ 
+
+ 
+
             <span>
 
+ 
+
               Estado
+
+ 
 
             </span>
 
  
 
+ 
+
+ 
+
             <strong id="providerStatus">
+
+ 
 
               Desconectado
 
+ 
+
             </strong>
+
+ 
+
+ 
 
  
 
@@ -404,7 +807,15 @@
 
  
 
+ 
+
+ 
+
         </section>
+
+ 
+
+ 
 
  
 
@@ -412,7 +823,15 @@
 
  
 
+ 
+
+ 
+
         <section class="dashboard-grid">
+
+ 
+
+ 
 
  
 
@@ -420,7 +839,15 @@
 
  
 
+ 
+
+ 
+
           <article class="panel map-panel">
+
+ 
+
+ 
 
  
 
@@ -428,73 +855,147 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <p class="eyebrow">
 
+ 
+
                   Ubicación
+
+ 
 
                 </p>
 
  
 
+ 
+
+ 
+
                 <h3>
 
+ 
+
                   Mapa en tiempo real
+
+ 
 
                 </h3>
 
  
 
+ 
+
+ 
+
               </div>
+
+ 
+
+ 
 
  
 
               <button
 
+ 
+
                 id="locationButton"
+
+ 
 
                 class="btn btn-secondary"
 
+ 
+
                 type="button"
+
+ 
 
               >
 
+ 
+
                 Actualizar ubicación
+
+ 
 
               </button>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
             <div
 
+ 
+
               id="mapPlaceholder"
 
+ 
+
               class="map-placeholder"
+
+ 
 
             >
 
  
 
+ 
+
+ 
+
               <div class="map-pin">
 
+ 
+
                 ●
+
+ 
 
               </div>
 
  
 
+ 
+
+ 
+
               <p id="locationText">
+
+ 
 
                 Activa tu disponibilidad para compartir ubicación.
 
+ 
+
               </p>
+
+ 
+
+ 
 
  
 
@@ -502,7 +1003,15 @@
 
  
 
+ 
+
+ 
+
           </article>
+
+ 
+
+ 
 
  
 
@@ -510,7 +1019,15 @@
 
  
 
+ 
+
+ 
+
           <article class="panel service-panel">
+
+ 
+
+ 
 
  
 
@@ -518,23 +1035,47 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <p class="eyebrow">
 
+ 
+
                   Solicitud nueva
+
+ 
 
                 </p>
 
  
 
+ 
+
+ 
+
                 <h3>
+
+ 
 
                   Servicio disponible
 
+ 
+
                 </h3>
+
+ 
+
+ 
 
  
 
@@ -542,21 +1083,43 @@
 
  
 
+ 
+
+ 
+
               <span
+
+ 
 
                 id="serviceTimer"
 
+ 
+
                 class="timer"
+
+ 
 
               >
 
+ 
+
                 --
+
+ 
 
               </span>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -564,41 +1127,83 @@
 
  
 
+ 
+
+ 
+
             <div
+
+ 
 
               id="emptyService"
 
+ 
+
               class="empty-state"
+
+ 
 
             >
 
  
 
+ 
+
+ 
+
               <div class="empty-icon">
 
+ 
+
                 ✓
+
+ 
 
               </div>
 
  
 
+ 
+
+ 
+
               <h4>
 
+ 
+
                 No hay servicios pendientes
+
+ 
 
               </h4>
 
  
 
+ 
+
+ 
+
               <p>
 
+ 
+
                 Cuando llegue una solicitud cercana aparecerá aquí.
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -606,13 +1211,27 @@
 
  
 
+ 
+
+ 
+
             <div
+
+ 
 
               id="serviceCard"
 
+ 
+
               class="service-card hidden"
 
+ 
+
             >
+
+ 
+
+ 
 
  
 
@@ -620,29 +1239,59 @@
 
  
 
+ 
+
+ 
+
                 <span
+
+ 
 
                   id="serviceType"
 
+ 
+
                   class="service-badge"
+
+ 
 
                 >
 
+ 
+
                   Grúa
+
+ 
 
                 </span>
 
  
 
+ 
+
+ 
+
                 <strong id="serviceDistance">
 
+ 
+
                   0 km
+
+ 
 
                 </strong>
 
  
 
+ 
+
+ 
+
               </div>
+
+ 
+
+ 
 
  
 
@@ -650,23 +1299,47 @@
 
  
 
+ 
+
+ 
+
                 <div>
+
+ 
+
+ 
 
  
 
                   <dt>
 
+ 
+
                     Folio
 
+ 
+
                   </dt>
+
+ 
+
+ 
 
  
 
                   <dd id="serviceFolio">
 
+ 
+
                     ---
 
+ 
+
                   </dd>
+
+ 
+
+ 
 
  
 
@@ -674,23 +1347,47 @@
 
  
 
+ 
+
+ 
+
                 <div>
+
+ 
+
+ 
 
  
 
                   <dt>
 
+ 
+
                     Cliente
 
+ 
+
                   </dt>
+
+ 
+
+ 
 
  
 
                   <dd id="serviceClient">
 
+ 
+
                     ---
 
+ 
+
                   </dd>
+
+ 
+
+ 
 
  
 
@@ -698,23 +1395,47 @@
 
  
 
+ 
+
+ 
+
                 <div>
+
+ 
+
+ 
 
  
 
                   <dt>
 
+ 
+
                     Vehículo
 
+ 
+
                   </dt>
+
+ 
+
+ 
 
  
 
                   <dd id="serviceVehicle">
 
+ 
+
                     ---
 
+ 
+
                   </dd>
+
+ 
+
+ 
 
  
 
@@ -722,27 +1443,55 @@
 
  
 
+ 
+
+ 
+
                 <div>
+
+ 
+
+ 
 
  
 
                   <dt>
 
+ 
+
                     Origen
 
+ 
+
                   </dt>
+
+ 
+
+ 
 
  
 
                   <dd id="serviceOrigin">
 
+ 
+
                     ---
+
+ 
 
                   </dd>
 
  
 
+ 
+
+ 
+
                 </div>
+
+ 
+
+ 
 
  
 
@@ -750,23 +1499,47 @@
 
  
 
+ 
+
+ 
+
                   <dt>
 
+ 
+
                     Destino
+
+ 
 
                   </dt>
 
  
 
+ 
+
+ 
+
                   <dd id="serviceDestination">
 
+ 
+
                     ---
+
+ 
 
                   </dd>
 
  
 
+ 
+
+ 
+
                 </div>
+
+ 
+
+ 
 
  
 
@@ -774,39 +1547,83 @@
 
  
 
+ 
+
+ 
+
+              <div id="quoteRequestDetails" class="quote-request-details hidden"></div>
+
+ 
+
               <div class="service-actions">
 
  
 
-                <button
-
-                  id="rejectServiceButton"
-
-                  class="btn btn-danger"
-
-                  type="button"
-
-                >
-
-                  Rechazar
-
-                </button>
+ 
 
  
 
                 <button
 
-                  id="acceptServiceButton"
+ 
 
-                  class="btn btn-primary"
+                  id="rejectServiceButton"
+
+ 
+
+                  class="btn btn-danger"
+
+ 
 
                   type="button"
 
+ 
+
                 >
+
+ 
+
+                  Rechazar
+
+ 
+
+                </button>
+
+ 
+
+ 
+
+ 
+
+                <button
+
+ 
+
+                  id="acceptServiceButton"
+
+ 
+
+                  class="btn btn-primary"
+
+ 
+
+                  type="button"
+
+ 
+
+                >
+
+ 
 
                   Aceptar servicio
 
+ 
+
                 </button>
+
+ 
+
+ 
 
  
 
@@ -814,7 +1631,15 @@
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -822,7 +1647,15 @@
 
  
 
+ 
+
+ 
+
         </section>
+
+ 
+
+ 
 
  
 
@@ -830,13 +1663,27 @@
 
  
 
+ 
+
+ 
+
         <section
+
+ 
 
           id="dashboardActiveService"
 
+ 
+
           class="panel activity-panel hidden"
 
+ 
+
         >
+
+ 
+
+ 
 
  
 
@@ -844,23 +1691,47 @@
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
               <p class="eyebrow">
 
+ 
+
                 Servicio activo
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
               <h3 id="dashboardActiveTitle">
+
+ 
 
                 Servicio
 
+ 
+
               </h3>
+
+ 
+
+ 
 
  
 
@@ -868,19 +1739,39 @@
 
  
 
+ 
+
+ 
+
             <button
+
+ 
 
               id="goToActiveServiceButton"
 
+ 
+
               class="btn btn-primary"
+
+ 
 
               type="button"
 
+ 
+
             >
+
+ 
 
               Ver seguimiento
 
+ 
+
             </button>
+
+ 
+
+ 
 
  
 
@@ -888,15 +1779,31 @@
 
  
 
+ 
+
+ 
+
           <p id="dashboardActiveSummary">
 
+ 
+
             Servicio asignado
+
+ 
 
           </p>
 
  
 
+ 
+
+ 
+
         </section>
+
+ 
+
+ 
 
  
 
@@ -904,7 +1811,15 @@
 
  
 
+ 
+
+ 
+
         <section class="panel activity-panel">
+
+ 
+
+ 
 
  
 
@@ -912,23 +1827,47 @@
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
               <p class="eyebrow">
 
+ 
+
                 Actividad reciente
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
               <h3>
+
+ 
 
                 Últimos movimientos
 
+ 
+
               </h3>
+
+ 
+
+ 
 
  
 
@@ -936,17 +1875,35 @@
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
           <div
 
+ 
+
             id="activityList"
+
+ 
 
             class="activity-list"
 
+ 
+
           >
+
+ 
+
+ 
 
  
 
@@ -954,7 +1911,15 @@
 
  
 
+ 
+
+ 
+
               <span class="activity-dot"></span>
+
+ 
+
+ 
 
  
 
@@ -962,19 +1927,39 @@
 
  
 
+ 
+
+ 
+
                 <strong>
 
+ 
+
                   Panel listo
+
+ 
 
                 </strong>
 
  
 
+ 
+
+ 
+
                 <p>
+
+ 
 
                   Activa tu disponibilidad para comenzar.
 
+ 
+
                 </p>
+
+ 
+
+ 
 
  
 
@@ -982,7 +1967,15 @@
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -990,11 +1983,23 @@
 
  
 
+ 
+
+ 
+
         </section>
 
  
 
+ 
+
+ 
+
       </section>
+
+ 
+
+ 
 
  
 
@@ -1002,15 +2007,31 @@
 
  
 
+ 
+
+ 
+
       <section
+
+ 
 
         id="view-servicios"
 
+ 
+
         class="app-view"
+
+ 
 
         hidden
 
+ 
+
       >
+
+ 
+
+ 
 
  
 
@@ -1018,7 +2039,15 @@
 
  
 
+ 
+
+ 
+
           <div class="panel-header">
+
+ 
+
+ 
 
  
 
@@ -1026,75 +2055,151 @@
 
  
 
+ 
+
+ 
+
               <p class="eyebrow">
 
+ 
+
                 Servicios
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
               <h3>
 
+ 
+
                 Servicio actual
+
+ 
 
               </h3>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
             <span
 
+ 
+
               id="activeServiceStatusBadge"
+
+ 
 
               class="service-badge"
 
+ 
+
             >
 
+ 
+
               Sin servicio
+
+ 
 
             </span>
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
           <div
 
+ 
+
             id="activeServiceEmpty"
+
+ 
 
             class="empty-state"
 
+ 
+
           >
+
+ 
+
+ 
 
  
 
             <div class="empty-icon">
 
+ 
+
               ✓
+
+ 
 
             </div>
 
  
 
+ 
+
+ 
+
             <h4>
 
+ 
+
               No tienes un servicio activo
+
+ 
 
             </h4>
 
  
 
+ 
+
+ 
+
             <p>
+
+ 
 
               Cuando aceptes un servicio aparecerá en esta sección.
 
+ 
+
             </p>
+
+ 
+
+ 
 
  
 
@@ -1102,13 +2207,27 @@
 
  
 
+ 
+
+ 
+
           <div
+
+ 
 
             id="activeServiceCard"
 
+ 
+
             class="service-card hidden"
 
+ 
+
           >
+
+ 
+
+ 
 
  
 
@@ -1116,23 +2235,47 @@
 
  
 
+ 
+
+ 
+
               <span class="service-badge">
 
+ 
+
                 Servicio asignado
+
+ 
 
               </span>
 
  
 
+ 
+
+ 
+
               <strong id="activeServiceStatus">
 
+ 
+
                 Asignado
+
+ 
 
               </strong>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -1140,23 +2283,47 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <dt>
 
+ 
+
                   Folio
 
+ 
+
                 </dt>
+
+ 
+
+ 
 
  
 
                 <dd id="activeServiceFolio">
 
+ 
+
                   ---
 
+ 
+
                 </dd>
+
+ 
+
+ 
 
  
 
@@ -1164,23 +2331,47 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <dt>
 
+ 
+
                   Cliente
 
+ 
+
                 </dt>
+
+ 
+
+ 
 
  
 
                 <dd id="activeServiceClient">
 
+ 
+
                   ---
 
+ 
+
                 </dd>
+
+ 
+
+ 
 
  
 
@@ -1188,23 +2379,47 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <dt>
 
+ 
+
                   Teléfono
 
+ 
+
                 </dt>
+
+ 
+
+ 
 
  
 
                 <dd id="activeServicePhone">
 
+ 
+
                   ---
 
+ 
+
                 </dd>
+
+ 
+
+ 
 
  
 
@@ -1212,23 +2427,47 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <dt>
 
+ 
+
                   Vehículo
 
+ 
+
                 </dt>
+
+ 
+
+ 
 
  
 
                 <dd id="activeServiceVehicle">
 
+ 
+
                   ---
 
+ 
+
                 </dd>
+
+ 
+
+ 
 
  
 
@@ -1236,27 +2475,55 @@
 
  
 
+ 
+
+ 
+
               <div>
+
+ 
+
+ 
 
  
 
                 <dt>
 
+ 
+
                   Origen
 
+ 
+
                 </dt>
+
+ 
+
+ 
 
  
 
                 <dd id="activeServiceOrigin">
 
+ 
+
                   ---
+
+ 
 
                 </dd>
 
  
 
+ 
+
+ 
+
               </div>
+
+ 
+
+ 
 
  
 
@@ -1264,23 +2531,47 @@
 
  
 
+ 
+
+ 
+
                 <dt>
 
+ 
+
                   Destino
+
+ 
 
                 </dt>
 
  
 
+ 
+
+ 
+
                 <dd id="activeServiceDestination">
 
+ 
+
                   ---
+
+ 
 
                 </dd>
 
  
 
+ 
+
+ 
+
               </div>
+
+ 
+
+ 
 
  
 
@@ -1288,43 +2579,87 @@
 
  
 
+ 
+
+ 
+
             <div class="service-actions">
 
  
 
+ 
+
+ 
+
               <button
+
+ 
 
                 id="openOriginButton"
 
+ 
+
                 class="btn btn-secondary"
+
+ 
 
                 type="button"
 
+ 
+
               >
+
+ 
 
                 Abrir origen
 
+ 
+
               </button>
+
+ 
+
+ 
 
  
 
               <button
 
+ 
+
                 id="openDestinationButton"
+
+ 
 
                 class="btn btn-secondary"
 
+ 
+
                 type="button"
+
+ 
 
               >
 
+ 
+
                 Abrir destino
+
+ 
 
               </button>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -1332,87 +2667,175 @@
 
  
 
+ 
+
+ 
+
               <button
+
+ 
 
                 id="onTheWayButton"
 
+ 
+
                 class="btn btn-primary"
+
+ 
 
                 type="button"
 
+ 
+
               >
+
+ 
 
                 En camino
 
+ 
+
               </button>
 
  
 
+ 
+
+ 
+
               <button
+
+ 
 
                 id="arrivalButton"
 
+ 
+
                 class="btn btn-primary"
+
+ 
 
                 type="button"
 
+ 
+
               >
+
+ 
 
                 Arribo
 
+ 
+
               </button>
 
  
 
+ 
+
+ 
+
               <button
+
+ 
 
                 id="startTransferButton"
 
+ 
+
                 class="btn btn-primary"
+
+ 
 
                 type="button"
 
+ 
+
               >
+
+ 
 
                 Iniciar traslado
 
+ 
+
               </button>
 
  
 
+ 
+
+ 
+
               <button
+
+ 
 
                 id="destinationArrivalButton"
 
+ 
+
                 class="btn btn-primary"
+
+ 
 
                 type="button"
 
+ 
+
               >
 
+ 
+
                 Llegué al destino
+
+ 
 
               </button>
 
  
 
+ 
+
+ 
+
               <button
+
+ 
 
                 id="finishServiceButton"
 
+ 
+
                 class="btn btn-danger"
+
+ 
 
                 type="button"
 
+ 
+
               >
+
+ 
 
                 Finalizar servicio
 
+ 
+
               </button>
+
+ 
+
+ 
 
  
 
             </div>
+
+ 
+
+ 
 
  
 
@@ -1420,11 +2843,23 @@
 
  
 
+ 
+
+ 
+
         </section>
 
  
 
+ 
+
+ 
+
       </section>
+
+ 
+
+ 
 
  
 
@@ -1432,15 +2867,31 @@
 
  
 
+ 
+
+ 
+
       <section
+
+ 
 
         id="view-historial"
 
+ 
+
         class="app-view"
+
+ 
 
         hidden
 
+ 
+
       >
+
+ 
+
+ 
 
  
 
@@ -1448,7 +2899,15 @@
 
  
 
+ 
+
+ 
+
           <div class="panel-header">
+
+ 
+
+ 
 
  
 
@@ -1456,19 +2915,39 @@
 
  
 
+ 
+
+ 
+
               <p class="eyebrow">
 
+ 
+
                 Historial
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
               <h3>
+
+ 
 
                 Servicios realizados
 
+ 
+
               </h3>
+
+ 
+
+ 
 
  
 
@@ -1476,7 +2955,15 @@
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -1484,67 +2971,135 @@
 
  
 
+ 
+
+ 
+
             <button
+
+ 
 
               id="historyPreviousDay"
 
+ 
+
               class="btn btn-secondary"
+
+ 
 
               type="button"
 
+ 
+
             >
+
+ 
 
               ← Día anterior
 
+ 
+
             </button>
+
+ 
+
+ 
 
  
 
             <label class="history-date-box">
 
+ 
+
               <span>Fecha</span>
+
+ 
 
               <input
 
+ 
+
                 id="historyDate"
+
+ 
 
                 type="date"
 
+ 
+
               />
+
+ 
 
             </label>
 
  
 
-            <button
-
-              id="historyToday"
-
-              class="btn btn-secondary"
-
-              type="button"
-
-            >
-
-              Hoy
-
-            </button>
+ 
 
  
 
             <button
 
-              id="historyNextDay"
+ 
+
+              id="historyToday"
+
+ 
 
               class="btn btn-secondary"
 
+ 
+
               type="button"
+
+ 
 
             >
 
-              Día siguiente →
+ 
+
+              Hoy
+
+ 
 
             </button>
+
+ 
+
+ 
+
+ 
+
+            <button
+
+ 
+
+              id="historyNextDay"
+
+ 
+
+              class="btn btn-secondary"
+
+ 
+
+              type="button"
+
+ 
+
+            >
+
+ 
+
+              Día siguiente →
+
+ 
+
+            </button>
+
+ 
+
+ 
 
  
 
@@ -1552,37 +3107,75 @@
 
  
 
+ 
+
+ 
+
           <div
+
+ 
 
             id="historyEmpty"
 
+ 
+
             class="empty-state"
+
+ 
 
           >
 
  
 
+ 
+
+ 
+
             <div class="empty-icon">
 
+ 
+
               ✓
+
+ 
 
             </div>
 
  
 
+ 
+
+ 
+
             <h4>
 
+ 
+
               No hay servicios en esta fecha
+
+ 
 
             </h4>
 
  
 
+ 
+
+ 
+
             <p>
+
+ 
 
               Los servicios terminados del día seleccionado aparecerán aquí.
 
+ 
+
             </p>
+
+ 
+
+ 
 
  
 
@@ -1590,13 +3183,27 @@
 
  
 
+ 
+
+ 
+
           <div
+
+ 
 
             id="historyList"
 
+ 
+
             class="history-list hidden"
 
+ 
+
           ></div>
+
+ 
+
+ 
 
  
 
@@ -1604,7 +3211,15 @@
 
  
 
+ 
+
+ 
+
       </section>
+
+ 
+
+ 
 
  
 
@@ -1612,15 +3227,31 @@
 
  
 
+ 
+
+ 
+
       <section
+
+ 
 
         id="view-ganancias"
 
+ 
+
         class="app-view"
+
+ 
 
         hidden
 
+ 
+
       >
+
+ 
+
+ 
 
  
 
@@ -1628,23 +3259,47 @@
 
  
 
+ 
+
+ 
+
           <article class="stat-card">
+
+ 
+
+ 
 
  
 
             <span>
 
+ 
+
               Ganancias hoy
 
+ 
+
             </span>
+
+ 
+
+ 
 
  
 
             <strong id="incomeToday">
 
+ 
+
               $0
 
+ 
+
             </strong>
+
+ 
+
+ 
 
  
 
@@ -1652,23 +3307,47 @@
 
  
 
+ 
+
+ 
+
           <article class="stat-card">
+
+ 
+
+ 
 
  
 
             <span>
 
+ 
+
               Esta semana
 
+ 
+
             </span>
+
+ 
+
+ 
 
  
 
             <strong id="incomeWeek">
 
+ 
+
               $0
 
+ 
+
             </strong>
+
+ 
+
+ 
 
  
 
@@ -1676,27 +3355,55 @@
 
  
 
+ 
+
+ 
+
           <article class="stat-card">
+
+ 
+
+ 
 
  
 
             <span>
 
+ 
+
               Este mes
 
+ 
+
             </span>
+
+ 
+
+ 
 
  
 
             <strong id="incomeMonth">
 
+ 
+
               $0
+
+ 
 
             </strong>
 
  
 
+ 
+
+ 
+
           </article>
+
+ 
+
+ 
 
  
 
@@ -1704,23 +3411,47 @@
 
  
 
+ 
+
+ 
+
             <span>
 
+ 
+
               Total
+
+ 
 
             </span>
 
  
 
+ 
+
+ 
+
             <strong id="incomeTotal">
 
+ 
+
               $0
+
+ 
 
             </strong>
 
  
 
+ 
+
+ 
+
           </article>
+
+ 
+
+ 
 
  
 
@@ -1728,7 +3459,15 @@
 
  
 
+ 
+
+ 
+
         <section class="panel activity-panel">
+
+ 
+
+ 
 
  
 
@@ -1736,23 +3475,47 @@
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
               <p class="eyebrow">
 
+ 
+
                 Ganancias
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
               <h3>
+
+ 
 
                 Movimientos
 
+ 
+
               </h3>
+
+ 
+
+ 
 
  
 
@@ -1760,7 +3523,15 @@
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -1768,83 +3539,167 @@
 
  
 
+ 
+
+ 
+
             <button
+
+ 
 
               id="incomePreviousDay"
 
+ 
+
               class="btn btn-secondary"
+
+ 
 
               type="button"
 
+ 
+
             >
+
+ 
 
               ← Día anterior
 
+ 
+
             </button>
+
+ 
+
+ 
 
  
 
             <label class="income-date-box">
 
+ 
+
               <span>Fecha</span>
+
+ 
 
               <input
 
+ 
+
                 id="incomeDate"
+
+ 
 
                 type="date"
 
+ 
+
               />
+
+ 
 
             </label>
 
  
 
+ 
+
+ 
+
             <button
+
+ 
 
               id="incomeTodayButton"
 
+ 
+
               class="btn btn-secondary"
+
+ 
 
               type="button"
 
+ 
+
             >
+
+ 
 
               Hoy
 
+ 
+
             </button>
 
  
 
+ 
+
+ 
+
             <button
+
+ 
 
               id="incomeNextDay"
 
+ 
+
               class="btn btn-secondary"
+
+ 
 
               type="button"
 
+ 
+
             >
 
+ 
+
               Día siguiente →
+
+ 
 
             </button>
 
  
 
+ 
+
+ 
+
             <button
+
+ 
 
               id="downloadIncomeExcelButton"
 
+ 
+
               class="btn btn-primary"
+
+ 
 
               type="button"
 
+ 
+
             >
+
+ 
 
               Descargar Excel
 
+ 
+
             </button>
+
+ 
+
+ 
 
  
 
@@ -1852,37 +3707,75 @@
 
  
 
+ 
+
+ 
+
           <div
+
+ 
 
             id="incomeEmpty"
 
+ 
+
             class="empty-state"
+
+ 
 
           >
 
  
 
+ 
+
+ 
+
             <div class="empty-icon">
 
+ 
+
               $
+
+ 
 
             </div>
 
  
 
+ 
+
+ 
+
             <h4>
 
+ 
+
               No hay movimientos registrados
+
+ 
 
             </h4>
 
  
 
+ 
+
+ 
+
             <p>
+
+ 
 
               Los cobros de tus servicios aparecerán aquí.
 
+ 
+
             </p>
+
+ 
+
+ 
 
  
 
@@ -1890,13 +3783,27 @@
 
  
 
+ 
+
+ 
+
           <div
+
+ 
 
             id="incomeMovements"
 
+ 
+
             class="income-movements hidden"
 
+ 
+
           ></div>
+
+ 
+
+ 
 
  
 
@@ -1904,7 +3811,15 @@
 
  
 
+ 
+
+ 
+
       </section>
+
+ 
+
+ 
 
  
 
@@ -1912,15 +3827,31 @@
 
  
 
+ 
+
+ 
+
       <section
+
+ 
 
         id="view-perfil"
 
+ 
+
         class="app-view"
+
+ 
 
         hidden
 
+ 
+
       >
+
+ 
+
+ 
 
  
 
@@ -1928,7 +3859,15 @@
 
  
 
+ 
+
+ 
+
           <div class="panel-header">
+
+ 
+
+ 
 
  
 
@@ -1936,19 +3875,39 @@
 
  
 
+ 
+
+ 
+
               <p class="eyebrow">
 
+ 
+
                 Mi perfil
+
+ 
 
               </p>
 
  
 
+ 
+
+ 
+
               <h3>
+
+ 
 
                 Información del proveedor
 
+ 
+
               </h3>
+
+ 
+
+ 
 
  
 
@@ -1956,7 +3915,15 @@
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -1964,63 +3931,127 @@
 
  
 
+ 
+
+ 
+
             <div class="provider-profile-hero">
+
+ 
+
+ 
 
  
 
               <div class="provider-photo-wrap">
 
+ 
+
                 <img
+
+ 
 
                   id="profilePhoto"
 
+ 
+
                   class="provider-photo hidden"
 
+ 
+
                   alt="Foto del proveedor"
+
+ 
 
                 />
 
  
 
+ 
+
+ 
+
                 <div
+
+ 
 
                   id="profilePhotoPlaceholder"
 
+ 
+
                   class="provider-photo-placeholder"
+
+ 
 
                 >
 
+ 
+
                   AS
+
+ 
 
                 </div>
 
+ 
+
               </div>
+
+ 
+
+ 
 
  
 
               <div class="provider-profile-main">
 
+ 
+
                 <h4 id="profileName">Proveedor AS CLICK</h4>
+
+ 
 
                 <p id="profileServiceType">Proveedor</p>
 
  
 
+ 
+
+ 
+
                 <div class="provider-rating">
+
+ 
 
                   <span>★</span>
 
+ 
+
                   <strong id="profileRating">5.0</strong>
+
+ 
 
                   <small>Calificación de clientes</small>
 
+ 
+
                 </div>
+
+ 
 
               </div>
 
  
 
+ 
+
+ 
+
             </div>
+
+ 
+
+ 
 
  
 
@@ -2028,153 +4059,307 @@
 
  
 
+ 
+
+ 
+
               <section class="profile-card">
 
+ 
+
                 <p class="eyebrow">Datos</p>
+
+ 
 
                 <h4>Datos del proveedor</h4>
 
  
 
+ 
+
+ 
+
                 <div class="profile-data-list">
 
+ 
+
                   <div>
+
+ 
 
                     <span>Nombre</span>
 
+ 
+
                     <strong id="profileFullName">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>Teléfono</span>
 
+ 
+
                     <strong id="profilePhone">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>Correo</span>
 
+ 
+
                     <strong id="profileEmail">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>Tipo de proveedor</span>
 
+ 
+
                     <strong id="profileProviderType">—</strong>
+
+ 
 
                   </div>
 
+ 
+
                 </div>
 
+ 
+
               </section>
+
+ 
+
+ 
 
  
 
               <section
 
+ 
+
                 id="profileVehicleCard"
+
+ 
 
                 class="profile-card"
 
+ 
+
               >
 
+ 
+
                 <p class="eyebrow">Unidad</p>
+
+ 
 
                 <h4>Unidad registrada</h4>
 
  
 
+ 
+
+ 
+
                 <div class="profile-data-list">
 
+ 
+
                   <div>
+
+ 
 
                     <span>Tipo de unidad</span>
 
+ 
+
                     <strong id="profileVehicleType">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>Marca / modelo</span>
 
+ 
+
                     <strong id="profileVehicleModel">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>Color</span>
 
+ 
+
                     <strong id="profileVehicleColor">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>Placas</span>
 
+ 
+
                     <strong id="profileVehiclePlates">—</strong>
+
+ 
 
                   </div>
 
  
 
+ 
+
+ 
+
                   <div>
+
+ 
 
                     <span>No. económico</span>
 
+ 
+
                     <strong id="profileVehicleEconomic">—</strong>
+
+ 
 
                   </div>
 
+ 
+
                 </div>
+
+ 
+
+ 
 
  
 
                 <div class="profile-locked-note">
 
+ 
+
                   Los datos de la unidad quedan protegidos después de su autorización.
 
+ 
+
                   Para modificarlos se requiere aprobación de AS CLICK.
+
+ 
 
                 </div>
 
  
 
+ 
+
+ 
+
                 <button
+
+ 
 
                   id="requestVehicleChangeButton"
 
+ 
+
                   class="btn btn-secondary"
+
+ 
 
                   type="button"
 
+ 
+
                 >
+
+ 
 
                   Solicitar cambio de unidad o datos
 
+ 
+
                 </button>
 
+ 
+
               </section>
+
+ 
+
+ 
 
  
 
@@ -2182,53 +4367,107 @@
 
  
 
+ 
+
+ 
+
             <section class="profile-card profile-photo-card">
 
+ 
+
               <p class="eyebrow">Foto</p>
+
+ 
 
               <h4>Foto de perfil</h4>
 
  
 
+ 
+
+ 
+
               <p class="profile-help">
+
+ 
 
                 La foto se registra una vez. Después, cualquier cambio requiere autorización.
 
+ 
+
               </p>
+
+ 
+
+ 
 
  
 
               <label class="profile-file-label">
 
+ 
+
                 <span>Seleccionar foto</span>
+
+ 
 
                 <input
 
+ 
+
                   id="profilePhotoInput"
+
+ 
 
                   type="file"
 
+ 
+
                   accept="image/*"
 
+ 
+
                 />
+
+ 
 
               </label>
 
  
 
+ 
+
+ 
+
               <p
+
+ 
 
                 id="profilePhotoStatus"
 
+ 
+
                 class="profile-help"
+
+ 
 
               >
 
+ 
+
                 No se ha seleccionado una nueva foto.
+
+ 
 
               </p>
 
+ 
+
             </section>
+
+ 
+
+ 
 
  
 
@@ -2236,7 +4475,15 @@
 
  
 
+ 
+
+ 
+
         </section>
+
+ 
+
+ 
 
  
 
@@ -2244,7 +4491,15 @@
 
  
 
+ 
+
+ 
+
     </main>
+
+ 
+
+ 
 
  
 
@@ -2252,35 +4507,71 @@
 
  
 
+ 
+
+ 
+
   <!-- MENSAJES EMERGENTES -->
+
+ 
+
+ 
 
  
 
   <div
 
+ 
+
     id="toast"
+
+ 
 
     class="toast"
 
+ 
+
     role="status"
 
+ 
+
     aria-live="polite"
+
+ 
 
   ></div>
 
  
 
+ 
+
+ 
+
   <script
+
+ 
 
     type="module"
 
+ 
+
     src="./app.js?v=16"
+
+ 
 
   ></script>
 
  
 
+ 
+
+ 
+
 </body>
+
+ 
+
+ 
 
  
 
