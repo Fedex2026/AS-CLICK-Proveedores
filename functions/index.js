@@ -1,3 +1,4 @@
+
 /* =========================================================
 
    AS CLICK - CLOUD FUNCTIONS
@@ -10,7 +11,6 @@
 
    ========================================================= */
 
- 
 
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 
@@ -20,19 +20,15 @@ const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
 const { getMessaging } = require("firebase-admin/messaging");
 
- 
 
 initializeApp();
 
- 
 
 const db = getFirestore();
 
- 
 
 const APP_PROVEEDORES_URL = "https://as-click-proveedores.vercel.app/";
 
- 
 
 function normalizarTexto(valor = "") {
 
@@ -48,7 +44,6 @@ function normalizarTexto(valor = "") {
 
 }
 
- 
 
 function normalizarTipoServicio(valor = "") {
 
@@ -60,7 +55,6 @@ function normalizarTipoServicio(valor = "") {
 
     .trim();
 
- 
 
   if (texto.includes("grua")) return "grua";
 
@@ -70,13 +64,11 @@ function normalizarTipoServicio(valor = "") {
 
   if (texto.includes("auxilio")) return "auxilio_vial";
 
- 
 
   return texto.replace(/\s+/g, "_");
 
 }
 
- 
 
 function obtenerTipoSolicitud(solicitud = {}) {
 
@@ -96,7 +88,6 @@ function obtenerTipoSolicitud(solicitud = {}) {
 
 }
 
- 
 
 function obtenerTipoProveedor(proveedor = {}) {
 
@@ -114,7 +105,6 @@ function obtenerTipoProveedor(proveedor = {}) {
 
 }
 
- 
 
 function nombreTipoServicio(tipo = "") {
 
@@ -130,13 +120,11 @@ function nombreTipoServicio(tipo = "") {
 
   };
 
- 
 
   return nombres[tipo] || "Servicio";
 
 }
 
- 
 
 function crearContenidoNotificacion(solicitudId, solicitud, tipoSolicitud) {
 
@@ -148,7 +136,6 @@ function crearContenidoNotificacion(solicitudId, solicitud, tipoSolicitud) {
 
     solicitudId;
 
- 
 
   if (
 
@@ -168,11 +155,9 @@ function crearContenidoNotificacion(solicitudId, solicitud, tipoSolicitud) {
 
   }
 
- 
 
   const servicio = nombreTipoServicio(tipoSolicitud);
 
- 
 
   return {
 
@@ -184,9 +169,8 @@ function crearContenidoNotificacion(solicitudId, solicitud, tipoSolicitud) {
 
 }
 
- 
 
-function obtenerFidProveedor(proveedor = {}) {
+function obtenerFcmTokenProveedor(proveedor = {}) {
 
   return String(
 
@@ -202,7 +186,6 @@ function obtenerFidProveedor(proveedor = {}) {
 
 }
 
- 
 
 exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
@@ -220,7 +203,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     const snapshot = event.data;
 
- 
 
     if (!snapshot) {
 
@@ -230,7 +212,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     }
 
- 
 
     const solicitudId = event.params.solicitudId;
 
@@ -238,7 +219,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     const estado = String(solicitud.estado || "").trim();
 
- 
 
     if (!["pendiente_cabina", "pendiente_cotizacion"].includes(estado)) {
 
@@ -256,11 +236,9 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     }
 
- 
 
     const tipoSolicitud = obtenerTipoSolicitud(solicitud);
 
- 
 
     if (!tipoSolicitud) {
 
@@ -274,7 +252,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     }
 
- 
 
     console.log(
 
@@ -282,7 +259,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     );
 
- 
 
     const proveedoresSnap = await db
 
@@ -292,11 +268,9 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       .get();
 
- 
 
-    const fids = [];
+    const tokens = [];
 
- 
 
     proveedoresSnap.forEach(docSnap => {
 
@@ -304,7 +278,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       const tipoProveedor = obtenerTipoProveedor(proveedor);
 
- 
 
       if (proveedor.activo !== true) return;
 
@@ -314,17 +287,15 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       if (tipoProveedor !== tipoSolicitud) return;
 
- 
 
-      const fid = obtenerFidProveedor(proveedor);
+      const token = obtenerFcmTokenProveedor(proveedor);
 
- 
 
-      if (!fid) {
+      if (!token) {
 
         console.log(
 
-          `[AS CLICK FCM] Proveedor ${docSnap.id} disponible pero sin FID registrado.`
+          `[AS CLICK FCM] Proveedor ${docSnap.id} disponible pero sin token FCM registrado.`
 
         );
 
@@ -332,27 +303,23 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       }
 
- 
 
-      fids.push(fid);
+      tokens.push(token);
 
     });
 
- 
 
-    const fidsUnicos = [...new Set(fids)].slice(0, 500);
+    const tokensUnicos = [...new Set(tokens)].slice(0, 500);
 
- 
 
-    if (!fidsUnicos.length) {
+    if (!tokensUnicos.length) {
 
       console.log(
 
-        `[AS CLICK FCM] No hay proveedores ${tipoSolicitud} disponibles con FID para ${solicitudId}.`
+        `[AS CLICK FCM] No hay proveedores ${tipoSolicitud} disponibles con token FCM para ${solicitudId}.`
 
       );
 
- 
 
       await snapshot.ref.set(
 
@@ -362,7 +329,7 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
             enviada: false,
 
-            motivo: "sin_proveedores_con_fid",
+            motivo: "sin_proveedores_con_token_fcm",
 
             intentados: 0,
 
@@ -382,13 +349,11 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       );
 
- 
 
       return;
 
     }
 
- 
 
     const contenido = crearContenidoNotificacion(
 
@@ -400,7 +365,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     );
 
- 
 
     const folio = String(
 
@@ -412,21 +376,10 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     );
 
- 
-
-    /*
-
-      Se envía DATA-ONLY.
-
-      Tu firebase-messaging-sw.js ya lee payload.data y muestra
-
-      la notificación en segundo plano. Esto evita duplicados.
-
-    */
 
     const mensaje = {
 
-      fids: fidsUnicos,
+      tokens: tokensUnicos,
 
       data: {
 
@@ -464,13 +417,11 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
     };
 
- 
 
     try {
 
       const respuesta = await getMessaging().sendEachForMulticast(mensaje);
 
- 
 
       console.log(
 
@@ -482,7 +433,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       );
 
- 
 
       if (respuesta.failureCount > 0) {
 
@@ -492,7 +442,7 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
             console.error(
 
-              `[AS CLICK FCM] Falló FID ${fidsUnicos[indice]}:`,
+              `[AS CLICK FCM] Falló token ${tokensUnicos[indice]}:`,
 
               resultado.error?.code ||
 
@@ -508,7 +458,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       }
 
- 
 
       await snapshot.ref.set(
 
@@ -518,7 +467,7 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
             enviada: respuesta.successCount > 0,
 
-            intentados: fidsUnicos.length,
+            intentados: tokensUnicos.length,
 
             enviados: respuesta.successCount,
 
@@ -546,7 +495,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       );
 
- 
 
       await snapshot.ref.set(
 
@@ -556,11 +504,11 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
             enviada: false,
 
-            intentados: fidsUnicos.length,
+            intentados: tokensUnicos.length,
 
             enviados: 0,
 
-            fallidos: fidsUnicos.length,
+            fallidos: tokensUnicos.length,
 
             tipoServicio: tipoSolicitud,
 
@@ -584,7 +532,6 @@ exports.notificarNuevaSolicitudProveedor = onDocumentCreated(
 
       );
 
- 
 
       throw error;
 
