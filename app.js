@@ -16,8 +16,9 @@ import {
   runTransaction
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 import {
-  getToken,
-  onMessage
+  onMessage,
+  onRegistered,
+  register
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
 const FCM_VAPID_KEY = "BKjE_5hK8UsbarozjPcX564dHqLGjzD0dV7QB1H6VUrd5Vgec6aejTvmsXuk8u9MHiDNK-4gZGDjWCusF6ThFS8";
 const CLOUDINARY_CLOUD_NAME = "dxcyy6jyv";
@@ -149,42 +150,38 @@ async function registerPushNotifications() {
       "./firebase-messaging-sw.js"
     );
     await navigator.serviceWorker.ready;
-    const token = await getToken(messaging, {
+    onRegistered(messaging, async installationId => {
+      if (!installationId || !s.user) return;
+      try {
+        await updateDoc(doc(db, "proveedores", s.user.uid), {
+          fcmToken: installationId,
+          fcmTokenActualizadoEn: serverTimestamp()
+        });
+        if (s.provider) {
+          s.provider.fcmToken = installationId;
+        }
+        console.log("✅ Dispositivo registrado para notificaciones push.");
+        console.log("FID:", installationId);
+      } catch (error) {
+        console.error("❌ Error guardando registro FCM:", error);
+      }
+    });
+    await register(messaging, {
       vapidKey: FCM_VAPID_KEY,
       serviceWorkerRegistration: messagingSW
     });
-    if (!token) {
-      console.log("FCM no devolvió token para este dispositivo.");
-      return;
-    }
-    await updateDoc(doc(db, "proveedores", s.user.uid), {
-      fcmToken: token,
-      fcmTokenActualizadoEn: serverTimestamp()
-    });
-    if (s.provider) {
-      s.provider.fcmToken = token;
-    }
-    console.log("✅ Dispositivo registrado para notificaciones push.");
-    console.log("FCM TOKEN:", token);
   } catch (error) {
     console.error("❌ Error registrando notificaciones push:", error);
   }
 }
 onMessage(messaging, payload => {
-  console.log("Notificación FCM recibida:", payload);
-  const title =
-    payload.notification?.title ||
-    payload.data?.title ||
-    "AS CLICK - Nuevo servicio";
-  const body =
-    payload.notification?.body ||
-    payload.data?.body ||
-    "Tienes un nuevo servicio disponible.";
+  const title = payload.notification?.title || "AS CLICK - Nuevo servicio";
+  const body = payload.notification?.body || "Tienes un nuevo servicio disponible.";
   toast(`${title}: ${body}`);
   if (Notification.permission === "granted") {
     new Notification(title, {
       body,
-      icon: payload.data?.icon || "./icon-192.png",
+      icon: "./icon-192.png",
       data: payload.data || {}
     });
   }
