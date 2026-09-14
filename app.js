@@ -2028,6 +2028,10 @@ function listenActiveService() {
 
  
 
+      const servicioActivoAnteriorId = s.activeService?.id || null;
+
+ 
+
       s.activeService = {
 
  
@@ -2041,6 +2045,44 @@ function listenActiveService() {
  
 
       };
+
+ 
+
+      const tipoActivo = String(
+
+        s.activeService.tipoServicio ||
+
+        s.activeService.servicio?.tipo ||
+
+        s.activeService.servicio?.nombre ||
+
+        ""
+
+      ).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+ 
+
+      const esGruaAsignadaPorCotizacion =
+
+        tipoActivo === "grua" &&
+
+        s.activeService.estado === "asignado" &&
+
+        servicioActivoAnteriorId !== activeDoc.id;
+
+ 
+
+      if (esGruaAsignadaPorCotizacion) {
+
+        startServiceAlert({
+
+          ...s.activeService,
+
+          __towQuoteAwarded: true
+
+        });
+
+      }
 
  
 
@@ -2820,19 +2862,23 @@ function startServiceAlert(request) {
 
  
 
+  const esGruaCotizacionGanadora = request.__towQuoteAwarded === true;
+
+ 
+
   const distance = Number(request.__distanceKm);
 
  
 
-  const distanceText = Number.isFinite(distance)
+  const distanceText = esGruaCotizacionGanadora
 
  
 
-    ? `${distance.toFixed(1)} km de distancia`
+    ? `Tu cotización fue autorizada${Number(request.precioAutorizado || 0) > 0 ? ` · $${Number(request.precioAutorizado).toLocaleString("es-MX")}` : ""}`
 
  
 
-    : "Servicio cercano";
+    : (Number.isFinite(distance) ? `${distance.toFixed(1)} km de distancia` : "Servicio cercano");
 
  
 
@@ -2884,7 +2930,7 @@ function startServiceAlert(request) {
 
  
 
-      <div style="color:#34d399;font-size:14px;font-weight:900;letter-spacing:2px;margin-bottom:10px;">AS CLICK · NUEVO SERVICIO</div>
+      <div style="color:#34d399;font-size:14px;font-weight:900;letter-spacing:2px;margin-bottom:10px;">${esGruaCotizacionGanadora ? "AS CLICK · COTIZACIÓN AUTORIZADA" : "AS CLICK · NUEVO SERVICIO"}</div>
 
  
 
@@ -2896,11 +2942,11 @@ function startServiceAlert(request) {
 
  
 
-      <button id="asClickOpenServiceAlert" type="button" style="width:100%;border:0;border-radius:16px;padding:17px 20px;background:#22c55e;color:#052e16;font-size:18px;font-weight:900;cursor:pointer;">VER SERVICIO</button>
+      <button id="asClickOpenServiceAlert" type="button" style="width:100%;border:0;border-radius:16px;padding:17px 20px;background:#22c55e;color:#052e16;font-size:18px;font-weight:900;cursor:pointer;">${esGruaCotizacionGanadora ? "VER SERVICIO ASIGNADO" : "VER SERVICIO"}</button>
 
  
 
-      <div style="margin-top:14px;font-size:13px;color:#94a3b8;">Tienes 90 segundos para aceptar o rechazar.</div>
+      <div style="margin-top:14px;font-size:13px;color:#94a3b8;">${esGruaCotizacionGanadora ? "El cliente eligió tu cotización. El servicio ya quedó asignado." : "Tienes 90 segundos para aceptar o rechazar."}</div>
 
  
 
