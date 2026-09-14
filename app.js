@@ -6,7 +6,7 @@ import {
 
   signOut
 
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
 import {
 
@@ -30,7 +30,7 @@ import {
 
   runTransaction
 
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
 import {
 
@@ -40,7 +40,7 @@ import {
 
   register
 
-} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
 
 const FCM_VAPID_KEY = "BKjE_5hK8UsbarozjPcX564dHqLGjzD0dV7QB1H6VUrd5Vgec6aejTvmsXuk8u9MHiDNK-4gZGDjWCusF6ThFS8";
 
