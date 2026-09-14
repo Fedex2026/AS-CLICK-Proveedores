@@ -3,9 +3,9 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-aut
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 import { getMessaging } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
 
-// Reemplaza estos datos por los del MISMO Firebase de AS CLICK clientes.
+// Firebase AS CLICK MEXICO
 const firebaseConfig = {
-  apiKey: apiKey: "AIzaSyBA6kPIkJsTQFOiUuKYlyZJAq8g-1-QHOY",
+  apiKey: "AIzaSyBA6kPIkJsTQFOiUuKYlyZJAq8g-1-QHOY",
   authDomain: "as-clicl-mexico.firebaseapp.com",
   databaseURL: "https://as-clicl-mexico-default-rtdb.firebaseio.com",
   projectId: "as-clicl-mexico",
