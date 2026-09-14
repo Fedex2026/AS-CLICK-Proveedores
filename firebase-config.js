@@ -1,10 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
 
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-import { getMessaging } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
+import { getMessaging } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
 
  
 
@@ -12,7 +12,7 @@ import { getMessaging } from "https://www.gstatic.com/firebasejs/12.19.0/firebas
 
 const firebaseConfig = {
 
-  apiKey: "AIzaSyBA6kPIkJsTQFOiUuKYlyZJAq8g-1-QHOY",
+  apiKey: "AIzaSyDeuQxzRhfVB9rXKD1pnOrNMXbrZnDj4UU",
 
   authDomain: "as-clicl-mexico.firebaseapp.com",
 
