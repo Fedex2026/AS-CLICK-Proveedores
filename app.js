@@ -116,6 +116,24 @@ const s = {
 
 };
 
+/* =========================================================
+
+   ALERTA LOCAL DE NUEVO SERVICIO
+
+   - Modal de pantalla completa
+
+   - Sonido repetitivo
+
+   - Vibración en dispositivos compatibles
+
+   ========================================================= */
+
+let serviceAlertRequestId = null;
+
+let serviceAlertInterval = null;
+
+let serviceAlertAudioContext = null;
+
 const $ = id => document.getElementById(id);
 
 function setText(id, value) {
@@ -1306,6 +1324,216 @@ async function submitTowQuote(currentRequest) {
 
 }
 
+function startServiceAlert(request) {
+
+  if (!request?.id) return;
+
+  if (serviceAlertRequestId === request.id) return;
+
+  stopServiceAlert();
+
+  serviceAlertRequestId = request.id;
+
+ 
+
+  const serviceName =
+
+    request.servicio?.nombre ||
+
+    formatServiceType(
+
+      request.servicio?.tipo ||
+
+      request.tipoServicio ||
+
+      request.tipo
+
+    ) ||
+
+    "Nuevo servicio";
+
+ 
+
+  const distance = Number(request.__distanceKm);
+
+  const distanceText = Number.isFinite(distance)
+
+    ? `${distance.toFixed(1)} km de distancia`
+
+    : "Servicio cercano";
+
+ 
+
+  let overlay = document.getElementById("asClickServiceAlert");
+
+  if (!overlay) {
+
+    overlay = document.createElement("div");
+
+    overlay.id = "asClickServiceAlert";
+
+    overlay.style.cssText = `position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(2,10,22,.94);backdrop-filter:blur(8px);`;
+
+    document.body.appendChild(overlay);
+
+  }
+
+ 
+
+  overlay.innerHTML = `
+
+    <div style="width:min(520px,100%);border:2px solid #22c55e;border-radius:24px;background:#0f1f35;box-shadow:0 0 50px rgba(34,197,94,.35);padding:32px 24px;text-align:center;color:#fff;">
+
+      <div style="font-size:52px;line-height:1;margin-bottom:14px;">🚨</div>
+
+      <div style="color:#34d399;font-size:14px;font-weight:900;letter-spacing:2px;margin-bottom:10px;">AS CLICK · NUEVO SERVICIO</div>
+
+      <div style="font-size:32px;font-weight:900;margin-bottom:10px;">${escapeHtml(serviceName)}</div>
+
+      <div style="font-size:18px;color:#bfdbfe;margin-bottom:26px;">${escapeHtml(distanceText)}</div>
+
+      <button id="asClickOpenServiceAlert" type="button" style="width:100%;border:0;border-radius:16px;padding:17px 20px;background:#22c55e;color:#052e16;font-size:18px;font-weight:900;cursor:pointer;">VER SERVICIO</button>
+
+      <div style="margin-top:14px;font-size:13px;color:#94a3b8;">Tienes 90 segundos para aceptar o rechazar.</div>
+
+    </div>`;
+
+ 
+
+  const openButton = document.getElementById("asClickOpenServiceAlert");
+
+  if (openButton) {
+
+    openButton.addEventListener("click", () => {
+
+      acknowledgeServiceAlert();
+
+      openView("dashboard");
+
+      setTimeout(() => {
+
+        document.getElementById("serviceCard")?.scrollIntoView({
+
+          behavior: "smooth",
+
+          block: "center"
+
+        });
+
+      }, 100);
+
+    });
+
+  }
+
+ 
+
+  playServiceAlertBurst();
+
+  vibrateServiceAlert();
+
+  serviceAlertInterval = setInterval(() => {
+
+    playServiceAlertBurst();
+
+    vibrateServiceAlert();
+
+  }, 4000);
+
+}
+
+ 
+
+function playServiceAlertBurst() {
+
+  try {
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioContextClass) return;
+
+    if (!serviceAlertAudioContext) serviceAlertAudioContext = new AudioContextClass();
+
+    const ctx = serviceAlertAudioContext;
+
+    if (ctx.state === "suspended") ctx.resume().catch(() => {});
+
+    const now = ctx.currentTime;
+
+    [0, 0.32, 0.64].forEach((offset, index) => {
+
+      const oscillator = ctx.createOscillator();
+
+      const gain = ctx.createGain();
+
+      oscillator.type = "square";
+
+      oscillator.frequency.setValueAtTime(index === 1 ? 980 : 760, now + offset);
+
+      gain.gain.setValueAtTime(0.0001, now + offset);
+
+      gain.gain.exponentialRampToValueAtTime(0.28, now + offset + 0.02);
+
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.24);
+
+      oscillator.connect(gain);
+
+      gain.connect(ctx.destination);
+
+      oscillator.start(now + offset);
+
+      oscillator.stop(now + offset + 0.26);
+
+    });
+
+  } catch (error) {
+
+    console.warn("No fue posible reproducir la alarma local:", error);
+
+  }
+
+}
+
+ 
+
+function vibrateServiceAlert() {
+
+  if ("vibrate" in navigator) navigator.vibrate([650, 200, 650, 200, 1000]);
+
+}
+
+ 
+
+function acknowledgeServiceAlert() {
+
+  if (serviceAlertInterval) {
+
+    clearInterval(serviceAlertInterval);
+
+    serviceAlertInterval = null;
+
+  }
+
+  if ("vibrate" in navigator) navigator.vibrate(0);
+
+  const overlay = document.getElementById("asClickServiceAlert");
+
+  if (overlay) overlay.remove();
+
+}
+
+ 
+
+function stopServiceAlert() {
+
+  acknowledgeServiceAlert();
+
+  serviceAlertRequestId = null;
+
+}
+
+ 
+
 function showService(request) {
 
   s.current = request;
@@ -1477,6 +1705,8 @@ function showService(request) {
   );
 
   startTimer(90);
+
+  startServiceAlert(request);
 
 }
 
@@ -1687,6 +1917,8 @@ function hideService() {
   s.current = null;
 
   stopTimer();
+
+  stopServiceAlert();
 
   setHidden("emptyService", false);
 
