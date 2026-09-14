@@ -6,7 +6,7 @@ import {
 
   signOut
 
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 
 import {
 
@@ -30,15 +30,17 @@ import {
 
   runTransaction
 
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 import {
 
   onMessage,
 
-  getToken
+  onRegistered,
 
-} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
+  register
+
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging.js";
 
 const FCM_VAPID_KEY = "BKjE_5hK8UsbarozjPcX564dHqLGjzD0dV7QB1H6VUrd5Vgec6aejTvmsXuk8u9MHiDNK-4gZGDjWCusF6ThFS8";
 
@@ -274,21 +276,15 @@ async function registerPushNotifications() {
 
   }
 
- 
-
   try {
 
     let permission = Notification.permission;
-
- 
 
     if (permission === "default") {
 
       permission = await Notification.requestPermission();
 
     }
-
- 
 
     if (permission !== "granted") {
 
@@ -298,59 +294,53 @@ async function registerPushNotifications() {
 
     }
 
- 
-
     const messagingSW = await navigator.serviceWorker.register(
 
       "./firebase-messaging-sw.js"
 
     );
 
- 
-
     await navigator.serviceWorker.ready;
 
- 
+    onRegistered(messaging, async installationId => {
 
-    const token = await getToken(messaging, {
+      if (!installationId || !s.user) return;
+
+      try {
+
+        await updateDoc(doc(db, "proveedores", s.user.uid), {
+
+          fcmToken: installationId,
+
+          fcmTokenActualizadoEn: serverTimestamp()
+
+        });
+
+        if (s.provider) {
+
+          s.provider.fcmToken = installationId;
+
+        }
+
+        console.log("✅ Dispositivo registrado para notificaciones push.");
+
+        console.log("FID:", installationId);
+
+      } catch (error) {
+
+        console.error("❌ Error guardando registro FCM:", error);
+
+      }
+
+    });
+
+    await register(messaging, {
 
       vapidKey: FCM_VAPID_KEY,
 
       serviceWorkerRegistration: messagingSW
 
     });
-
- 
-
-    if (!token) {
-
-      console.log("No se pudo obtener token FCM.");
-
-      return;
-
-    }
-
- 
-
-    await updateDoc(doc(db, "proveedores", s.user.uid), {
-
-      fcmToken: token,
-
-      fcmTokenActualizadoEn: serverTimestamp()
-
-    });
-
- 
-
-    if (s.provider) {
-
-      s.provider.fcmToken = token;
-
-    }
-
- 
-
-    console.log("✅ Token FCM registrado correctamente.");
 
   } catch (error) {
 
@@ -360,33 +350,13 @@ async function registerPushNotifications() {
 
 }
 
- 
-
 onMessage(messaging, payload => {
 
-  const title =
+  const title = payload.notification?.title || "AS CLICK - Nuevo servicio";
 
-    payload.notification?.title ||
-
-    payload.data?.title ||
-
-    "AS CLICK - Nuevo servicio";
-
- 
-
-  const body =
-
-    payload.notification?.body ||
-
-    payload.data?.body ||
-
-    "Tienes un nuevo servicio disponible.";
-
- 
+  const body = payload.notification?.body || "Tienes un nuevo servicio disponible.";
 
   toast(`${title}: ${body}`);
-
- 
 
   if (Notification.permission === "granted") {
 
@@ -394,7 +364,7 @@ onMessage(messaging, payload => {
 
       body,
 
-      icon: payload.data?.icon || "./icon-192.png",
+      icon: "./icon-192.png",
 
       data: payload.data || {}
 
