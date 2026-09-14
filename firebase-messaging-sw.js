@@ -14,7 +14,7 @@ importScripts('https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging-com
 
 firebase.initializeApp({
 
-  apiKey: 'AIzaSyDeuQxzRhfVB9rXKD1pnOrNMXbrZnDj4UU',
+  apiKey: 'AIzaSyBA6kPIkJsTQFOiUuKYlyZJAq8g-1-QHOY',
 
   authDomain: 'as-clicl-mexico.firebaseapp.com',
 
