@@ -1,62 +1,36 @@
 /* =========================================================
 
- 
-
    AS CLICK PROVEEDORES - FIREBASE MESSAGING SERVICE WORKER
-
- 
 
    Recibe notificaciones push cuando la PWA está en segundo
 
- 
-
    plano, minimizada o cerrada.
-
- 
 
    ========================================================= */
 
  
 
-importScripts('https://www.gstatic.com/firebasejs/12.19.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.17.0/firebase-app-compat.js');
 
- 
-
-importScripts('https://www.gstatic.com/firebasejs/12.19.0/firebase-messaging-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging-compat.js');
 
  
 
 firebase.initializeApp({
 
- 
-
-  apiKey: 'AIzaSyBA6kPIkJsTQFOiUuKYlyZJAq8g-1-QHOY',
-
- 
+  apiKey: 'AIzaSyDeuQxzRhfVB9rXKD1pnOrNMXbrZnDj4UU',
 
   authDomain: 'as-clicl-mexico.firebaseapp.com',
 
- 
-
   databaseURL: 'https://as-clicl-mexico-default-rtdb.firebaseio.com',
-
- 
 
   projectId: 'as-clicl-mexico',
 
- 
-
   storageBucket: 'as-clicl-mexico.firebasestorage.app',
-
- 
 
   messagingSenderId: '908429271001',
 
- 
-
   appId: '1:908429271001:web:40149a91fb2eef3ab4c3c8'
-
- 
 
 });
 
@@ -68,15 +42,11 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(payload => {
 
- 
-
   console.log('[AS CLICK SW] Notificación recibida en segundo plano:', payload);
 
  
 
   const notification = payload.notification || {};
-
- 
 
   const data = payload.data || {};
 
@@ -155,8 +125,6 @@ messaging.onBackgroundMessage(payload => {
  
 
   return self.registration.showNotification(title, notificationOptions);
-
- 
 
 });
 
