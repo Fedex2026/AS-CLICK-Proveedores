@@ -2198,34 +2198,6 @@ function evaluateAvailableServices() {
 
  
 
-  if (
-
- 
-
-    !Number.isFinite(s.latitude) ||
-
- 
-
-    !Number.isFinite(s.longitude)
-
- 
-
-  ) {
-
- 
-
-    hideService();
-
- 
-
-    return;
-
- 
-
-  }
-
- 
-
   const providerType = normalizeServiceType(
 
  
@@ -2243,6 +2215,42 @@ function evaluateAvailableServices() {
  
 
   );
+
+
+
+  if (
+
+
+
+    providerType !== "grua" &&
+
+
+
+    (!Number.isFinite(s.latitude) ||
+
+
+
+    !Number.isFinite(s.longitude))
+
+
+
+  ) {
+
+
+
+    hideService();
+
+
+
+    return;
+
+
+
+  }
+
+ 
+
+
 
  
 
@@ -2390,29 +2398,57 @@ function evaluateAvailableServices() {
 
  
 
-      if (
+      const tieneGpsProveedor =
+        Number.isFinite(s.latitude) &&
+        Number.isFinite(s.longitude);
 
- 
 
-        !Number.isFinite(latitude) ||
 
- 
+      const tieneGpsSolicitud =
+        Number.isFinite(latitude) &&
+        Number.isFinite(longitude);
 
-        !Number.isFinite(longitude)
 
- 
 
-      ) {
+      if (request.__isQuoteRequest && providerType === "grua") {
 
- 
 
-        return false;
 
- 
+        request.__distanceKm =
+          tieneGpsProveedor && tieneGpsSolicitud
+            ? calculateDistanceKm(
+                s.latitude,
+                s.longitude,
+                latitude,
+                longitude
+              )
+            : null;
+
+
+
+        request.__allowedRadiusKm = null;
+
+
+
+        return true;
+
+
 
       }
 
- 
+
+
+      if (!tieneGpsProveedor || !tieneGpsSolicitud) {
+
+
+
+        return false;
+
+
+
+      }
+
+
 
       const distance = calculateDistanceKm(
 
@@ -2472,19 +2508,22 @@ function evaluateAvailableServices() {
 
     .sort(
 
- 
 
-      (a, b) =>
 
- 
+      (a, b) => {
 
-        Number(a.__distanceKm) -
+        const distanciaA = Number(a.__distanceKm);
+        const distanciaB = Number(b.__distanceKm);
 
- 
+        if (!Number.isFinite(distanciaA) && !Number.isFinite(distanciaB)) return 0;
+        if (!Number.isFinite(distanciaA)) return 1;
+        if (!Number.isFinite(distanciaB)) return -1;
 
-        Number(b.__distanceKm)
+        return distanciaA - distanciaB;
 
- 
+      }
+
+
 
     );
 
@@ -2761,6 +2800,12 @@ async function submitTowQuote(currentRequest) {
     categoriaGrua: currentRequest.grua?.categoria || "",
 
  
+
+    distanciaKm: Number.isFinite(Number(currentRequest.__distanceKm))
+      ? Number(Number(currentRequest.__distanceKm).toFixed(2))
+      : null,
+
+
 
     estado: "enviada",
 
