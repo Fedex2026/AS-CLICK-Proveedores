@@ -1,10 +1,18 @@
 {
   "name": "AS CLICK Proveedores",
   "short_name": "Proveedores",
-  "description": "Portal para proveedores de servicios AS CLICK",
-  "start_url": "./login.html",
+  "description": "AS CLICK - Portal de Proveedores",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#07111f",
-  "theme_color": "#07111f",
-  "icons": []
+  "background_color": "#071525",
+  "theme_color": "#071525",
+  "icons": [
+    {
+      "src": "./LOGO.PROVEEDORES.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
