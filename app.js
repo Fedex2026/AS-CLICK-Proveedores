@@ -11177,523 +11177,94 @@ async function updateActiveServiceStatus(nextStatus) {
  
 
 async function finishActiveService() {
-
- 
-
- 
-
- 
-
   if (!s.activeService || !s.user) return;
 
- 
-
- 
-
- 
-
-  const id = s.activeService.id;
-
- 
-
- 
-
- 
+  const service = s.activeService;
+  const id = service.id;
 
   try {
-
- 
-
- 
-
- 
-
+    // 1) Finalizar primero la solicitud. Esta es la acción principal del botón.
     await updateDoc(
-
- 
-
- 
-
- 
-
       doc(db, "solicitudes", id),
-
- 
-
- 
-
- 
-
       {
-
- 
-
- 
-
- 
-
         estado: "finalizado",
-
- 
-
- 
-
- 
-
-        fechaFinalizacion:
-
- 
-
- 
-
- 
-
-          serverTimestamp(),
-
- 
-
- 
-
- 
-
-        actualizadoEn:
-
- 
-
- 
-
- 
-
-          serverTimestamp()
-
- 
-
- 
-
- 
-
+        fechaFinalizacion: serverTimestamp(),
+        actualizadoEn: serverTimestamp()
       }
-
- 
-
- 
-
- 
-
     );
 
- 
-
- 
-
- 
-
-    await updateDoc(
-
- 
-
- 
-
- 
-
-      doc(db, "proveedores", s.provider?.id || s.user.uid),
-
- 
-
- 
-
- 
-
-      {
-
- 
-
- 
-
- 
-
-        disponible: true,
-
- 
-
- 
-
- 
-
-        ocupado: false,
-
- 
-
- 
-
- 
-        estadoConexion: "disponible",
-
- 
-
- 
-
- 
-
-        servicioActualId: null,
-
- 
-
- 
-
- 
-
-        ultimaActualizacion:
-
- 
-
- 
-
- 
-
-          serverTimestamp()
-
- 
-
- 
-
- 
-
-      }
-
- 
-
- 
-
- 
-
-    );
-
- 
-
- 
-
- 
-
-    await setDoc(
-
- 
-
- 
-
- 
-
-      doc(
-
- 
-
- 
-
- 
-
-        db,
-
- 
-
- 
-
- 
-
-        "ubicacionesProveedores",
-
- 
-
- 
-
- 
-
-        s.user.uid
-
- 
-
- 
-
- 
-
-      ),
-
- 
-
- 
-
- 
-
-      {
-
- 
-
- 
-
- 
-
-        proveedorId: s.user.uid,
-
- 
-
- 
-
- 
-
-        disponible: true,
-
- 
-
- 
-
- 
-
-        servicioActualId: null,
-
- 
-
- 
-
- 
-
-        actualizadoEn:
-
- 
-
- 
-
- 
-
-          serverTimestamp()
-
- 
-
- 
-
- 
-
-      },
-
- 
-
- 
-
- 
-
-      { merge: true }
-
- 
-
- 
-
- 
-
-    );
-
- 
-
- 
-
- 
-
+    // 2) Quitar inmediatamente el servicio de la pantalla.
     s.activeService = null;
-
- 
-
- 
-
- 
-
-    s.available = true;
-
- 
-
- 
-
- 
-
-    s.provider.servicioActualId = null;
-
- 
-
- 
-
- 
-
-    renderAvailability();
-
- 
-
- 
-
- 
+    if (s.provider) {
+      s.provider.servicioActualId = null;
+      s.provider.disponible = true;
+      s.provider.ocupado = false;
+      s.provider.estadoConexion = "disponible";
+    }
 
     renderActiveService();
-
- 
-
- 
-
- 
-
-    startLocation();
-
- 
-
- 
-
- 
+    renderAvailability();
 
     activity(
-
- 
-
- 
-
- 
-
       "Servicio finalizado",
-
- 
-
- 
-
- 
-
-      `Folio ${id}`
-
- 
-
- 
-
- 
-
+      `Folio ${service.folioOficial || service.folio || id}`
     );
 
- 
+    toast("Servicio finalizado correctamente.");
 
- 
+    // 3) Liberar al proveedor por separado.
+    // Si esta escritura falla por reglas/permisos, NO revierte ni bloquea
+    // la finalización del servicio que ya quedó guardada en solicitudes.
+    try {
+      const providerId = s.provider?.id || s.user.uid;
 
- 
+      await updateDoc(
+        doc(db, "proveedores", providerId),
+        {
+          disponible: true,
+          ocupado: false,
+          estadoConexion: "disponible",
+          servicioActualId: null,
+          ultimaActualizacion: serverTimestamp()
+        }
+      );
 
-    toast(
-
- 
-
- 
-
- 
-
-      "Servicio finalizado. Ya estás disponible nuevamente."
-
- 
-
- 
-
- 
-
-    );
-
- 
-
- 
-
- 
-
-    openView("dashboard");
-
- 
-
- 
-
- 
-
-    evaluateAvailableServices();
-
- 
-
- 
-
- 
-
+      if (
+        Number.isFinite(Number(s.latitude)) &&
+        Number.isFinite(Number(s.longitude))
+      ) {
+        try {
+          await updateDoc(
+            doc(db, "proveedores", providerId),
+            {
+              ubicacion: {
+                latitud: Number(s.latitude),
+                longitud: Number(s.longitude),
+                accuracy: Number.isFinite(Number(s.accuracy))
+                  ? Number(s.accuracy)
+                  : null,
+                actualizadoEn: serverTimestamp()
+              }
+            }
+          );
+        } catch (locationError) {
+          console.warn(
+            "Servicio finalizado; no fue posible actualizar la ubicación del proveedor:",
+            locationError
+          );
+        }
+      }
+    } catch (providerError) {
+      console.warn(
+        "Servicio finalizado; no fue posible actualizar el estado del proveedor:",
+        providerError
+      );
+    }
   } catch (error) {
-
- 
-
- 
-
- 
-
-    console.error(
-
- 
-
- 
-
- 
-
-      "Error finalizando servicio:",
-
- 
-
- 
-
- 
-
-      error
-
- 
-
- 
-
- 
-
-    );
-
- 
-
- 
-
- 
-
-    toast(
-
- 
-
- 
-
- 
-
-      "No fue posible finalizar el servicio."
-
- 
-
- 
-
- 
-
-    );
-
- 
-
- 
-
- 
-
+    console.error("Error finalizando servicio:", error);
+    toast("No fue posible finalizar el servicio.");
   }
-
- 
-
- 
-
- 
-
 }
-
- 
-
- 
-
- 
 
 function openActiveOrigin() {
 
