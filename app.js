@@ -1,5 +1,3 @@
-
-
 import { auth, db, messaging } from "./firebase-config.js";
 
  
@@ -15746,118 +15744,55 @@ function getIncomeServiceType(service) {
 
  
 
-function getProviderEarning(service) {
+function getTowServiceGrossAmount(service) {
 
- 
+  const candidates = [
+    service.precioAutorizado,
+    service.cotizacionAutorizada?.precio,
+    service.cotizacion?.precio,
+    service.grua?.precioAutorizado,
+    service.grua?.precio,
+    service.precioFinal,
+    service.importeFinal,
+    service.importe
+  ];
 
- 
-
- 
-
-  const type = getIncomeServiceType(service);
-
- 
-
- 
-
- 
-
-  const isPublic = isPublicServiceVehicle(service);
-
- 
-
- 
-
- 
-
-  if (type === "ajustador") {
-
- 
-
- 
-
- 
-
-    return isPublic ? 250 : 300;
-
- 
-
- 
-
- 
-
+  for (const value of candidates) {
+    const amount = Number(String(value ?? "").replace(/[^0-9.-]/g, ""));
+    if (Number.isFinite(amount) && amount > 0) return amount;
   }
-
- 
-
- 
-
- 
-
-  if (type === "abogado") {
-
- 
-
- 
-
- 
-
-    return isPublic ? 350 : 500;
-
- 
-
- 
-
- 
-
-  }
-
- 
-
- 
-
- 
-
-  if (type === "auxilio_vial") {
-
- 
-
- 
-
- 
-
-    return 100;
-
- 
-
- 
-
- 
-
-  }
-
- 
-
- 
-
- 
-
-  // Grúa no tiene tarifa fija aquí.
-
- 
-
- 
-
- 
 
   return 0;
+}
 
- 
+function getTowAccounting(service) {
+  const gross = getTowServiceGrossAmount(service);
+  const commission = gross * 0.10;
+  const net = gross - commission;
+  return { gross, commission, net };
+}
 
- 
+function getProviderEarning(service) {
+  const type = getIncomeServiceType(service);
+  const isPublic = isPublicServiceVehicle(service);
 
- 
+  if (type === "ajustador") {
+    return isPublic ? 250 : 300;
+  }
 
+  if (type === "abogado") {
+    return isPublic ? 350 : 500;
+  }
+
+  if (type === "auxilio_vial") {
+    return 100;
+  }
+
+  if (type === "grua") {
+    return getTowAccounting(service).net;
+  }
+
+  return 0;
 }
 
  
@@ -15903,6 +15838,7 @@ function isSameLocalDay(dateA, dateB) {
  
 
  
+
 
  
 
@@ -16084,6 +16020,7 @@ function downloadIncomeExcel() {
 
   const selectedDate =
 
+
  
 
  
@@ -16263,6 +16200,7 @@ function downloadIncomeExcel() {
  
 
  
+
 
  
 
@@ -16444,6 +16382,7 @@ function downloadIncomeExcel() {
 
     const serviceType = formatServiceType(
 
+
  
 
  
@@ -16623,6 +16562,7 @@ function downloadIncomeExcel() {
  
 
  
+
 
  
 
@@ -16804,6 +16744,7 @@ function renderIncome() {
 
   const monthStart = new Date(
 
+
  
 
  
@@ -16983,6 +16924,7 @@ function renderIncome() {
  
 
  
+
 
  
 
@@ -17164,6 +17106,7 @@ function renderIncome() {
 
   setHidden("incomeEmpty", movements.length > 0);
 
+
  
 
  
@@ -17332,6 +17275,10 @@ function renderIncome() {
 
         : "Particular";
 
+      const towAccounting = getIncomeServiceType(service) === "grua"
+        ? getTowAccounting(service)
+        : null;
+
  
 
  
@@ -17339,6 +17286,7 @@ function renderIncome() {
  
 
       const dateText = item.date.toLocaleDateString("es-MX", {
+
 
  
 
@@ -17483,29 +17431,13 @@ function renderIncome() {
  
 
           <div class="income-item-data">
-
- 
-
- 
-
- 
-
             <span>${escapeHtml(vehicleClass)}</span>
-
- 
-
- 
-
- 
-
             <span>${escapeHtml(dateText)} · ${escapeHtml(timeText)}</span>
-
- 
-
- 
-
- 
-
+            ${towAccounting ? `
+              <span>Importe del servicio: ${escapeHtml(formatMoney(towAccounting.gross))}</span>
+              <span>Comisión AS CLICK (10%): -${escapeHtml(formatMoney(towAccounting.commission))}</span>
+              <span>Neto proveedor: ${escapeHtml(formatMoney(towAccounting.net))}</span>
+            ` : ""}
           </div>
 
  
@@ -17535,6 +17467,7 @@ function renderIncome() {
  
 
  
+
 
  
 
@@ -17716,6 +17649,7 @@ function calculateDistanceKm(
 
     Math.sin(latitudeDifference / 2) ** 2 +
 
+
  
 
  
@@ -17895,6 +17829,7 @@ function estimateMinutes(distanceKm) {
  
 
  
+
 
  
 
@@ -18076,6 +18011,7 @@ function renderProviderProfile() {
 
     provider.phone ||
 
+
  
 
  
@@ -18255,6 +18191,7 @@ function renderProviderProfile() {
  
 
  
+
 
  
 
@@ -18436,6 +18373,7 @@ function renderProviderProfile() {
 
   const vehicleType =
 
+
  
 
  
@@ -18615,6 +18553,7 @@ function renderProviderProfile() {
  
 
  
+
 
  
 
@@ -18796,6 +18735,7 @@ function renderProviderProfile() {
 
   const showVehicle =
 
+
  
 
  
@@ -18975,6 +18915,7 @@ function normalizeServiceType(value) {
  
 
  
+
 
  
 
@@ -19156,6 +19097,7 @@ function activity(title, description) {
 
   const list = $("activityList");
 
+
  
 
  
@@ -19335,6 +19277,7 @@ function toast(message) {
  
 
  
+
 
  
 
@@ -19516,6 +19459,7 @@ const viewTitles = {
 
   perfil: "Mi perfil"
 
+
  
 
  
@@ -19696,6 +19640,7 @@ function openView(viewName) {
 
  
 
+
  
 
     $("currentViewTitle");
@@ -19875,6 +19820,7 @@ document
  
 
 if ("serviceWorker" in navigator) {
+
 
  
 
