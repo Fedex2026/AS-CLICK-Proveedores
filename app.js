@@ -1,8 +1,18 @@
+AS CLICK PROVEEDOR - bloqueo administrativo
+
 import { auth, db, messaging } from "./firebase-config.js";
 
  
 
+ 
+
+ 
+
 import {
+
+ 
+
+ 
 
  
 
@@ -10,7 +20,15 @@ import {
 
  
 
+ 
+
+ 
+
   signOut
+
+ 
+
+ 
 
  
 
@@ -18,7 +36,15 @@ import {
 
  
 
+ 
+
+ 
+
 import {
+
+ 
+
+ 
 
  
 
@@ -26,7 +52,15 @@ import {
 
  
 
+ 
+
+ 
+
   doc,
+
+ 
+
+ 
 
  
 
@@ -34,7 +68,15 @@ import {
 
  
 
+ 
+
+ 
+
   onSnapshot,
+
+ 
+
+ 
 
  
 
@@ -42,7 +84,15 @@ import {
 
  
 
+ 
+
+ 
+
   where,
+
+ 
+
+ 
 
  
 
@@ -50,7 +100,15 @@ import {
 
  
 
+ 
+
+ 
+
   setDoc,
+
+ 
+
+ 
 
  
 
@@ -58,7 +116,15 @@ import {
 
  
 
+ 
+
+ 
+
   runTransaction
+
+ 
+
+ 
 
  
 
@@ -66,7 +132,15 @@ import {
 
  
 
+ 
+
+ 
+
 import {
+
+ 
+
+ 
 
  
 
@@ -74,7 +148,15 @@ import {
 
  
 
+ 
+
+ 
+
   onRegistered,
+
+ 
+
+ 
 
  
 
@@ -82,7 +164,15 @@ import {
 
  
 
+ 
+
+ 
+
 } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-messaging.js";
+
+ 
+
+ 
 
  
 
@@ -90,7 +180,15 @@ const FCM_VAPID_KEY = "BKjE_5hK8UsbarozjPcX564dHqLGjzD0dV7QB1H6VUrd5Vgec6aejTvms
 
  
 
+ 
+
+ 
+
 const CLOUDINARY_CLOUD_NAME = "dxcyy6jyv";
+
+ 
+
+ 
 
  
 
@@ -98,7 +196,15 @@ const CLOUDINARY_UPLOAD_PRESET = "as_click_evidencias";
 
  
 
+ 
+
+ 
+
 const CLOUDINARY_PROFILE_UPLOAD_URL =
+
+ 
+
+ 
 
  
 
@@ -106,7 +212,15 @@ const CLOUDINARY_PROFILE_UPLOAD_URL =
 
  
 
+ 
+
+ 
+
 const ACTIVE_STATES = [
+
+ 
+
+ 
 
  
 
@@ -114,7 +228,15 @@ const ACTIVE_STATES = [
 
  
 
+ 
+
+ 
+
   "en_camino",
+
+ 
+
+ 
 
  
 
@@ -122,7 +244,15 @@ const ACTIVE_STATES = [
 
  
 
+ 
+
+ 
+
   "en_traslado",
+
+ 
+
+ 
 
  
 
@@ -130,7 +260,15 @@ const ACTIVE_STATES = [
 
  
 
+ 
+
+ 
+
 ];
+
+ 
+
+ 
 
  
 
@@ -138,7 +276,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   user: null,
+
+ 
+
+ 
 
  
 
@@ -146,7 +292,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   available: false,
+
+ 
+
+ 
 
  
 
@@ -154,7 +308,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   activeService: null,
+
+ 
+
+ 
 
  
 
@@ -162,7 +324,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   seconds: 0,
+
+ 
+
+ 
 
  
 
@@ -170,7 +340,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   latitude: null,
+
+ 
+
+ 
 
  
 
@@ -178,7 +356,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   accuracy: null,
+
+ 
+
+ 
 
  
 
@@ -186,7 +372,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   rejected: new Set(),
+
+ 
+
+ 
 
  
 
@@ -194,7 +388,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   unsubscribeActiveService: null,
+
+ 
+
+ 
 
  
 
@@ -202,7 +404,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   unsubscribeQuoteRequests: null,
+
+ 
+
+ 
 
  
 
@@ -210,7 +420,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   quoted: new Set(),
+
+ 
+
+ 
 
  
 
@@ -218,7 +436,19 @@ const s = {
 
  
 
+  unsubscribeProviderProfile: null,
+
+ 
+
+ 
+
+ 
+
   historyServices: [],
+
+ 
+
+ 
 
  
 
@@ -226,7 +456,15 @@ const s = {
 
  
 
+ 
+
+ 
+
   incomeDate: ""
+
+ 
+
+ 
 
  
 
@@ -234,7 +472,15 @@ const s = {
 
  
 
+ 
+
+ 
+
 /* =========================================================
+
+ 
+
+ 
 
  
 
@@ -242,7 +488,15 @@ const s = {
 
  
 
+ 
+
+ 
+
    - Modal de pantalla completa
+
+ 
+
+ 
 
  
 
@@ -250,7 +504,15 @@ const s = {
 
  
 
+ 
+
+ 
+
    - Vibración en dispositivos compatibles
+
+ 
+
+ 
 
  
 
@@ -258,7 +520,15 @@ const s = {
 
  
 
+ 
+
+ 
+
 let serviceAlertRequestId = null;
+
+ 
+
+ 
 
  
 
@@ -266,7 +536,15 @@ let serviceAlertInterval = null;
 
  
 
+ 
+
+ 
+
 let serviceAlertAudioContext = null;
+
+ 
+
+ 
 
  
 
@@ -274,31 +552,63 @@ let serviceAlertAudioUnlocked = false;
 
  
 
+ 
+
+ 
+
 /*
+
+ 
 
    iPhone / Safari exige que el audio se habilite desde una interacción
 
+ 
+
    real del usuario. Cualquier primer toque/clic en el panel prepara el
+
+ 
 
    AudioContext para que la alarma pueda sonar cuando llegue el servicio.
 
+ 
+
 */
+
+ 
 
 async function unlockServiceAlertAudio() {
 
+ 
+
   try {
 
+ 
+
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+ 
 
     if (!AudioContextClass) return false;
 
  
 
+ 
+
+ 
+
     if (!serviceAlertAudioContext) {
+
+ 
 
       serviceAlertAudioContext = new AudioContextClass();
 
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -306,77 +616,155 @@ async function unlockServiceAlertAudio() {
 
  
 
+ 
+
+ 
+
     if (ctx.state === "suspended") {
+
+ 
 
       await ctx.resume();
 
+ 
+
     }
+
+ 
+
+ 
 
  
 
     if (ctx.state !== "running") {
 
+ 
+
       return false;
+
+ 
 
     }
 
  
 
+ 
+
+ 
+
     // Pulso prácticamente silencioso para desbloquear audio en iOS.
+
+ 
 
     const oscillator = ctx.createOscillator();
 
+ 
+
     const gain = ctx.createGain();
+
+ 
 
     gain.gain.setValueAtTime(0.00001, ctx.currentTime);
 
+ 
+
     oscillator.connect(gain);
+
+ 
 
     gain.connect(ctx.destination);
 
+ 
+
     oscillator.start(ctx.currentTime);
+
+ 
 
     oscillator.stop(ctx.currentTime + 0.03);
 
  
 
+ 
+
+ 
+
     serviceAlertAudioUnlocked = true;
+
+ 
 
     return true;
 
+ 
+
   } catch (error) {
+
+ 
 
     console.warn("No fue posible habilitar el audio de la alarma:", error);
 
+ 
+
     return false;
 
+ 
+
   }
+
+ 
 
 }
 
  
 
+ 
+
+ 
+
 ["pointerdown", "touchstart", "click"].forEach(eventName => {
+
+ 
 
   document.addEventListener(
 
+ 
+
     eventName,
+
+ 
 
     () => {
 
+ 
+
       if (!serviceAlertAudioUnlocked) {
+
+ 
 
         unlockServiceAlertAudio();
 
+ 
+
       }
+
+ 
 
     },
 
+ 
+
     { capture: true, passive: true }
+
+ 
 
   );
 
+ 
+
 });
+
+ 
+
+ 
 
  
 
@@ -384,11 +772,23 @@ const $ = id => document.getElementById(id);
 
  
 
+ 
+
+ 
+
 function setText(id, value) {
 
  
 
+ 
+
+ 
+
   const element = $(id);
+
+ 
+
+ 
 
  
 
@@ -396,7 +796,15 @@ function setText(id, value) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -404,13 +812,167 @@ function setHidden(id, hidden) {
 
  
 
+ 
+
+ 
+
   const element = $(id);
+
+ 
+
+ 
 
  
 
   if (element) element.classList.toggle("hidden", hidden);
 
  
+
+ 
+
+ 
+
+}
+
+ 
+
+ 
+
+ 
+
+function providerBlockUntilMs(provider = {}) {
+
+  const hasta = provider.bloqueoHasta;
+
+  if (!hasta) return 0;
+
+  if (typeof hasta?.toDate === "function") return hasta.toDate().getTime();
+
+  if (typeof hasta?.seconds === "number") return hasta.seconds * 1000;
+
+  const ms = new Date(hasta).getTime();
+
+  return Number.isFinite(ms) ? ms : 0;
+
+}
+
+ 
+
+function providerIsBlocked(provider = s.provider) {
+
+  if (!provider || provider.bloqueoAdmin !== true) return false;
+
+  const hastaMs = providerBlockUntilMs(provider);
+
+  if (!hastaMs) return true;
+
+  return hastaMs > Date.now();
+
+}
+
+ 
+
+function blockedProviderMessage() {
+
+  const motivo = String(s.provider?.bloqueoMotivo || "Pendiente de aclaración").trim();
+
+  const hastaMs = providerBlockUntilMs(s.provider);
+
+  if (hastaMs > Date.now()) {
+
+    return `Cuenta bloqueada por administración. Motivo: ${motivo}. Bloqueo hasta ${new Date(hastaMs).toLocaleString("es-MX")}.`;
+
+  }
+
+  return `Cuenta bloqueada por administración. Motivo: ${motivo}. Debes esperar la reactivación del administrador.`;
+
+}
+
+ 
+
+function applyProviderBlockState() {
+
+  if (!providerIsBlocked()) return false;
+
+  s.available = false;
+
+  hideService();
+
+  stopLocation();
+
+  renderAvailability();
+
+  setText("availabilityText", "Bloqueado");
+
+  setText("providerStatus", "Bloqueado");
+
+  setText("locationText", blockedProviderMessage());
+
+  const toggle = $("availabilityToggle");
+
+  if (toggle) toggle.disabled = true;
+
+  return true;
+
+}
+
+ 
+
+function listenProviderProfile() {
+
+  if (!s.user) return;
+
+  if (s.unsubscribeProviderProfile) {
+
+    s.unsubscribeProviderProfile();
+
+    s.unsubscribeProviderProfile = null;
+
+  }
+
+ 
+
+  s.unsubscribeProviderProfile = onSnapshot(
+
+    doc(db, "proveedores", s.user.uid),
+
+    snapshot => {
+
+      if (!snapshot.exists()) return;
+
+      s.provider = { id: snapshot.id, ...snapshot.data() };
+
+ 
+
+      if (providerIsBlocked()) {
+
+        applyProviderBlockState();
+
+        return;
+
+      }
+
+ 
+
+      s.available = s.provider.disponible === true;
+
+    listenProviderProfile();
+
+      renderProviderProfile();
+
+      renderAvailability();
+
+ 
+
+    applyProviderBlockState();
+
+      evaluateAvailableServices();
+
+    },
+
+    error => console.error("Error escuchando estado del proveedor:", error)
+
+  );
 
 }
 
@@ -420,7 +982,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
   clearRealtimeListeners();
+
+ 
+
+ 
 
  
 
@@ -428,7 +998,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     location.replace("login.html");
+
+ 
+
+ 
 
  
 
@@ -436,7 +1014,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -444,7 +1030,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -452,7 +1046,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     if (!providerSnap.exists()) {
+
+ 
+
+ 
 
  
 
@@ -460,7 +1062,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       location.replace("login.html");
+
+ 
+
+ 
 
  
 
@@ -468,7 +1078,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -476,7 +1094,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       id: providerSnap.id,
+
+ 
+
+ 
 
  
 
@@ -484,7 +1110,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -492,7 +1126,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     setText(
+
+ 
+
+ 
 
  
 
@@ -500,7 +1142,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       `Hola, ${
+
+ 
+
+ 
 
  
 
@@ -508,7 +1158,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
         s.provider.nombreCompleto ||
+
+ 
+
+ 
 
  
 
@@ -516,7 +1174,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
         "Proveedor"
+
+ 
+
+ 
 
  
 
@@ -524,11 +1190,23 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     setText(
+
+ 
+
+ 
 
  
 
@@ -536,7 +1214,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       Number(s.provider.calificacion ?? 5).toFixed(1)
+
+ 
+
+ 
 
  
 
@@ -544,7 +1230,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     setText(
+
+ 
+
+ 
 
  
 
@@ -552,7 +1246,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       s.provider.serviciosHoy ??
+
+ 
+
+ 
 
  
 
@@ -560,7 +1262,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       0
+
+ 
+
+ 
 
  
 
@@ -568,7 +1278,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     setText(
+
+ 
+
+ 
 
  
 
@@ -576,7 +1294,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       `$${Number(s.provider.gananciasHoy ?? 0).toLocaleString("es-MX")}`
+
+ 
+
+ 
 
  
 
@@ -584,11 +1310,23 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     renderProviderProfile();
 
  
 
+ 
+
+ 
+
     renderAvailability();
+
+ 
+
+ 
 
  
 
@@ -596,7 +1334,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     listenTowQuotes();
+
+ 
+
+ 
 
  
 
@@ -604,7 +1350,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     initializeHistory();
+
+ 
+
+ 
 
  
 
@@ -612,7 +1366,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     if (s.available || s.provider.servicioActualId) {
+
+ 
+
+ 
 
  
 
@@ -620,7 +1382,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -628,7 +1398,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
       evaluateAvailableServices,
+
+ 
+
+ 
 
  
 
@@ -636,11 +1414,23 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -648,7 +1438,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
     toast("No fue posible cargar el perfil del proveedor.");
+
+ 
+
+ 
 
  
 
@@ -656,7 +1454,15 @@ onAuthStateChanged(auth, async user => {
 
  
 
+ 
+
+ 
+
 });
+
+ 
+
+ 
 
  
 
@@ -664,7 +1470,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -672,7 +1486,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     !messaging ||
+
+ 
+
+ 
 
  
 
@@ -680,11 +1502,23 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     !("serviceWorker" in navigator)
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -692,7 +1526,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -700,7 +1542,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -708,7 +1558,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     if (permission === "default") {
+
+ 
+
+ 
 
  
 
@@ -716,7 +1574,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -724,7 +1590,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
       console.log("Notificaciones no autorizadas por el usuario.");
+
+ 
+
+ 
 
  
 
@@ -732,7 +1606,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -740,11 +1622,23 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
       "./firebase-messaging-sw.js"
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -752,7 +1646,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     onRegistered(messaging, async installationId => {
+
+ 
+
+ 
 
  
 
@@ -760,7 +1662,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
       try {
+
+ 
+
+ 
 
  
 
@@ -768,7 +1678,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
           fcmToken: installationId,
+
+ 
+
+ 
 
  
 
@@ -776,11 +1694,23 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
         });
 
  
 
+ 
+
+ 
+
         if (s.provider) {
+
+ 
+
+ 
 
  
 
@@ -788,7 +1718,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -796,7 +1734,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
         console.log("FID:", installationId);
+
+ 
+
+ 
 
  
 
@@ -804,7 +1750,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
         console.error("❌ Error guardando registro FCM:", error);
+
+ 
+
+ 
 
  
 
@@ -812,7 +1766,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -820,7 +1782,15 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
       vapidKey: FCM_VAPID_KEY,
+
+ 
+
+ 
 
  
 
@@ -828,11 +1798,23 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
     });
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -840,11 +1822,23 @@ async function registerPushNotifications() {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -852,7 +1846,15 @@ onMessage(messaging, payload => {
 
  
 
+ 
+
+ 
+
   const title = payload.notification?.title || "AS CLICK - Nuevo servicio";
+
+ 
+
+ 
 
  
 
@@ -860,7 +1862,15 @@ onMessage(messaging, payload => {
 
  
 
+ 
+
+ 
+
   toast(`${title}: ${body}`);
+
+ 
+
+ 
 
  
 
@@ -868,7 +1878,15 @@ onMessage(messaging, payload => {
 
  
 
+ 
+
+ 
+
     new Notification(title, {
+
+ 
+
+ 
 
  
 
@@ -876,7 +1894,15 @@ onMessage(messaging, payload => {
 
  
 
+ 
+
+ 
+
       icon: "./icon-192.png",
+
+ 
+
+ 
 
  
 
@@ -884,7 +1910,15 @@ onMessage(messaging, payload => {
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -892,7 +1926,15 @@ onMessage(messaging, payload => {
 
  
 
+ 
+
+ 
+
 });
+
+ 
+
+ 
 
  
 
@@ -900,7 +1942,15 @@ bindClick("availabilityToggle", toggleAvailability);
 
  
 
+ 
+
+ 
+
 bindClick("locationButton", getLocationOnce);
+
+ 
+
+ 
 
  
 
@@ -908,7 +1958,15 @@ bindClick("logoutButton", logout);
 
  
 
+ 
+
+ 
+
 bindClick("acceptServiceButton", acceptService);
+
+ 
+
+ 
 
  
 
@@ -916,7 +1974,15 @@ bindClick("rejectServiceButton", rejectService);
 
  
 
+ 
+
+ 
+
 bindClick("onTheWayButton", () => updateActiveServiceStatus("en_camino"));
+
+ 
+
+ 
 
  
 
@@ -924,7 +1990,15 @@ bindClick("arrivalButton", () => updateActiveServiceStatus("arribo"));
 
  
 
+ 
+
+ 
+
 bindClick("startTransferButton", () => updateActiveServiceStatus("en_traslado"));
+
+ 
+
+ 
 
  
 
@@ -932,7 +2006,15 @@ bindClick("destinationArrivalButton", () => updateActiveServiceStatus("destino")
 
  
 
+ 
+
+ 
+
 bindClick("finishServiceButton", finishActiveService);
+
+ 
+
+ 
 
  
 
@@ -940,7 +2022,15 @@ bindClick("openOriginButton", openActiveOrigin);
 
  
 
+ 
+
+ 
+
 bindClick("openDestinationButton", openActiveDestination);
+
+ 
+
+ 
 
  
 
@@ -948,7 +2038,15 @@ bindClick("goToActiveServiceButton", () => openView("servicios"));
 
  
 
+ 
+
+ 
+
 bindClick("requestVehicleChangeButton", () => {
+
+ 
+
+ 
 
  
 
@@ -956,7 +2054,15 @@ bindClick("requestVehicleChangeButton", () => {
 
  
 
+ 
+
+ 
+
 });
+
+ 
+
+ 
 
  
 
@@ -964,7 +2070,15 @@ const profilePhotoInput = $("profilePhotoInput");
 
  
 
+ 
+
+ 
+
 if (profilePhotoInput) {
+
+ 
+
+ 
 
  
 
@@ -972,7 +2086,15 @@ if (profilePhotoInput) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -980,7 +2102,15 @@ bindClick("historyPreviousDay", () => changeHistoryDay(-1));
 
  
 
+ 
+
+ 
+
 bindClick("historyNextDay", () => changeHistoryDay(1));
+
+ 
+
+ 
 
  
 
@@ -988,7 +2118,15 @@ bindClick("historyToday", () => setHistoryDate(todayDateInputValue()));
 
  
 
+ 
+
+ 
+
 bindClick("incomePreviousDay", () => changeIncomeDay(-1));
+
+ 
+
+ 
 
  
 
@@ -996,7 +2134,15 @@ bindClick("incomeNextDay", () => changeIncomeDay(1));
 
  
 
+ 
+
+ 
+
 bindClick("incomeTodayButton", () => setIncomeDate(todayDateInputValue()));
+
+ 
+
+ 
 
  
 
@@ -1004,7 +2150,15 @@ bindClick("downloadIncomeExcelButton", downloadIncomeExcel);
 
  
 
+ 
+
+ 
+
 const incomeDateInput = $("incomeDate");
+
+ 
+
+ 
 
  
 
@@ -1012,7 +2166,15 @@ if (incomeDateInput) {
 
  
 
+ 
+
+ 
+
   incomeDateInput.addEventListener("change", event => {
+
+ 
+
+ 
 
  
 
@@ -1020,11 +2182,23 @@ if (incomeDateInput) {
 
  
 
+ 
+
+ 
+
   });
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1032,7 +2206,15 @@ const historyDateInput = $("historyDate");
 
  
 
+ 
+
+ 
+
 if (historyDateInput) {
+
+ 
+
+ 
 
  
 
@@ -1040,7 +2222,15 @@ if (historyDateInput) {
 
  
 
+ 
+
+ 
+
     setHistoryDate(event.target.value);
+
+ 
+
+ 
 
  
 
@@ -1048,7 +2238,15 @@ if (historyDateInput) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1056,7 +2254,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   const file = event.target.files?.[0];
+
+ 
+
+ 
 
  
 
@@ -1064,11 +2270,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     setText(
 
  
 
+ 
+
+ 
+
       "profilePhotoStatus",
+
+ 
+
+ 
 
  
 
@@ -1076,7 +2294,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1084,7 +2310,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1092,7 +2326,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     s.provider.fotoURL ||
+
+ 
+
+ 
 
  
 
@@ -1100,7 +2342,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     s.provider.photoURL ||
+
+ 
+
+ 
 
  
 
@@ -1108,7 +2358,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   if (existingPhoto) {
+
+ 
+
+ 
 
  
 
@@ -1116,11 +2374,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     setText(
 
  
 
+ 
+
+ 
+
       "profilePhotoStatus",
+
+ 
+
+ 
 
  
 
@@ -1128,11 +2398,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -1140,7 +2422,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1148,7 +2438,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1156,7 +2454,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     event.target.value = "";
+
+ 
+
+ 
 
  
 
@@ -1164,11 +2470,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1176,7 +2494,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     event.target.value = "";
+
+ 
+
+ 
 
  
 
@@ -1184,11 +2510,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1196,7 +2534,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -1204,7 +2550,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     "Subiendo foto a Cloudinary..."
+
+ 
+
+ 
 
  
 
@@ -1212,7 +2566,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -1220,11 +2582,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     formData.append("file", file);
 
  
 
+ 
+
+ 
+
     formData.append(
+
+ 
+
+ 
 
  
 
@@ -1232,11 +2606,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       CLOUDINARY_UPLOAD_PRESET
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1244,7 +2630,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       "tags",
+
+ 
+
+ 
 
  
 
@@ -1252,7 +2646,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1260,11 +2662,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       CLOUDINARY_PROFILE_UPLOAD_URL,
 
  
 
+ 
+
+ 
+
       {
+
+ 
+
+ 
 
  
 
@@ -1272,7 +2686,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
         body: formData
+
+ 
+
+ 
 
  
 
@@ -1280,7 +2702,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1288,7 +2718,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     if (!response.ok || !data.secure_url) {
+
+ 
+
+ 
 
  
 
@@ -1296,7 +2734,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
         data?.error?.message ||
+
+ 
+
+ 
 
  
 
@@ -1304,11 +2750,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -1316,7 +2774,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     await updateDoc(
+
+ 
+
+ 
 
  
 
@@ -1324,7 +2790,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       {
+
+ 
+
+ 
 
  
 
@@ -1332,7 +2806,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
         fotoURL: photoUrl,
+
+ 
+
+ 
 
  
 
@@ -1340,11 +2822,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       }
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1352,7 +2846,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     s.provider.fotoURL = photoUrl;
+
+ 
+
+ 
 
  
 
@@ -1360,11 +2862,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     setText(
 
  
 
+ 
+
+ 
+
       "profilePhotoStatus",
+
+ 
+
+ 
 
  
 
@@ -1372,7 +2886,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1380,7 +2902,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -1388,7 +2918,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       "Error subiendo foto de perfil:",
+
+ 
+
+ 
 
  
 
@@ -1396,7 +2934,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1404,7 +2950,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       "profilePhotoStatus",
+
+ 
+
+ 
 
  
 
@@ -1412,7 +2966,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1420,7 +2982,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
       error?.message ||
+
+ 
+
+ 
 
  
 
@@ -1428,11 +2998,23 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
   } finally {
+
+ 
+
+ 
 
  
 
@@ -1440,7 +3022,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
     profilePhotoInput.value = "";
+
+ 
+
+ 
 
  
 
@@ -1448,7 +3038,15 @@ async function uploadProfilePhoto(event) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1456,7 +3054,15 @@ function bindClick(id, handler) {
 
  
 
+ 
+
+ 
+
   const element = $(id);
+
+ 
+
+ 
 
  
 
@@ -1464,15 +3070,37 @@ function bindClick(id, handler) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
 async function toggleAvailability() {
 
+  if (!s.user) return;
+
  
 
-  if (!s.user) return;
+  if (providerIsBlocked()) {
+
+    applyProviderBlockState();
+
+    toast(blockedProviderMessage());
+
+    return;
+
+  }
+
+ 
+
+ 
 
  
 
@@ -1480,7 +3108,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
     toast("Tienes un servicio activo. Finalízalo antes de cambiar tu disponibilidad.");
+
+ 
+
+ 
 
  
 
@@ -1488,7 +3124,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1496,7 +3140,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
   const next = !s.available;
+
+ 
+
+ 
 
  
 
@@ -1504,7 +3156,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -1512,7 +3172,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       disponible: next,
+
+ 
+
+ 
 
  
 
@@ -1520,7 +3188,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       ultimaActualizacion: serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -1528,7 +3204,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
     s.available = next;
+
+ 
+
+ 
 
  
 
@@ -1536,7 +3220,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
     renderAvailability();
+
+ 
+
+ 
 
  
 
@@ -1544,7 +3236,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       startLocation();
+
+ 
+
+ 
 
  
 
@@ -1552,11 +3252,23 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       toast("Ahora estás disponible para recibir servicios.");
 
  
 
+ 
+
+ 
+
       evaluateAvailableServices();
+
+ 
+
+ 
 
  
 
@@ -1564,7 +3276,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       stopLocation();
+
+ 
+
+ 
 
  
 
@@ -1572,7 +3292,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
         doc(db, "ubicacionesProveedores", s.user.uid),
+
+ 
+
+ 
 
  
 
@@ -1580,11 +3308,23 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
           proveedorId: s.user.uid,
 
  
 
+ 
+
+ 
+
           disponible: false,
+
+ 
+
+ 
 
  
 
@@ -1592,7 +3332,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
           actualizadoEn: serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -1600,11 +3348,23 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
         { merge: true }
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -1612,7 +3372,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
         "locationText",
+
+ 
+
+ 
 
  
 
@@ -1620,7 +3388,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -1628,7 +3404,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
         "Disponibilidad desactivada",
+
+ 
+
+ 
 
  
 
@@ -1636,7 +3420,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -1644,11 +3436,23 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
       hideService();
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -1656,7 +3460,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
     console.error("Error al cambiar disponibilidad:", error);
+
+ 
+
+ 
 
  
 
@@ -1664,7 +3476,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
   } finally {
+
+ 
+
+ 
 
  
 
@@ -1672,7 +3492,15 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1680,7 +3508,35 @@ async function toggleAvailability() {
 
  
 
+ 
+
+ 
+
 function renderAvailability() {
+
+  if (providerIsBlocked()) {
+
+    const toggle = $("availabilityToggle");
+
+    if (toggle) {
+
+      toggle.classList.remove("on");
+
+      toggle.classList.remove("is-on");
+
+      toggle.setAttribute("aria-pressed", "false");
+
+      toggle.disabled = true;
+
+    }
+
+    setText("availabilityText", "Bloqueado");
+
+    setText("providerStatus", "Bloqueado");
+
+    return;
+
+  }
 
  
 
@@ -1688,7 +3544,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
     s.activeService ||
+
+ 
+
+ 
 
  
 
@@ -1696,7 +3560,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -1704,7 +3576,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
   if (toggle) {
+
+ 
+
+ 
 
  
 
@@ -1712,7 +3592,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
     toggle.classList.toggle("is-on", s.available && !occupied);
+
+ 
+
+ 
 
  
 
@@ -1720,7 +3608,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
       "aria-pressed",
+
+ 
+
+ 
 
  
 
@@ -1728,7 +3624,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -1736,11 +3640,23 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -1748,7 +3664,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
     occupied
+
+ 
+
+ 
 
  
 
@@ -1756,11 +3680,23 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
       : s.available
 
  
 
+ 
+
+ 
+
         ? "Disponible"
+
+ 
+
+ 
 
  
 
@@ -1768,7 +3704,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -1776,7 +3720,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
     "providerStatus",
+
+ 
+
+ 
 
  
 
@@ -1784,7 +3736,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
       ? "Ocupado"
+
+ 
+
+ 
 
  
 
@@ -1792,7 +3752,15 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
         ? "Disponible"
+
+ 
+
+ 
 
  
 
@@ -1800,11 +3768,23 @@ function renderAvailability() {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1812,7 +3792,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
   if (s.unsubscribeRequests) {
+
+ 
+
+ 
 
  
 
@@ -1820,7 +3808,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1828,7 +3824,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
     collection(db, "solicitudes"),
+
+ 
+
+ 
 
  
 
@@ -1836,7 +3840,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -1844,11 +3856,23 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
     requestsQuery,
 
  
 
+ 
+
+ 
+
     snapshot => {
+
+ 
+
+ 
 
  
 
@@ -1856,7 +3880,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
         id: requestDoc.id,
+
+ 
+
+ 
 
  
 
@@ -1864,7 +3896,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
       }));
+
+ 
+
+ 
 
  
 
@@ -1872,11 +3912,23 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
     },
 
  
 
+ 
+
+ 
+
     error => {
+
+ 
+
+ 
 
  
 
@@ -1884,7 +3936,15 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
       toast("Firebase no permitió consultar las solicitudes.");
+
+ 
+
+ 
 
  
 
@@ -1892,11 +3952,23 @@ function listenServices() {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1904,7 +3976,15 @@ function listenTowQuotes() {
 
  
 
+ 
+
+ 
+
   if (s.unsubscribeQuoteRequests) s.unsubscribeQuoteRequests();
+
+ 
+
+ 
 
  
 
@@ -1912,7 +3992,15 @@ function listenTowQuotes() {
 
  
 
+ 
+
+ 
+
   s.unsubscribeQuoteRequests = onSnapshot(quoteQuery, snapshot => {
+
+ 
+
+ 
 
  
 
@@ -1920,7 +4008,15 @@ function listenTowQuotes() {
 
  
 
+ 
+
+ 
+
     evaluateAvailableServices();
+
+ 
+
+ 
 
  
 
@@ -1928,7 +4024,15 @@ function listenTowQuotes() {
 
  
 
+ 
+
+ 
+
     console.error("Error escuchando cotizaciones de grúa:", error);
+
+ 
+
+ 
 
  
 
@@ -1936,7 +4040,15 @@ function listenTowQuotes() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -1944,7 +4056,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
   if (s.unsubscribeActiveService) {
+
+ 
+
+ 
 
  
 
@@ -1952,7 +4072,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -1960,7 +4088,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
     collection(db, "solicitudes"),
+
+ 
+
+ 
 
  
 
@@ -1968,11 +4104,23 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
     where("estado", "in", ACTIVE_STATES)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -1980,7 +4128,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
     activeQuery,
+
+ 
+
+ 
 
  
 
@@ -1988,7 +4144,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
       const activeDoc = snapshot.docs[0];
+
+ 
+
+ 
 
  
 
@@ -1996,7 +4160,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         s.activeService = null;
+
+ 
+
+ 
 
  
 
@@ -2004,7 +4176,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
           s.provider.servicioActualId = null;
+
+ 
+
+ 
 
  
 
@@ -2012,7 +4192,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         renderActiveService();
+
+ 
+
+ 
 
  
 
@@ -2020,11 +4208,23 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         return;
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -2032,7 +4232,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
       s.activeService = {
+
+ 
+
+ 
 
  
 
@@ -2040,7 +4248,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         ...activeDoc.data()
+
+ 
+
+ 
 
  
 
@@ -2048,41 +4264,83 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
       const tipoActivo = String(
+
+ 
 
         s.activeService.tipoServicio ||
 
+ 
+
         s.activeService.servicio?.tipo ||
+
+ 
 
         s.activeService.servicio?.nombre ||
 
+ 
+
         ""
+
+ 
 
       ).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
  
 
+ 
+
+ 
+
       const esGruaAsignadaPorCotizacion =
+
+ 
 
         tipoActivo === "grua" &&
 
+ 
+
         s.activeService.estado === "asignado" &&
+
+ 
 
         servicioActivoAnteriorId !== activeDoc.id;
 
  
 
+ 
+
+ 
+
       if (esGruaAsignadaPorCotizacion) {
+
+ 
 
         startServiceAlert({
 
+ 
+
           ...s.activeService,
+
+ 
 
           __towQuoteAwarded: true
 
+ 
+
         });
 
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -2090,7 +4348,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
       if (s.provider) {
+
+ 
+
+ 
 
  
 
@@ -2098,7 +4364,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         s.provider.disponible = false;
+
+ 
+
+ 
 
  
 
@@ -2106,7 +4380,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         s.provider.estadoConexion = "ocupado";
+
+ 
+
+ 
 
  
 
@@ -2114,7 +4396,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
           disponible: false,
+
+ 
+
+ 
 
  
 
@@ -2122,7 +4412,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
           servicioActualId: activeDoc.id,
+
+ 
+
+ 
 
  
 
@@ -2130,11 +4428,23 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
         }).catch(error => console.error("No se pudo marcar proveedor ocupado:", error));
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -2142,7 +4452,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
       renderActiveService();
+
+ 
+
+ 
 
  
 
@@ -2150,7 +4468,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -2158,7 +4484,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
       console.error("Error escuchando servicio activo:", error);
+
+ 
+
+ 
 
  
 
@@ -2166,7 +4500,15 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -2174,11 +4516,27 @@ function listenActiveService() {
 
  
 
+ 
+
+ 
+
 }
 
  
 
+ 
+
+ 
+
 function evaluateAvailableServices() {
+
+  if (providerIsBlocked()) {
+
+    applyProviderBlockState();
+
+    return;
+
+  }
 
  
 
@@ -2186,7 +4544,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
     hideService();
+
+ 
+
+ 
 
  
 
@@ -2194,7 +4560,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2202,7 +4576,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
     s.provider?.tipoProveedor ||
+
+ 
+
+ 
 
  
 
@@ -2210,47 +4592,95 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
     ""
+
+ 
+
+ 
 
  
 
   );
 
+ 
 
+ 
+
+ 
 
   if (
 
+ 
 
+ 
+
+ 
 
     providerType !== "grua" &&
 
+ 
 
+ 
+
+ 
 
     (!Number.isFinite(s.latitude) ||
 
+ 
 
+ 
+
+ 
 
     !Number.isFinite(s.longitude))
 
+ 
 
+ 
+
+ 
 
   ) {
 
+ 
 
+ 
+
+ 
 
     hideService();
 
+ 
 
+ 
+
+ 
 
     return;
 
+ 
 
+ 
+
+ 
 
   }
 
  
 
+ 
 
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2258,7 +4688,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
   const availableRequests = solicitudesBase
+
+ 
+
+ 
 
  
 
@@ -2266,7 +4704,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       if (s.rejected.has(request.id) || s.quoted.has(request.id)) return false;
+
+ 
+
+ 
 
  
 
@@ -2274,7 +4720,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       const requestType = normalizeServiceType(
+
+ 
+
+ 
 
  
 
@@ -2282,7 +4736,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.servicio?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -2290,7 +4752,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.tipo ||
+
+ 
+
+ 
 
  
 
@@ -2298,7 +4768,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -2306,11 +4784,23 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         return false;
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -2318,7 +4808,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.asignacion?.uidProveedor ||
+
+ 
+
+ 
 
  
 
@@ -2326,7 +4824,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       if (
+
+ 
+
+ 
 
  
 
@@ -2334,7 +4840,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         String(assignedProvider).trim()
+
+ 
+
+ 
 
  
 
@@ -2342,11 +4856,23 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         return false;
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -2354,7 +4880,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.ubicacion?.latitud ??
+
+ 
+
+ 
 
  
 
@@ -2362,7 +4896,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.latitud ??
+
+ 
+
+ 
 
  
 
@@ -2370,7 +4912,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -2378,7 +4928,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.ubicacion?.longitud ??
+
+ 
+
+ 
 
  
 
@@ -2386,7 +4944,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         request.longitud ??
+
+ 
+
+ 
 
  
 
@@ -2394,63 +4960,127 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
       const tieneGpsProveedor =
+
         Number.isFinite(s.latitude) &&
+
         Number.isFinite(s.longitude);
 
+ 
 
+ 
+
+ 
 
       const tieneGpsSolicitud =
+
         Number.isFinite(latitude) &&
+
         Number.isFinite(longitude);
 
+ 
 
+ 
+
+ 
 
       if (request.__isQuoteRequest && providerType === "grua") {
 
+ 
 
+ 
+
+ 
 
         request.__distanceKm =
+
           tieneGpsProveedor && tieneGpsSolicitud
+
             ? calculateDistanceKm(
+
                 s.latitude,
+
                 s.longitude,
+
                 latitude,
+
                 longitude
+
               )
+
             : null;
 
+ 
 
+ 
+
+ 
 
         request.__allowedRadiusKm = null;
 
+ 
 
+ 
+
+ 
 
         return true;
 
+ 
 
+ 
+
+ 
 
       }
 
+ 
 
+ 
+
+ 
 
       if (!tieneGpsProveedor || !tieneGpsSolicitud) {
 
+ 
 
+ 
+
+ 
 
         return false;
 
+ 
 
+ 
+
+ 
 
       }
 
+ 
 
+ 
+
+ 
 
       const distance = calculateDistanceKm(
+
+ 
+
+ 
 
  
 
@@ -2458,7 +5088,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         s.longitude,
+
+ 
+
+ 
 
  
 
@@ -2466,11 +5104,23 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         longitude
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -2478,7 +5128,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       request.__distanceKm = distance;
+
+ 
+
+ 
 
  
 
@@ -2486,7 +5144,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
       return (
+
+ 
+
+ 
 
  
 
@@ -2494,7 +5160,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
         distance <= 70
+
+ 
+
+ 
 
  
 
@@ -2502,30 +5176,61 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
     })
+
+ 
+
+ 
 
  
 
     .sort(
 
+ 
 
+ 
+
+ 
 
       (a, b) => {
 
+ 
+
         const distanciaA = Number(a.__distanceKm);
+
         const distanciaB = Number(b.__distanceKm);
 
+ 
+
         if (!Number.isFinite(distanciaA) && !Number.isFinite(distanciaB)) return 0;
+
         if (!Number.isFinite(distanciaA)) return 1;
+
         if (!Number.isFinite(distanciaB)) return -1;
+
+ 
 
         return distanciaA - distanciaB;
 
+ 
+
       }
 
+ 
 
+ 
+
+ 
 
     );
+
+ 
+
+ 
 
  
 
@@ -2533,7 +5238,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
     hideService();
+
+ 
+
+ 
 
  
 
@@ -2541,7 +5254,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2549,7 +5270,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
   if (s.current?.id === nearest.id) {
+
+ 
+
+ 
 
  
 
@@ -2557,11 +5286,23 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2569,7 +5310,15 @@ function evaluateAvailableServices() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2577,7 +5326,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
   const createdAtMs = getRequestCreatedTime(request);
+
+ 
+
+ 
 
  
 
@@ -2585,7 +5342,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
   const ageSeconds = Math.max(
+
+ 
+
+ 
 
  
 
@@ -2593,7 +5358,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
     Math.floor(
+
+ 
+
+ 
 
  
 
@@ -2601,7 +5374,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
     )
+
+ 
+
+ 
 
  
 
@@ -2609,7 +5390,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
   if (ageSeconds < 20) return 10;
+
+ 
+
+ 
 
  
 
@@ -2617,7 +5406,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
   if (ageSeconds < 60) return 40;
+
+ 
+
+ 
 
  
 
@@ -2625,7 +5422,15 @@ function getAllowedRadiusKm(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2633,7 +5438,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
   const created =
+
+ 
+
+ 
 
  
 
@@ -2641,7 +5454,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
     request.fechaCreacion ||
+
+ 
+
+ 
 
  
 
@@ -2649,7 +5470,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
     request.createdAt;
+
+ 
+
+ 
 
  
 
@@ -2657,7 +5486,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
   if (typeof created.toMillis === "function") {
+
+ 
+
+ 
 
  
 
@@ -2665,7 +5502,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -2673,7 +5518,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
     return created.seconds * 1000;
+
+ 
+
+ 
 
  
 
@@ -2681,7 +5534,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
   const parsed = new Date(created).getTime();
+
+ 
+
+ 
 
  
 
@@ -2689,7 +5550,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
     ? parsed
+
+ 
+
+ 
 
  
 
@@ -2697,7 +5566,15 @@ function getRequestCreatedTime(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -2705,7 +5582,15 @@ function formatQuoteCondition(v){ return v === "siniestro" ? "Siniestro / chocad
 
  
 
+ 
+
+ 
+
 function formatReleaseStatus(v){ return v === "liberado" ? "Liberado" : v === "pendiente_liberacion" ? "Pendiente de liberación" : v === "no_aplica" ? "No aplica" : (v || "Sin dato"); }
+
+ 
+
+ 
 
  
 
@@ -2713,11 +5598,29 @@ function formatLoadStatus(v){ return v === "con_carga" ? "Con carga" : v === "va
 
  
 
-async function submitTowQuote(currentRequest) {
+ 
 
  
 
+async function submitTowQuote(currentRequest) {
+
   if (!s.user || !s.provider) return;
+
+ 
+
+  if (providerIsBlocked()) {
+
+    applyProviderBlockState();
+
+    toast(blockedProviderMessage());
+
+    return;
+
+  }
+
+ 
+
+ 
 
  
 
@@ -2725,7 +5628,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   if (priceText === null) return;
+
+ 
+
+ 
 
  
 
@@ -2733,7 +5644,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   if (!Number.isFinite(precio) || precio <= 0) { toast("Ingresa un precio válido."); return; }
+
+ 
+
+ 
 
  
 
@@ -2741,7 +5660,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   if (etaText === null) return;
+
+ 
+
+ 
 
  
 
@@ -2749,7 +5676,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   if (!eta) { toast("Ingresa un tiempo estimado válido."); return; }
+
+ 
+
+ 
 
  
 
@@ -2757,7 +5692,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   const quoteRef = doc(db, "solicitudes", currentRequest.id, "cotizaciones", s.user.uid);
+
+ 
+
+ 
 
  
 
@@ -2765,7 +5708,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
     proveedorUid: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -2773,7 +5724,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
     telefonoProveedor: s.provider.telefono || s.provider.celular || "",
+
+ 
+
+ 
 
  
 
@@ -2781,7 +5740,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
     calificacion: Number(s.provider.calificacion ?? 5),
+
+ 
+
+ 
 
  
 
@@ -2789,7 +5756,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
     tiempoEstimadoMinutos: eta,
+
+ 
+
+ 
 
  
 
@@ -2797,17 +5772,35 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
     categoriaGrua: currentRequest.grua?.categoria || "",
 
  
 
+ 
+
+ 
+
     distanciaKm: Number.isFinite(Number(currentRequest.__distanceKm))
+
       ? Number(Number(currentRequest.__distanceKm).toFixed(2))
+
       : null,
 
+ 
 
+ 
+
+ 
 
     estado: "enviada",
+
+ 
+
+ 
 
  
 
@@ -2815,7 +5808,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
     actualizadoEn: serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -2823,7 +5824,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   s.quoted.add(currentRequest.id);
+
+ 
+
+ 
 
  
 
@@ -2831,7 +5840,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   toast("Cotización enviada. El cliente decidirá qué propuesta autorizar.");
+
+ 
+
+ 
 
  
 
@@ -2839,7 +5856,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
   setTimeout(evaluateAvailableServices, 300);
+
+ 
+
+ 
 
  
 
@@ -2847,7 +5872,15 @@ async function submitTowQuote(currentRequest) {
 
  
 
+ 
+
+ 
+
 function startServiceAlert(request) {
+
+ 
+
+ 
 
  
 
@@ -2855,11 +5888,23 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
   if (serviceAlertRequestId === request.id) return;
 
  
 
+ 
+
+ 
+
   stopServiceAlert();
+
+ 
+
+ 
 
  
 
@@ -2871,7 +5916,19 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const serviceName =
+
+ 
+
+ 
 
  
 
@@ -2879,7 +5936,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     formatServiceType(
+
+ 
+
+ 
 
  
 
@@ -2887,7 +5952,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
       request.tipoServicio ||
+
+ 
+
+ 
 
  
 
@@ -2895,7 +5968,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     ) ||
+
+ 
+
+ 
 
  
 
@@ -2907,7 +5988,19 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const esGruaCotizacionGanadora = request.__towQuoteAwarded === true;
+
+ 
+
+ 
 
  
 
@@ -2915,11 +6008,23 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
   const distanceText = esGruaCotizacionGanadora
 
  
 
+ 
+
+ 
+
     ? `Tu cotización fue autorizada${Number(request.precioAutorizado || 0) > 0 ? ` · $${Number(request.precioAutorizado).toLocaleString("es-MX")}` : ""}`
+
+ 
+
+ 
 
  
 
@@ -2931,7 +6036,19 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   let overlay = document.getElementById("asClickServiceAlert");
+
+ 
+
+ 
 
  
 
@@ -2939,7 +6056,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     overlay = document.createElement("div");
+
+ 
+
+ 
 
  
 
@@ -2947,7 +6072,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     overlay.style.cssText = `position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(2,10,22,.94);backdrop-filter:blur(8px);`;
+
+ 
+
+ 
 
  
 
@@ -2955,7 +6088,19 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -2967,7 +6112,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     <div style="width:min(520px,100%);border:2px solid #22c55e;border-radius:24px;background:#0f1f35;box-shadow:0 0 50px rgba(34,197,94,.35);padding:32px 24px;text-align:center;color:#fff;">
+
+ 
+
+ 
 
  
 
@@ -2975,7 +6128,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
       <div style="color:#34d399;font-size:14px;font-weight:900;letter-spacing:2px;margin-bottom:10px;">${esGruaCotizacionGanadora ? "AS CLICK · COTIZACIÓN AUTORIZADA" : "AS CLICK · NUEVO SERVICIO"}</div>
+
+ 
+
+ 
 
  
 
@@ -2983,7 +6144,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
       <div style="font-size:18px;color:#bfdbfe;margin-bottom:26px;">${escapeHtml(distanceText)}</div>
+
+ 
+
+ 
 
  
 
@@ -2991,7 +6160,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
       <div style="margin-top:14px;font-size:13px;color:#94a3b8;">${esGruaCotizacionGanadora ? "El cliente eligió tu cotización. El servicio ya quedó asignado." : "Tienes 90 segundos para aceptar o rechazar."}</div>
+
+ 
+
+ 
 
  
 
@@ -3003,7 +6180,19 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
+ 
+
+ 
+
   const openButton = document.getElementById("asClickOpenServiceAlert");
+
+ 
+
+ 
 
  
 
@@ -3011,7 +6200,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     openButton.addEventListener("click", () => {
+
+ 
+
+ 
 
  
 
@@ -3019,7 +6216,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
       openView("dashboard");
+
+ 
+
+ 
 
  
 
@@ -3027,7 +6232,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
         document.getElementById("serviceCard")?.scrollIntoView({
+
+ 
+
+ 
 
  
 
@@ -3035,7 +6248,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
           block: "center"
+
+ 
+
+ 
 
  
 
@@ -3043,7 +6264,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
       }, 100);
+
+ 
+
+ 
 
  
 
@@ -3051,7 +6280,19 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3063,7 +6304,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
   vibrateServiceAlert();
+
+ 
+
+ 
 
  
 
@@ -3071,7 +6320,15 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
     playServiceAlertBurst();
+
+ 
+
+ 
 
  
 
@@ -3079,11 +6336,27 @@ function startServiceAlert(request) {
 
  
 
+ 
+
+ 
+
   }, 4000);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3095,7 +6368,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -3103,15 +6384,31 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
     if (!AudioContextClass) return;
+
+ 
+
+ 
 
  
 
     if (!serviceAlertAudioContext) {
 
+ 
+
       serviceAlertAudioContext = new AudioContextClass();
 
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -3119,19 +6416,39 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
     if (ctx.state === "suspended") {
 
+ 
+
       ctx.resume().catch(() => {});
+
+ 
 
     }
 
  
 
+ 
+
+ 
+
     // En iPhone el contexto debe haber sido desbloqueado antes con un toque.
+
+ 
 
     // En Android/Chrome se conserva el comportamiento que ya funcionaba.
 
+ 
+
     if (ctx.state !== "running") return;
+
+ 
+
+ 
 
  
 
@@ -3139,7 +6456,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
     [0, 0.32, 0.64].forEach((offset, index) => {
+
+ 
+
+ 
 
  
 
@@ -3147,7 +6472,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
       const gain = ctx.createGain();
+
+ 
+
+ 
 
  
 
@@ -3155,7 +6488,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
       oscillator.frequency.setValueAtTime(index === 1 ? 980 : 760, now + offset);
+
+ 
+
+ 
 
  
 
@@ -3163,7 +6504,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
       gain.gain.exponentialRampToValueAtTime(0.28, now + offset + 0.02);
+
+ 
+
+ 
 
  
 
@@ -3171,7 +6520,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
       oscillator.connect(gain);
+
+ 
+
+ 
 
  
 
@@ -3179,7 +6536,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
       oscillator.start(now + offset);
+
+ 
+
+ 
 
  
 
@@ -3187,7 +6552,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -3195,7 +6568,15 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
     console.warn("No fue posible reproducir la alarma local:", error);
+
+ 
+
+ 
 
  
 
@@ -3203,7 +6584,19 @@ function playServiceAlertBurst() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3215,11 +6608,27 @@ function vibrateServiceAlert() {
 
  
 
+ 
+
+ 
+
   if ("vibrate" in navigator) navigator.vibrate([650, 200, 650, 200, 1000]);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3231,7 +6640,15 @@ function acknowledgeServiceAlert() {
 
  
 
+ 
+
+ 
+
   if (serviceAlertInterval) {
+
+ 
+
+ 
 
  
 
@@ -3239,7 +6656,15 @@ function acknowledgeServiceAlert() {
 
  
 
+ 
+
+ 
+
     serviceAlertInterval = null;
+
+ 
+
+ 
 
  
 
@@ -3247,7 +6672,15 @@ function acknowledgeServiceAlert() {
 
  
 
+ 
+
+ 
+
   if ("vibrate" in navigator) navigator.vibrate(0);
+
+ 
+
+ 
 
  
 
@@ -3255,11 +6688,27 @@ function acknowledgeServiceAlert() {
 
  
 
+ 
+
+ 
+
   if (overlay) overlay.remove();
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3271,7 +6720,15 @@ function stopServiceAlert() {
 
  
 
+ 
+
+ 
+
   acknowledgeServiceAlert();
+
+ 
+
+ 
 
  
 
@@ -3279,7 +6736,19 @@ function stopServiceAlert() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
+
+ 
+
+ 
 
  
 
@@ -3291,7 +6760,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   s.current = request;
+
+ 
+
+ 
 
  
 
@@ -3299,7 +6776,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   setHidden("serviceCard", false);
+
+ 
+
+ 
 
  
 
@@ -3307,7 +6792,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   const quoteDetails = $("quoteRequestDetails");
+
+ 
+
+ 
 
  
 
@@ -3315,7 +6808,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   const rejectButton = $("rejectServiceButton");
+
+ 
+
+ 
 
  
 
@@ -3323,7 +6824,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   if (rejectButton) rejectButton.textContent = esCotizacionGrua ? "Omitir" : "Rechazar";
+
+ 
+
+ 
 
  
 
@@ -3331,7 +6840,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     quoteDetails.classList.toggle("hidden", !esCotizacionGrua);
+
+ 
+
+ 
 
  
 
@@ -3339,7 +6856,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
       const g = request.grua || {};
+
+ 
+
+ 
 
  
 
@@ -3347,7 +6872,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
         <h4>Datos para cotizar</h4>
+
+ 
+
+ 
 
  
 
@@ -3355,7 +6888,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
           <div class="quote-request-item"><span>Categoría</span><b>Grúa ${escapeHtml(g.categoria || "Sin definir")}</b></div>
+
+ 
+
+ 
 
  
 
@@ -3363,7 +6904,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
           <div class="quote-request-item"><span>Liberación</span><b>${escapeHtml(formatReleaseStatus(g.liberacion))}</b></div>
+
+ 
+
+ 
 
  
 
@@ -3371,7 +6920,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
           ${g.esVehiculoCarga ? `<div class="quote-request-item"><span>Carga</span><b>${escapeHtml(formatLoadStatus(g.estadoCarga))}</b></div>` : ""}
+
+ 
+
+ 
 
  
 
@@ -3379,7 +6936,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
           ${g.comentarios ? `<div class="quote-request-item quote-request-note"><span>Comentarios</span><b>${escapeHtml(g.comentarios)}</b></div>` : ""}
+
+ 
+
+ 
 
  
 
@@ -3387,7 +6952,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -3395,7 +6968,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -3403,7 +6984,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     request.servicio?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -3411,7 +7000,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
       request.servicio?.tipo ||
+
+ 
+
+ 
 
  
 
@@ -3419,7 +7016,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
       request.tipo
+
+ 
+
+ 
 
  
 
@@ -3427,7 +7032,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3435,7 +7048,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -3443,11 +7064,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     request.folioOficial ||
 
  
 
+ 
+
+ 
+
     request.folio ||
+
+ 
+
+ 
 
  
 
@@ -3455,11 +7088,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -3467,11 +7112,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     request.cliente?.nombre ||
 
  
 
+ 
+
+ 
+
     request.clienteNombre ||
+
+ 
+
+ 
 
  
 
@@ -3479,7 +7136,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     "Cliente AS CLICK"
+
+ 
+
+ 
 
  
 
@@ -3487,7 +7152,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -3495,11 +7168,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     vehicleText(request)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3507,7 +7192,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   const originMapsUrl = buildOriginMapsUrl(request);
+
+ 
+
+ 
 
  
 
@@ -3515,7 +7208,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     if (originMapsUrl) {
+
+ 
+
+ 
 
  
 
@@ -3523,7 +7224,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
         <a
+
+ 
+
+ 
 
  
 
@@ -3531,7 +7240,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
           target="_blank"
+
+ 
+
+ 
 
  
 
@@ -3539,7 +7256,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
           style="
+
+ 
+
+ 
 
  
 
@@ -3547,7 +7272,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
             color:#38bdf8;
+
+ 
+
+ 
 
  
 
@@ -3555,7 +7288,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
             text-decoration:none;
+
+ 
+
+ 
 
  
 
@@ -3563,7 +7304,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
             border:1px solid #38bdf8;
+
+ 
+
+ 
 
  
 
@@ -3571,7 +7320,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
             cursor:pointer;
+
+ 
+
+ 
 
  
 
@@ -3579,7 +7336,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
         >
+
+ 
+
+ 
 
  
 
@@ -3587,11 +7352,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
         </a>
 
  
 
+ 
+
+ 
+
       `;
+
+ 
+
+ 
 
  
 
@@ -3599,7 +7376,15 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
       originElement.textContent = buildOriginText(request);
+
+ 
+
+ 
 
  
 
@@ -3607,11 +7392,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -3619,11 +7416,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
     buildDestinationText(request)
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3631,11 +7440,23 @@ function showService(request) {
 
  
 
+ 
+
+ 
+
   startServiceAlert(request);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3643,7 +7464,15 @@ function updateDistanceDisplay(request) {
 
  
 
+ 
+
+ 
+
   const distance = Number(request.__distanceKm);
+
+ 
+
+ 
 
  
 
@@ -3651,7 +7480,15 @@ function updateDistanceDisplay(request) {
 
  
 
+ 
+
+ 
+
     setText("serviceDistance", "Cercano");
+
+ 
+
+ 
 
  
 
@@ -3659,11 +7496,23 @@ function updateDistanceDisplay(request) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -3671,7 +7520,15 @@ function updateDistanceDisplay(request) {
 
  
 
+ 
+
+ 
+
     `${distance.toFixed(1)} km · ${estimateMinutes(distance)} min`
+
+ 
+
+ 
 
  
 
@@ -3679,7 +7536,15 @@ function updateDistanceDisplay(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3687,7 +7552,15 @@ function vehicleText(request) {
 
  
 
+ 
+
+ 
+
   return [
+
+ 
+
+ 
 
  
 
@@ -3695,7 +7568,15 @@ function vehicleText(request) {
 
  
 
+ 
+
+ 
+
     request.vehiculo?.subMarca ??
+
+ 
+
+ 
 
  
 
@@ -3703,7 +7584,15 @@ function vehicleText(request) {
 
  
 
+ 
+
+ 
+
       request.submarca,
+
+ 
+
+ 
 
  
 
@@ -3711,7 +7600,15 @@ function vehicleText(request) {
 
  
 
+ 
+
+ 
+
     request.vehiculo?.placas ?? request.placas
+
+ 
+
+ 
 
  
 
@@ -3719,7 +7616,15 @@ function vehicleText(request) {
 
  
 
+ 
+
+ 
+
     .filter(Boolean)
+
+ 
+
+ 
 
  
 
@@ -3727,11 +7632,23 @@ function vehicleText(request) {
 
  
 
+ 
+
+ 
+
     "Vehículo por confirmar";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3739,7 +7656,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
   const originText =
+
+ 
+
+ 
 
  
 
@@ -3747,7 +7672,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     request.ubicacion?.domicilio ||
+
+ 
+
+ 
 
  
 
@@ -3755,7 +7688,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     request.origen;
+
+ 
+
+ 
 
  
 
@@ -3763,7 +7704,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     return originText;
+
+ 
+
+ 
 
  
 
@@ -3771,7 +7720,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
   const latitude = Number(
+
+ 
+
+ 
 
  
 
@@ -3779,7 +7736,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     request.ubicacion?.latitude ??
+
+ 
+
+ 
 
  
 
@@ -3787,11 +7752,23 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     request.latitude
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3799,7 +7776,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     request.ubicacion?.longitud ??
+
+ 
+
+ 
 
  
 
@@ -3807,7 +7792,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     request.longitud ??
+
+ 
+
+ 
 
  
 
@@ -3815,7 +7808,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3823,7 +7824,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
     Number.isFinite(latitude) &&
+
+ 
+
+ 
 
  
 
@@ -3831,7 +7840,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3839,7 +7856,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -3847,7 +7872,15 @@ function buildOriginText(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3855,7 +7888,15 @@ function buildDestinationText(request) {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -3863,11 +7904,23 @@ function buildDestinationText(request) {
 
  
 
+ 
+
+ 
+
     request.destino.trim()
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3875,11 +7928,23 @@ function buildDestinationText(request) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
   return (
+
+ 
+
+ 
 
  
 
@@ -3887,7 +7952,15 @@ function buildDestinationText(request) {
 
  
 
+ 
+
+ 
+
     request.destinoTexto ||
+
+ 
+
+ 
 
  
 
@@ -3895,7 +7968,15 @@ function buildDestinationText(request) {
 
  
 
+ 
+
+ 
+
     "Por confirmar"
+
+ 
+
+ 
 
  
 
@@ -3903,7 +7984,15 @@ function buildDestinationText(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -3911,7 +8000,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   if (request.ubicacion?.enlaceGoogleMaps) {
+
+ 
+
+ 
 
  
 
@@ -3919,7 +8016,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -3927,7 +8032,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
     request.ubicacion?.latitud ??
+
+ 
+
+ 
 
  
 
@@ -3935,7 +8048,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
     request.latitud ??
+
+ 
+
+ 
 
  
 
@@ -3943,7 +8064,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -3951,7 +8080,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
     request.ubicacion?.longitud ??
+
+ 
+
+ 
 
  
 
@@ -3959,7 +8096,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
     request.longitud ??
+
+ 
+
+ 
 
  
 
@@ -3967,11 +8112,23 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -3979,11 +8136,23 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
     Number.isFinite(longitude)
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -3991,7 +8160,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -3999,7 +8176,15 @@ function buildOriginMapsUrl(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4007,11 +8192,23 @@ function buildDestinationMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   const destination = buildDestinationText(request);
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -4019,11 +8216,23 @@ function buildDestinationMapsUrl(request) {
 
  
 
+ 
+
+ 
+
     destination === "Por confirmar"
 
  
 
+ 
+
+ 
+
   ) {
+
+ 
+
+ 
 
  
 
@@ -4031,7 +8240,15 @@ function buildDestinationMapsUrl(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4039,7 +8256,15 @@ function buildDestinationMapsUrl(request) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4047,11 +8272,23 @@ function hideService() {
 
  
 
+ 
+
+ 
+
   s.current = null;
 
  
 
+ 
+
+ 
+
   stopTimer();
+
+ 
+
+ 
 
  
 
@@ -4059,7 +8296,15 @@ function hideService() {
 
  
 
+ 
+
+ 
+
   setHidden("emptyService", false);
+
+ 
+
+ 
 
  
 
@@ -4067,7 +8312,15 @@ function hideService() {
 
  
 
+ 
+
+ 
+
   setText("serviceTimer", "--");
+
+ 
+
+ 
 
  
 
@@ -4075,11 +8328,29 @@ function hideService() {
 
  
 
-async function acceptService() {
+ 
 
  
 
+async function acceptService() {
+
   if (!s.current || !s.user) return;
+
+ 
+
+  if (providerIsBlocked()) {
+
+    applyProviderBlockState();
+
+    toast(blockedProviderMessage());
+
+    return;
+
+  }
+
+ 
+
+ 
 
  
 
@@ -4087,7 +8358,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
   if (currentRequest.__isQuoteRequest === true || currentRequest.estado === "pendiente_cotizacion") {
+
+ 
+
+ 
 
  
 
@@ -4095,7 +8374,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -4103,7 +8390,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
   const id = currentRequest.id;
+
+ 
+
+ 
 
  
 
@@ -4111,7 +8406,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
   const rejectButton = $("rejectServiceButton");
+
+ 
+
+ 
 
  
 
@@ -4119,11 +8422,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
   if (rejectButton) rejectButton.disabled = true;
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -4131,7 +8446,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     await runTransaction(
+
+ 
+
+ 
 
  
 
@@ -4139,7 +8462,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       async transaction => {
+
+ 
+
+ 
 
  
 
@@ -4147,7 +8478,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           await transaction.get(requestRef);
+
+ 
+
+ 
 
  
 
@@ -4155,7 +8494,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           throw new Error(
+
+ 
+
+ 
 
  
 
@@ -4163,11 +8510,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           );
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -4175,7 +8534,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         const assignedUid =
+
+ 
+
+ 
 
  
 
@@ -4183,11 +8550,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           requestData.proveedorId;
 
  
 
+ 
+
+ 
+
         if (
+
+ 
+
+ 
 
  
 
@@ -4195,11 +8574,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         ) {
 
  
 
+ 
+
+ 
+
           throw new Error(
+
+ 
+
+ 
 
  
 
@@ -4207,11 +8598,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           );
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -4219,7 +8622,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           assignedUid &&
+
+ 
+
+ 
 
  
 
@@ -4227,7 +8638,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         ) {
+
+ 
+
+ 
 
  
 
@@ -4235,7 +8654,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
             "Otro proveedor aceptó el servicio primero."
+
+ 
+
+ 
 
  
 
@@ -4243,7 +8670,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         }
+
+ 
+
+ 
 
  
 
@@ -4251,7 +8686,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           currentRequest.__distanceKm
+
+ 
+
+ 
 
  
 
@@ -4259,7 +8702,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         const eta = estimateMinutes(distance);
+
+ 
+
+ 
 
  
 
@@ -4267,7 +8718,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           estado: "asignado",
+
+ 
+
+ 
 
  
 
@@ -4275,7 +8734,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           "asignacion.nombreProveedor":
+
+ 
+
+ 
 
  
 
@@ -4283,7 +8750,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
             s.provider.nombreCompleto ||
+
+ 
+
+ 
 
  
 
@@ -4291,7 +8766,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           "asignacion.telefonoProveedor":
+
+ 
+
+ 
 
  
 
@@ -4299,7 +8782,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           "asignacion.fotoProveedor":
+
+ 
+
+ 
 
  
 
@@ -4307,7 +8798,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
             s.provider.fotoURL ||
+
+ 
+
+ 
 
  
 
@@ -4315,7 +8814,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           "asignacion.tiempoEstimadoMinutos":
+
+ 
+
+ 
 
  
 
@@ -4323,7 +8830,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           distanciaProveedorKm:
+
+ 
+
+ 
 
  
 
@@ -4331,7 +8846,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
               ? Number(distance.toFixed(2))
+
+ 
+
+ 
 
  
 
@@ -4339,7 +8862,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           fechaAsignacion:
+
+ 
+
+ 
 
  
 
@@ -4347,11 +8878,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           actualizadoEn:
 
  
 
+ 
+
+ 
+
             serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -4359,7 +8902,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -4367,7 +8918,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     await updateDoc(
+
+ 
+
+ 
 
  
 
@@ -4375,11 +8934,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       {
 
  
 
+ 
+
+ 
+
         disponible: false,
+
+ 
+
+ 
 
  
 
@@ -4387,7 +8958,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         servicioActualId: id,
+
+ 
+
+ 
 
  
 
@@ -4395,7 +8974,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -4403,7 +8990,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4411,7 +9006,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       doc(
+
+ 
+
+ 
 
  
 
@@ -4419,7 +9022,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         "ubicacionesProveedores",
+
+ 
+
+ 
 
  
 
@@ -4427,7 +9038,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -4435,7 +9054,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         proveedorId: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -4443,7 +9070,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         servicioActualId: id,
+
+ 
+
+ 
 
  
 
@@ -4451,7 +9086,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
           serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -4459,11 +9102,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       { merge: true }
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4471,11 +9126,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     s.provider.servicioActualId = id;
 
  
 
+ 
+
+ 
+
     s.activeService = {
+
+ 
+
+ 
 
  
 
@@ -4483,7 +9150,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       id,
+
+ 
+
+ 
 
  
 
@@ -4491,7 +9166,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       asignacion: {
+
+ 
+
+ 
 
  
 
@@ -4499,7 +9182,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         uidProveedor: s.user.uid
+
+ 
+
+ 
 
  
 
@@ -4507,7 +9198,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -4515,11 +9214,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     renderActiveService();
 
  
 
+ 
+
+ 
+
     startLocation();
+
+ 
+
+ 
 
  
 
@@ -4527,11 +9238,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     hideService();
 
  
 
+ 
+
+ 
+
     activity(
+
+ 
+
+ 
 
  
 
@@ -4539,7 +9262,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       `Folio ${
+
+ 
+
+ 
 
  
 
@@ -4547,7 +9278,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
         currentRequest.folio ||
+
+ 
+
+ 
 
  
 
@@ -4555,7 +9294,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       }`
+
+ 
+
+ 
 
  
 
@@ -4563,7 +9310,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -4571,7 +9326,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -4579,7 +9342,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
   } catch (error) {
+
+ 
+
+ 
 
  
 
@@ -4587,7 +9358,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -4595,7 +9374,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
       "No fue posible aceptar el servicio."
+
+ 
+
+ 
 
  
 
@@ -4603,7 +9390,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     evaluateAvailableServices();
+
+ 
+
+ 
 
  
 
@@ -4611,7 +9406,15 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
     if (acceptButton) acceptButton.disabled = false;
+
+ 
+
+ 
 
  
 
@@ -4619,11 +9422,23 @@ async function acceptService() {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4631,7 +9446,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   if (!s.current || !s.user) return;
+
+ 
+
+ 
 
  
 
@@ -4639,7 +9462,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   if (currentRequest.__isQuoteRequest === true || currentRequest.estado === "pendiente_cotizacion") {
+
+ 
+
+ 
 
  
 
@@ -4647,7 +9478,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
     toast("Cotización omitida.");
+
+ 
+
+ 
 
  
 
@@ -4655,7 +9494,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
     setTimeout(evaluateAvailableServices, 300);
+
+ 
+
+ 
 
  
 
@@ -4663,7 +9510,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4671,7 +9526,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   s.rejected.add(id);
+
+ 
+
+ 
 
  
 
@@ -4679,7 +9542,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
     await setDoc(
+
+ 
+
+ 
 
  
 
@@ -4687,11 +9558,23 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
         db,
 
  
 
+ 
+
+ 
+
         "solicitudes",
+
+ 
+
+ 
 
  
 
@@ -4699,7 +9582,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
         "rechazos",
+
+ 
+
+ 
 
  
 
@@ -4707,7 +9598,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -4715,7 +9614,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
         proveedorId: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -4723,7 +9630,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
           s.provider?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -4731,7 +9646,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
           s.user.email,
+
+ 
+
+ 
 
  
 
@@ -4739,7 +9662,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -4747,11 +9678,23 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   } catch (error) {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -4759,7 +9702,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
       error
+
+ 
+
+ 
 
  
 
@@ -4767,7 +9718,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4775,7 +9734,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
     "Servicio rechazado",
+
+ 
+
+ 
 
  
 
@@ -4783,7 +9750,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
       currentRequest.folioOficial ||
+
+ 
+
+ 
 
  
 
@@ -4791,7 +9766,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
       id
+
+ 
+
+ 
 
  
 
@@ -4799,7 +9782,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -4807,7 +9798,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   hideService();
+
+ 
+
+ 
 
  
 
@@ -4815,7 +9814,15 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
     evaluateAvailableServices,
+
+ 
+
+ 
 
  
 
@@ -4823,11 +9830,23 @@ async function rejectService() {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -4835,7 +9854,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   const request = s.activeService;
+
+ 
+
+ 
 
  
 
@@ -4843,7 +9870,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setHidden("activeServiceEmpty", hasActive);
+
+ 
+
+ 
 
  
 
@@ -4851,7 +9886,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setHidden("dashboardActiveService", !hasActive);
+
+ 
+
+ 
 
  
 
@@ -4859,7 +9902,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     setText("activeServiceStatusBadge", "Sin servicio");
+
+ 
+
+ 
 
  
 
@@ -4867,7 +9918,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     setHidden("destinationArrivalButton", false);
+
+ 
+
+ 
 
  
 
@@ -4875,11 +9934,23 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -4887,7 +9958,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     request.folioOficial ||
+
+ 
+
+ 
 
  
 
@@ -4895,7 +9974,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     request.id;
+
+ 
+
+ 
 
  
 
@@ -4903,7 +9990,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     formatStatus(request.estado);
+
+ 
+
+ 
 
  
 
@@ -4911,7 +10006,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -4919,7 +10022,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     request.cliente?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -4927,7 +10038,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     "Cliente AS CLICK"
+
+ 
+
+ 
 
  
 
@@ -4935,7 +10054,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -4943,7 +10070,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     request.cliente?.telefono ||
+
+ 
+
+ 
 
  
 
@@ -4951,7 +10086,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     "No disponible"
+
+ 
+
+ 
 
  
 
@@ -4959,7 +10102,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -4967,7 +10118,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     vehicleText(request)
+
+ 
+
+ 
 
  
 
@@ -4975,7 +10134,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -4983,7 +10150,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     buildOriginText(request)
+
+ 
+
+ 
 
  
 
@@ -4991,7 +10166,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -4999,7 +10182,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     buildDestinationText(request)
+
+ 
+
+ 
 
  
 
@@ -5007,7 +10198,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -5015,7 +10214,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     statusName
+
+ 
+
+ 
 
  
 
@@ -5023,7 +10230,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -5031,7 +10246,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     statusName
+
+ 
+
+ 
 
  
 
@@ -5039,7 +10262,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -5047,7 +10278,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     `Servicio ${folio}`
+
+ 
+
+ 
 
  
 
@@ -5055,7 +10294,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -5063,11 +10310,23 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
     `${statusName} · ${buildOriginText(request)}`
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -5075,7 +10334,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
   if (finishButton) {
+
+ 
+
+ 
 
  
 
@@ -5083,7 +10350,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
       getRequestServiceType(request) === "grua"
+
+ 
+
+ 
 
  
 
@@ -5091,11 +10366,23 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
         : "Terminar servicio";
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5103,7 +10390,15 @@ function renderActiveService() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5111,7 +10406,15 @@ function getRequestServiceType(request) {
 
  
 
+ 
+
+ 
+
   return normalizeServiceType(
+
+ 
+
+ 
 
  
 
@@ -5119,7 +10422,15 @@ function getRequestServiceType(request) {
 
  
 
+ 
+
+ 
+
     request?.servicio?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -5127,7 +10438,15 @@ function getRequestServiceType(request) {
 
  
 
+ 
+
+ 
+
     request?.tipo ||
+
+ 
+
+ 
 
  
 
@@ -5135,11 +10454,23 @@ function getRequestServiceType(request) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5147,7 +10478,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   const status = request?.estado;
+
+ 
+
+ 
 
  
 
@@ -5155,7 +10494,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   const isTowTruck = serviceType === "grua";
+
+ 
+
+ 
 
  
 
@@ -5163,7 +10510,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   // Aceptar -> En camino -> Arribo -> Iniciar traslado ->
+
+ 
+
+ 
 
  
 
@@ -5171,7 +10526,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   setHidden("startTransferButton", !isTowTruck);
+
+ 
+
+ 
 
  
 
@@ -5179,7 +10542,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   setHidden("openDestinationButton", !isTowTruck);
+
+ 
+
+ 
 
  
 
@@ -5187,7 +10558,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     const order = [
+
+ 
+
+ 
 
  
 
@@ -5195,7 +10574,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       "en_camino",
+
+ 
+
+ 
 
  
 
@@ -5203,7 +10590,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       "en_traslado",
+
+ 
+
+ 
 
  
 
@@ -5211,7 +10606,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     ];
+
+ 
+
+ 
 
  
 
@@ -5219,7 +10622,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     setButtonDisabled(
+
+ 
+
+ 
 
  
 
@@ -5227,7 +10638,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       currentIndex !== 0
+
+ 
+
+ 
 
  
 
@@ -5235,7 +10654,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     setButtonDisabled(
+
+ 
+
+ 
 
  
 
@@ -5243,7 +10670,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       currentIndex !== 1
+
+ 
+
+ 
 
  
 
@@ -5251,7 +10686,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     setButtonDisabled(
+
+ 
+
+ 
 
  
 
@@ -5259,7 +10702,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       currentIndex !== 2
+
+ 
+
+ 
 
  
 
@@ -5267,7 +10718,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     setButtonDisabled(
+
+ 
+
+ 
 
  
 
@@ -5275,11 +10734,23 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       currentIndex !== 3
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5287,7 +10758,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
       "finishServiceButton",
+
+ 
+
+ 
 
  
 
@@ -5295,7 +10774,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5303,7 +10790,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -5311,11 +10806,23 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   // Aceptar -> En camino -> Arribo -> Terminar servicio
 
  
 
+ 
+
+ 
+
   setButtonDisabled(
+
+ 
+
+ 
 
  
 
@@ -5323,7 +10830,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     status !== "asignado"
+
+ 
+
+ 
 
  
 
@@ -5331,7 +10846,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   setButtonDisabled(
+
+ 
+
+ 
 
  
 
@@ -5339,11 +10862,23 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     status !== "en_camino"
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -5351,7 +10886,15 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
     "finishServiceButton",
+
+ 
+
+ 
 
  
 
@@ -5359,11 +10902,23 @@ function updateProgressButtons(request) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5371,7 +10926,15 @@ function setButtonDisabled(id, disabled) {
 
  
 
+ 
+
+ 
+
   const button = $(id);
+
+ 
+
+ 
 
  
 
@@ -5379,7 +10942,15 @@ function setButtonDisabled(id, disabled) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5387,11 +10958,23 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
   if (!s.activeService || !s.user) return;
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -5399,7 +10982,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       estado: nextStatus,
+
+ 
+
+ 
 
  
 
@@ -5407,7 +10998,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -5415,7 +11014,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       en_camino: "fechaEnCamino",
+
+ 
+
+ 
 
  
 
@@ -5423,7 +11030,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       en_traslado: "fechaInicioTraslado",
+
+ 
+
+ 
 
  
 
@@ -5431,7 +11046,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -5439,7 +11062,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       updates[dateFields[nextStatus]] =
+
+ 
+
+ 
 
  
 
@@ -5447,7 +11078,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -5455,11 +11094,23 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       doc(
 
  
 
+ 
+
+ 
+
         db,
+
+ 
+
+ 
 
  
 
@@ -5467,11 +11118,23 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
         s.activeService.id
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -5479,7 +11142,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5487,7 +11158,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       ...s.activeService,
+
+ 
+
+ 
 
  
 
@@ -5495,7 +11174,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -5503,7 +11190,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     activity(
+
+ 
+
+ 
 
  
 
@@ -5511,7 +11206,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       `Folio ${
+
+ 
+
+ 
 
  
 
@@ -5519,7 +11222,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
         s.activeService.folio ||
+
+ 
+
+ 
 
  
 
@@ -5527,7 +11238,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       }`
+
+ 
+
+ 
 
  
 
@@ -5535,7 +11254,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -5543,7 +11270,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5551,7 +11286,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -5559,7 +11302,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
       error
+
+ 
+
+ 
 
  
 
@@ -5567,7 +11318,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -5575,7 +11334,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5583,7 +11350,15 @@ async function updateActiveServiceStatus(nextStatus) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5591,7 +11366,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
   if (!s.activeService || !s.user) return;
+
+ 
+
+ 
 
  
 
@@ -5599,11 +11382,23 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
   try {
 
  
 
+ 
+
+ 
+
     await updateDoc(
+
+ 
+
+ 
 
  
 
@@ -5611,7 +11406,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       {
+
+ 
+
+ 
 
  
 
@@ -5619,7 +11422,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         fechaFinalizacion:
+
+ 
+
+ 
 
  
 
@@ -5627,7 +11438,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         actualizadoEn:
+
+ 
+
+ 
 
  
 
@@ -5635,11 +11454,23 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       }
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5647,7 +11478,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       doc(db, "proveedores", s.user.uid),
+
+ 
+
+ 
 
  
 
@@ -5655,7 +11494,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         disponible: true,
+
+ 
+
+ 
 
  
 
@@ -5663,7 +11510,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         servicioActualId: null,
+
+ 
+
+ 
 
  
 
@@ -5671,7 +11526,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
           serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -5679,7 +11542,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5687,7 +11558,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       doc(
+
+ 
+
+ 
 
  
 
@@ -5695,7 +11574,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         "ubicacionesProveedores",
+
+ 
+
+ 
 
  
 
@@ -5703,7 +11590,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -5711,7 +11606,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         proveedorId: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -5719,7 +11622,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
         servicioActualId: null,
+
+ 
+
+ 
 
  
 
@@ -5727,7 +11638,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
           serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -5735,11 +11654,23 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       { merge: true }
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5747,7 +11678,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     s.available = true;
+
+ 
+
+ 
 
  
 
@@ -5755,7 +11694,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     renderAvailability();
+
+ 
+
+ 
 
  
 
@@ -5763,7 +11710,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     startLocation();
+
+ 
+
+ 
 
  
 
@@ -5771,7 +11726,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       "Servicio finalizado",
+
+ 
+
+ 
 
  
 
@@ -5779,11 +11742,23 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     );
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -5791,7 +11766,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5799,7 +11782,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     evaluateAvailableServices();
+
+ 
+
+ 
 
  
 
@@ -5807,7 +11798,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -5815,7 +11814,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
       error
+
+ 
+
+ 
 
  
 
@@ -5823,7 +11830,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -5831,7 +11846,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5839,7 +11862,15 @@ async function finishActiveService() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5847,11 +11878,23 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
   if (!s.activeService) return;
 
  
 
+ 
+
+ 
+
   const url =
+
+ 
+
+ 
 
  
 
@@ -5859,7 +11902,15 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
   if (url) {
+
+ 
+
+ 
 
  
 
@@ -5867,7 +11918,15 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
       url,
+
+ 
+
+ 
 
  
 
@@ -5875,7 +11934,15 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
       "noopener,noreferrer"
+
+ 
+
+ 
 
  
 
@@ -5883,11 +11950,23 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
   } else {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -5895,7 +11974,15 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5903,7 +11990,15 @@ function openActiveOrigin() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5911,7 +12006,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
   if (!s.activeService) return;
+
+ 
+
+ 
 
  
 
@@ -5919,7 +12022,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
     buildDestinationMapsUrl(s.activeService);
+
+ 
+
+ 
 
  
 
@@ -5927,7 +12038,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
     window.open(
+
+ 
+
+ 
 
  
 
@@ -5935,7 +12054,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
       "_blank",
+
+ 
+
+ 
 
  
 
@@ -5943,7 +12070,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5951,7 +12086,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -5959,7 +12102,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -5967,7 +12118,15 @@ function openActiveDestination() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -5975,7 +12134,15 @@ function formatStatus(value) {
 
  
 
+ 
+
+ 
+
   const statuses = {
+
+ 
+
+ 
 
  
 
@@ -5983,7 +12150,15 @@ function formatStatus(value) {
 
  
 
+ 
+
+ 
+
     en_camino: "En camino",
+
+ 
+
+ 
 
  
 
@@ -5991,7 +12166,15 @@ function formatStatus(value) {
 
  
 
+ 
+
+ 
+
     en_traslado: "En traslado",
+
+ 
+
+ 
 
  
 
@@ -5999,11 +12182,23 @@ function formatStatus(value) {
 
  
 
+ 
+
+ 
+
     finalizado: "Finalizado"
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -6011,11 +12206,23 @@ function formatStatus(value) {
 
  
 
+ 
+
+ 
+
     "Servicio activo";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6023,7 +12230,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
   stopTimer();
+
+ 
+
+ 
 
  
 
@@ -6031,7 +12246,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -6039,11 +12262,23 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
     `${seconds}s`
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -6051,7 +12286,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
     s.seconds -= 1;
+
+ 
+
+ 
 
  
 
@@ -6059,7 +12302,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
       "serviceTimer",
+
+ 
+
+ 
 
  
 
@@ -6067,7 +12318,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6075,7 +12334,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
       stopTimer();
+
+ 
+
+ 
 
  
 
@@ -6083,7 +12350,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6091,7 +12366,15 @@ function startTimer(seconds) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6099,7 +12382,15 @@ function stopTimer() {
 
  
 
+ 
+
+ 
+
   if (s.timer) {
+
+ 
+
+ 
 
  
 
@@ -6107,7 +12398,15 @@ function stopTimer() {
 
  
 
+ 
+
+ 
+
     s.timer = null;
+
+ 
+
+ 
 
  
 
@@ -6115,7 +12414,15 @@ function stopTimer() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6123,7 +12430,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
   if (
+
+ 
+
+ 
 
  
 
@@ -6131,7 +12446,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
     s.watch !== null
+
+ 
+
+ 
 
  
 
@@ -6139,7 +12462,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
     return;
+
+ 
+
+ 
 
  
 
@@ -6147,11 +12478,23 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
   setText(
 
  
 
+ 
+
+ 
+
     "locationText",
+
+ 
+
+ 
 
  
 
@@ -6159,7 +12502,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -6167,7 +12518,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
     navigator.geolocation.watchPosition(
+
+ 
+
+ 
 
  
 
@@ -6175,11 +12534,23 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
       locationError,
 
  
 
+ 
+
+ 
+
       {
+
+ 
+
+ 
 
  
 
@@ -6187,7 +12558,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
         maximumAge: 5000,
+
+ 
+
+ 
 
  
 
@@ -6195,7 +12574,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
       }
+
+ 
+
+ 
 
  
 
@@ -6203,7 +12590,15 @@ function startLocation() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6211,7 +12606,15 @@ function stopLocation() {
 
  
 
+ 
+
+ 
+
   if (s.watch !== null) {
+
+ 
+
+ 
 
  
 
@@ -6219,7 +12622,15 @@ function stopLocation() {
 
  
 
+ 
+
+ 
+
     s.watch = null;
+
+ 
+
+ 
 
  
 
@@ -6227,7 +12638,15 @@ function stopLocation() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6235,11 +12654,23 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
   if (!navigator.geolocation) {
 
  
 
+ 
+
+ 
+
     toast(
+
+ 
+
+ 
 
  
 
@@ -6247,7 +12678,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6255,7 +12694,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6263,7 +12710,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
     "locationText",
+
+ 
+
+ 
 
  
 
@@ -6271,7 +12726,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -6279,7 +12742,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
     saveLocation,
+
+ 
+
+ 
 
  
 
@@ -6287,7 +12758,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
     {
+
+ 
+
+ 
 
  
 
@@ -6295,7 +12774,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
       maximumAge: 5000,
+
+ 
+
+ 
 
  
 
@@ -6303,7 +12790,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6311,7 +12806,15 @@ function getLocationOnce() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6319,7 +12822,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
   if (!s.user) return;
+
+ 
+
+ 
 
  
 
@@ -6327,7 +12838,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
     latitude,
+
+ 
+
+ 
 
  
 
@@ -6335,7 +12854,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
     accuracy
+
+ 
+
+ 
 
  
 
@@ -6343,7 +12870,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
   s.latitude = latitude;
+
+ 
+
+ 
 
  
 
@@ -6351,7 +12886,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
   s.accuracy = accuracy;
+
+ 
+
+ 
 
  
 
@@ -6359,7 +12902,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
     "locationText",
+
+ 
+
+ 
 
  
 
@@ -6367,11 +12918,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
   try {
+
+ 
+
+ 
 
  
 
@@ -6379,7 +12942,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       doc(
+
+ 
+
+ 
 
  
 
@@ -6387,7 +12958,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         "ubicacionesProveedores",
+
+ 
+
+ 
 
  
 
@@ -6395,7 +12974,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       ),
+
+ 
+
+ 
 
  
 
@@ -6403,7 +12990,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         proveedorId: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -6411,7 +13006,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         longitude,
+
+ 
+
+ 
 
  
 
@@ -6419,7 +13022,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         longitud: longitude,
+
+ 
+
+ 
 
  
 
@@ -6427,7 +13038,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         disponible:
+
+ 
+
+ 
 
  
 
@@ -6435,7 +13054,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           !s.activeService,
+
+ 
+
+ 
 
  
 
@@ -6443,7 +13070,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           s.activeService?.id ||
+
+ 
+
+ 
 
  
 
@@ -6451,7 +13086,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           null,
+
+ 
+
+ 
 
  
 
@@ -6459,7 +13102,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           normalizeServiceType(
+
+ 
+
+ 
 
  
 
@@ -6467,7 +13118,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
             s.provider?.tipo ||
+
+ 
+
+ 
 
  
 
@@ -6475,7 +13134,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           ),
+
+ 
+
+ 
 
  
 
@@ -6483,7 +13150,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -6491,11 +13166,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       { merge: true }
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6503,7 +13190,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       await setDoc(
+
+ 
+
+ 
 
  
 
@@ -6511,7 +13206,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           db,
+
+ 
+
+ 
 
  
 
@@ -6519,7 +13222,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           s.activeService.id,
+
+ 
+
+ 
 
  
 
@@ -6527,7 +13238,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           "ubicacionProveedor"
+
+ 
+
+ 
 
  
 
@@ -6535,11 +13254,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         {
 
  
 
+ 
+
+ 
+
           proveedorId: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -6547,7 +13278,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           longitude,
+
+ 
+
+ 
 
  
 
@@ -6555,7 +13294,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           longitud: longitude,
+
+ 
+
+ 
 
  
 
@@ -6563,7 +13310,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           estado:
+
+ 
+
+ 
 
  
 
@@ -6571,7 +13326,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
           actualizadoEn:
+
+ 
+
+ 
 
  
 
@@ -6579,7 +13342,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
         },
+
+ 
+
+ 
 
  
 
@@ -6587,11 +13358,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6599,11 +13382,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
   } catch (error) {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -6611,11 +13406,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       error
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -6623,7 +13430,15 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
       "Firebase no permitió guardar la ubicación."
+
+ 
+
+ 
 
  
 
@@ -6631,11 +13446,23 @@ async function saveLocation(position) {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6643,7 +13470,15 @@ function locationError(error) {
 
  
 
+ 
+
+ 
+
   const messages = {
+
+ 
+
+ 
 
  
 
@@ -6651,7 +13486,15 @@ function locationError(error) {
 
  
 
+ 
+
+ 
+
     2: "No fue posible detectar la ubicación.",
+
+ 
+
+ 
 
  
 
@@ -6659,11 +13502,23 @@ function locationError(error) {
 
  
 
+ 
+
+ 
+
   };
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -6671,7 +13526,15 @@ function locationError(error) {
 
  
 
+ 
+
+ 
+
     messages[error.code] ||
+
+ 
+
+ 
 
  
 
@@ -6679,11 +13542,23 @@ function locationError(error) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6691,7 +13566,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
   stopLocation();
+
+ 
+
+ 
 
  
 
@@ -6699,7 +13582,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
   clearRealtimeListeners();
+
+ 
+
+ 
 
  
 
@@ -6707,7 +13598,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
     if (s.user) {
+
+ 
+
+ 
 
  
 
@@ -6715,7 +13614,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
         doc(db, "proveedores", s.user.uid),
+
+ 
+
+ 
 
  
 
@@ -6723,7 +13630,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
           disponible: false,
+
+ 
+
+ 
 
  
 
@@ -6731,7 +13646,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
             s.activeService
+
+ 
+
+ 
 
  
 
@@ -6739,7 +13662,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
               : "desconectado",
+
+ 
+
+ 
 
  
 
@@ -6747,7 +13678,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
             serverTimestamp()
+
+ 
+
+ 
 
  
 
@@ -6755,7 +13694,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -6763,7 +13710,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
         doc(
+
+ 
+
+ 
 
  
 
@@ -6771,7 +13726,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
           "ubicacionesProveedores",
+
+ 
+
+ 
 
  
 
@@ -6779,7 +13742,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
         ),
+
+ 
+
+ 
 
  
 
@@ -6787,7 +13758,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
           proveedorId: s.user.uid,
+
+ 
+
+ 
 
  
 
@@ -6795,7 +13774,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
           servicioActualId:
+
+ 
+
+ 
 
  
 
@@ -6803,7 +13790,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
           actualizadoEn:
+
+ 
+
+ 
 
  
 
@@ -6811,7 +13806,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
         },
+
+ 
+
+ 
 
  
 
@@ -6819,11 +13822,23 @@ async function logout() {
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -6831,7 +13846,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
     console.error(
+
+ 
+
+ 
 
  
 
@@ -6839,7 +13862,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
       error
+
+ 
+
+ 
 
  
 
@@ -6847,7 +13878,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6855,7 +13894,15 @@ async function logout() {
 
  
 
+ 
+
+ 
+
   location.replace("login.html");
+
+ 
+
+ 
 
  
 
@@ -6863,7 +13910,19 @@ async function logout() {
 
  
 
+ 
+
+ 
+
 function clearRealtimeListeners() {
+
+  if (s.unsubscribeProviderProfile) {
+
+    s.unsubscribeProviderProfile();
+
+    s.unsubscribeProviderProfile = null;
+
+  }
 
  
 
@@ -6871,7 +13930,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
     clearInterval(s.refreshRadiusTimer);
+
+ 
+
+ 
 
  
 
@@ -6879,7 +13946,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6887,7 +13962,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
     s.unsubscribeRequests();
+
+ 
+
+ 
 
  
 
@@ -6895,7 +13978,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6903,7 +13994,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
     s.unsubscribeActiveService();
+
+ 
+
+ 
 
  
 
@@ -6911,7 +14010,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6919,7 +14026,15 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
     s.unsubscribeHistory();
+
+ 
+
+ 
 
  
 
@@ -6927,11 +14042,23 @@ function clearRealtimeListeners() {
 
  
 
+ 
+
+ 
+
   }
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6939,7 +14066,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
   if (!s.user) return;
+
+ 
+
+ 
 
  
 
@@ -6947,7 +14082,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
     s.historyDate = todayDateInputValue();
+
+ 
+
+ 
 
  
 
@@ -6955,7 +14098,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
   const input = $("historyDate");
+
+ 
+
+ 
 
  
 
@@ -6963,7 +14114,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
   if (!s.incomeDate) {
+
+ 
+
+ 
 
  
 
@@ -6971,7 +14130,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -6979,7 +14146,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
   if (incomeInput) incomeInput.value = s.incomeDate;
+
+ 
+
+ 
 
  
 
@@ -6987,7 +14162,15 @@ function initializeHistory() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -6995,7 +14178,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
   if (!s.user) return;
+
+ 
+
+ 
 
  
 
@@ -7003,11 +14194,23 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
     s.unsubscribeHistory();
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7015,7 +14218,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
     collection(db, "solicitudes"),
+
+ 
+
+ 
 
  
 
@@ -7023,7 +14234,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -7031,7 +14250,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
     historyQuery,
+
+ 
+
+ 
 
  
 
@@ -7039,7 +14266,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
       s.historyServices = snapshot.docs
+
+ 
+
+ 
 
  
 
@@ -7047,7 +14282,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
           id: historyDoc.id,
+
+ 
+
+ 
 
  
 
@@ -7055,7 +14298,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
         }))
+
+ 
+
+ 
 
  
 
@@ -7063,7 +14314,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
       renderHistory();
+
+ 
+
+ 
 
  
 
@@ -7071,7 +14330,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
     },
+
+ 
+
+ 
 
  
 
@@ -7079,7 +14346,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
       console.error("Error cargando historial:", error);
+
+ 
+
+ 
 
  
 
@@ -7087,7 +14362,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -7095,7 +14378,15 @@ function listenHistory() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7103,7 +14394,15 @@ function todayDateInputValue() {
 
  
 
+ 
+
+ 
+
   const now = new Date();
+
+ 
+
+ 
 
  
 
@@ -7111,7 +14410,15 @@ function todayDateInputValue() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7119,7 +14426,15 @@ function localDateInputValue(date) {
 
  
 
+ 
+
+ 
+
   const year = date.getFullYear();
+
+ 
+
+ 
 
  
 
@@ -7127,7 +14442,15 @@ function localDateInputValue(date) {
 
  
 
+ 
+
+ 
+
   const day = String(date.getDate()).padStart(2, "0");
+
+ 
+
+ 
 
  
 
@@ -7135,7 +14458,15 @@ function localDateInputValue(date) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7143,7 +14474,15 @@ function setHistoryDate(value) {
 
  
 
+ 
+
+ 
+
   if (!value) return;
+
+ 
+
+ 
 
  
 
@@ -7151,7 +14490,15 @@ function setHistoryDate(value) {
 
  
 
+ 
+
+ 
+
   const input = $("historyDate");
+
+ 
+
+ 
 
  
 
@@ -7159,11 +14506,23 @@ function setHistoryDate(value) {
 
  
 
+ 
+
+ 
+
     input.value = value;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7171,7 +14530,15 @@ function setHistoryDate(value) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7179,7 +14546,15 @@ function changeHistoryDay(days) {
 
  
 
+ 
+
+ 
+
   const base = s.historyDate || todayDateInputValue();
+
+ 
+
+ 
 
  
 
@@ -7187,11 +14562,23 @@ function changeHistoryDay(days) {
 
  
 
+ 
+
+ 
+
   const date = new Date(year, month - 1, day);
 
  
 
+ 
+
+ 
+
   date.setDate(date.getDate() + days);
+
+ 
+
+ 
 
  
 
@@ -7199,7 +14586,15 @@ function changeHistoryDay(days) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7207,7 +14602,15 @@ function setIncomeDate(value) {
 
  
 
+ 
+
+ 
+
   if (!value) return;
+
+ 
+
+ 
 
  
 
@@ -7215,7 +14618,15 @@ function setIncomeDate(value) {
 
  
 
+ 
+
+ 
+
   const input = $("incomeDate");
+
+ 
+
+ 
 
  
 
@@ -7223,11 +14634,23 @@ function setIncomeDate(value) {
 
  
 
+ 
+
+ 
+
     input.value = value;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7235,7 +14658,15 @@ function setIncomeDate(value) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7243,7 +14674,15 @@ function changeIncomeDay(days) {
 
  
 
+ 
+
+ 
+
   const base = s.incomeDate || todayDateInputValue();
+
+ 
+
+ 
 
  
 
@@ -7251,7 +14690,15 @@ function changeIncomeDay(days) {
 
  
 
+ 
+
+ 
+
   const date = new Date(year, month - 1, day);
+
+ 
+
+ 
 
  
 
@@ -7259,11 +14706,23 @@ function changeIncomeDay(days) {
 
  
 
+ 
+
+ 
+
   setIncomeDate(localDateInputValue(date));
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7271,7 +14730,15 @@ function getServiceFinalizationDate(service) {
 
  
 
+ 
+
+ 
+
   const value =
+
+ 
+
+ 
 
  
 
@@ -7279,7 +14746,15 @@ function getServiceFinalizationDate(service) {
 
  
 
+ 
+
+ 
+
     service.finalizadoEn ||
+
+ 
+
+ 
 
  
 
@@ -7287,7 +14762,15 @@ function getServiceFinalizationDate(service) {
 
  
 
+ 
+
+ 
+
   if (!value) return null;
+
+ 
+
+ 
 
  
 
@@ -7295,11 +14778,23 @@ function getServiceFinalizationDate(service) {
 
  
 
+ 
+
+ 
+
     return value.toDate();
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7307,11 +14802,23 @@ function getServiceFinalizationDate(service) {
 
  
 
+ 
+
+ 
+
     return new Date(value.seconds * 1000);
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7319,11 +14826,23 @@ function getServiceFinalizationDate(service) {
 
  
 
+ 
+
+ 
+
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7331,7 +14850,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
   const list = $("historyList");
+
+ 
+
+ 
 
  
 
@@ -7339,11 +14866,23 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
   if (!list || !empty) return;
 
  
 
+ 
+
+ 
+
   const selectedDate =
+
+ 
+
+ 
 
  
 
@@ -7351,7 +14890,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
   const services = s.historyServices
+
+ 
+
+ 
 
  
 
@@ -7359,7 +14906,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       const date = getServiceFinalizationDate(service);
+
+ 
+
+ 
 
  
 
@@ -7367,7 +14922,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
     })
+
+ 
+
+ 
 
  
 
@@ -7375,7 +14938,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       const dateA = getServiceFinalizationDate(a);
+
+ 
+
+ 
 
  
 
@@ -7383,11 +14954,23 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       return (dateB?.getTime() || 0) - (dateA?.getTime() || 0);
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -7395,7 +14978,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
   setHidden("historyList", services.length === 0);
+
+ 
+
+ 
 
  
 
@@ -7403,7 +14994,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
     list.innerHTML = "";
+
+ 
+
+ 
 
  
 
@@ -7411,7 +15010,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7419,7 +15026,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
     .map(service => {
+
+ 
+
+ 
 
  
 
@@ -7427,7 +15042,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
         service.folioOficial ||
+
+ 
+
+ 
 
  
 
@@ -7435,7 +15058,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
         service.id;
+
+ 
+
+ 
 
  
 
@@ -7443,7 +15074,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
         service.servicio?.tipo ||
+
+ 
+
+ 
 
  
 
@@ -7451,7 +15090,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
         service.tipoServicio ||
+
+ 
+
+ 
 
  
 
@@ -7459,7 +15106,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -7467,7 +15122,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
         service.cliente?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -7475,7 +15138,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
         service.nombreCliente ||
+
+ 
+
+ 
 
  
 
@@ -7483,7 +15154,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       const vehicle = vehicleText(service);
+
+ 
+
+ 
 
  
 
@@ -7491,7 +15170,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       const time = finishedAt
+
+ 
+
+ 
 
  
 
@@ -7499,7 +15186,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
             hour: "2-digit",
+
+ 
+
+ 
 
  
 
@@ -7507,7 +15202,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
           })
+
+ 
+
+ 
 
  
 
@@ -7515,7 +15218,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       return `
+
+ 
+
+ 
 
  
 
@@ -7523,7 +15234,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
           <div class="history-item-main">
+
+ 
+
+ 
 
  
 
@@ -7531,11 +15250,23 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
             <strong>${escapeHtml(folio)}</strong>
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -7543,7 +15274,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
@@ -7551,7 +15290,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
               <strong>${escapeHtml(client)}</strong>
+
+ 
+
+ 
 
  
 
@@ -7559,7 +15306,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
@@ -7567,7 +15322,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
               <strong>${escapeHtml(vehicle)}</strong>
+
+ 
+
+ 
 
  
 
@@ -7575,7 +15338,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
@@ -7583,7 +15354,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
               <strong>${escapeHtml(time)}</strong>
+
+ 
+
+ 
 
  
 
@@ -7591,7 +15370,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
@@ -7599,7 +15386,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
               <strong>Finalizado</strong>
+
+ 
+
+ 
 
  
 
@@ -7607,7 +15402,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -7615,7 +15418,15 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
       `;
+
+ 
+
+ 
 
  
 
@@ -7623,11 +15434,23 @@ function renderHistory() {
 
  
 
+ 
+
+ 
+
     .join("");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7635,7 +15458,15 @@ function normalizeText(value) {
 
  
 
+ 
+
+ 
+
   return String(value || "")
+
+ 
+
+ 
 
  
 
@@ -7643,7 +15474,15 @@ function normalizeText(value) {
 
  
 
+ 
+
+ 
+
     .toLowerCase()
+
+ 
+
+ 
 
  
 
@@ -7651,7 +15490,15 @@ function normalizeText(value) {
 
  
 
+ 
+
+ 
+
     .replace(/[\u0300-\u036f]/g, "")
+
+ 
+
+ 
 
  
 
@@ -7659,7 +15506,15 @@ function normalizeText(value) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7667,7 +15522,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
   return normalizeText(
+
+ 
+
+ 
 
  
 
@@ -7675,7 +15538,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
     service.vehiculo?.tipoUso ||
+
+ 
+
+ 
 
  
 
@@ -7683,7 +15554,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
     service.servicio?.modalidad ||
+
+ 
+
+ 
 
  
 
@@ -7691,7 +15570,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
     service.tipoVehiculo ||
+
+ 
+
+ 
 
  
 
@@ -7699,7 +15586,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
     service.modalidadVehiculo ||
+
+ 
+
+ 
 
  
 
@@ -7707,7 +15602,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
     service.tipoCliente ||
+
+ 
+
+ 
 
  
 
@@ -7715,7 +15618,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
     ""
+
+ 
+
+ 
 
  
 
@@ -7723,7 +15634,15 @@ function getServiceVehicleClass(service) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7731,11 +15650,23 @@ function isPublicServiceVehicle(service) {
 
  
 
+ 
+
+ 
+
   const value = getServiceVehicleClass(service);
 
  
 
+ 
+
+ 
+
   return (
+
+ 
+
+ 
 
  
 
@@ -7743,7 +15674,15 @@ function isPublicServiceVehicle(service) {
 
  
 
+ 
+
+ 
+
     value.includes("publico") ||
+
+ 
+
+ 
 
  
 
@@ -7751,11 +15690,23 @@ function isPublicServiceVehicle(service) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7763,7 +15714,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
   const value = normalizeText(
+
+ 
+
+ 
 
  
 
@@ -7771,7 +15730,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     service.servicio?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -7779,7 +15746,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     service.tipo ||
+
+ 
+
+ 
 
  
 
@@ -7787,7 +15762,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -7795,11 +15778,23 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     return "ajustador";
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7807,11 +15802,23 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     return "abogado";
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7819,7 +15826,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     value.includes("auxilio") ||
+
+ 
+
+ 
 
  
 
@@ -7827,7 +15842,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     value.includes("cambio de llanta") ||
+
+ 
+
+ 
 
  
 
@@ -7835,7 +15858,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     value.includes("gasolina")
+
+ 
+
+ 
 
  
 
@@ -7843,11 +15874,23 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     return "auxilio_vial";
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7855,11 +15898,23 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
     return "grua";
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7867,7 +15922,15 @@ function getIncomeServiceType(service) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7875,7 +15938,15 @@ function getProviderEarning(service) {
 
  
 
+ 
+
+ 
+
   const type = getIncomeServiceType(service);
+
+ 
+
+ 
 
  
 
@@ -7883,7 +15954,15 @@ function getProviderEarning(service) {
 
  
 
+ 
+
+ 
+
   if (type === "ajustador") {
+
+ 
+
+ 
 
  
 
@@ -7891,7 +15970,15 @@ function getProviderEarning(service) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7899,11 +15986,23 @@ function getProviderEarning(service) {
 
  
 
+ 
+
+ 
+
     return isPublic ? 350 : 500;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7911,11 +16010,23 @@ function getProviderEarning(service) {
 
  
 
+ 
+
+ 
+
     return 100;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -7923,11 +16034,23 @@ function getProviderEarning(service) {
 
  
 
+ 
+
+ 
+
   return 0;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7935,7 +16058,15 @@ function isSameLocalDay(dateA, dateB) {
 
  
 
+ 
+
+ 
+
   return (
+
+ 
+
+ 
 
  
 
@@ -7943,7 +16074,15 @@ function isSameLocalDay(dateA, dateB) {
 
  
 
+ 
+
+ 
+
     dateA.getMonth() === dateB.getMonth() &&
+
+ 
+
+ 
 
  
 
@@ -7951,11 +16090,23 @@ function isSameLocalDay(dateA, dateB) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -7963,7 +16114,15 @@ function startOfCurrentWeek(date) {
 
  
 
+ 
+
+ 
+
   const result = new Date(
+
+ 
+
+ 
 
  
 
@@ -7971,7 +16130,15 @@ function startOfCurrentWeek(date) {
 
  
 
+ 
+
+ 
+
     date.getMonth(),
+
+ 
+
+ 
 
  
 
@@ -7979,7 +16146,15 @@ function startOfCurrentWeek(date) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -7987,7 +16162,15 @@ function startOfCurrentWeek(date) {
 
  
 
+ 
+
+ 
+
   const diff = day === 0 ? 6 : day - 1;
+
+ 
+
+ 
 
  
 
@@ -7995,7 +16178,15 @@ function startOfCurrentWeek(date) {
 
  
 
+ 
+
+ 
+
   result.setHours(0, 0, 0, 0);
+
+ 
+
+ 
 
  
 
@@ -8003,7 +16194,15 @@ function startOfCurrentWeek(date) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8011,7 +16210,15 @@ function formatMoney(value) {
 
  
 
+ 
+
+ 
+
   return new Intl.NumberFormat("es-MX", {
+
+ 
+
+ 
 
  
 
@@ -8019,7 +16226,15 @@ function formatMoney(value) {
 
  
 
+ 
+
+ 
+
     currency: "MXN",
+
+ 
+
+ 
 
  
 
@@ -8027,11 +16242,23 @@ function formatMoney(value) {
 
  
 
+ 
+
+ 
+
   }).format(value || 0);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8039,11 +16266,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   const selectedDate =
 
  
 
+ 
+
+ 
+
     s.incomeDate || todayDateInputValue();
+
+ 
+
+ 
 
  
 
@@ -8051,7 +16290,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     ? s.historyServices
+
+ 
+
+ 
 
  
 
@@ -8059,7 +16306,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   )
+
+ 
+
+ 
 
  
 
@@ -8067,7 +16322,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       const date = getServiceFinalizationDate(service);
+
+ 
+
+ 
 
  
 
@@ -8075,7 +16338,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       return {
+
+ 
+
+ 
 
  
 
@@ -8083,7 +16354,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
         date,
+
+ 
+
+ 
 
  
 
@@ -8091,11 +16370,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       };
 
  
 
+ 
+
+ 
+
     })
+
+ 
+
+ 
 
  
 
@@ -8103,7 +16394,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       item.date &&
+
+ 
+
+ 
 
  
 
@@ -8111,7 +16410,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       localDateInputValue(item.date) === selectedDate
+
+ 
+
+ 
 
  
 
@@ -8119,11 +16426,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     .sort((a, b) => b.date.getTime() - a.date.getTime());
 
  
 
+ 
+
+ 
+
   if (!movements.length) {
+
+ 
+
+ 
 
  
 
@@ -8131,11 +16450,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8143,7 +16474,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     const text = String(value ?? "");
+
+ 
+
+ 
 
  
 
@@ -8151,7 +16490,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -8159,7 +16506,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     [
+
+ 
+
+ 
 
  
 
@@ -8167,7 +16522,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       "Hora",
+
+ 
+
+ 
 
  
 
@@ -8175,7 +16538,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       "Tipo de servicio",
+
+ 
+
+ 
 
  
 
@@ -8183,7 +16554,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       "Ganancia"
+
+ 
+
+ 
 
  
 
@@ -8191,7 +16570,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   ];
+
+ 
+
+ 
 
  
 
@@ -8199,7 +16586,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     const service = item.service;
+
+ 
+
+ 
 
  
 
@@ -8207,7 +16602,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       service.folioOficial ||
+
+ 
+
+ 
 
  
 
@@ -8215,7 +16618,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       service.id;
+
+ 
+
+ 
 
  
 
@@ -8223,7 +16634,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       service.servicio?.tipo ||
+
+ 
+
+ 
 
  
 
@@ -8231,7 +16650,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       service.tipoServicio ||
+
+ 
+
+ 
 
  
 
@@ -8239,7 +16666,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8247,7 +16682,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       ? "Servicio público"
+
+ 
+
+ 
 
  
 
@@ -8255,7 +16698,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     rows.push([
+
+ 
+
+ 
 
  
 
@@ -8263,7 +16714,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       item.date.toLocaleTimeString("es-MX", {
+
+ 
+
+ 
 
  
 
@@ -8271,7 +16730,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
         minute: "2-digit"
+
+ 
+
+ 
 
  
 
@@ -8279,7 +16746,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       folio,
+
+ 
+
+ 
 
  
 
@@ -8287,7 +16762,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
       vehicleClass,
+
+ 
+
+ 
 
  
 
@@ -8295,11 +16778,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     ]);
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -8307,7 +16802,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     .map(row => row.map(escapeCsv).join(","))
+
+ 
+
+ 
 
  
 
@@ -8315,7 +16818,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   const blob = new Blob(
+
+ 
+
+ 
 
  
 
@@ -8323,7 +16834,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     {
+
+ 
+
+ 
 
  
 
@@ -8331,11 +16850,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
     }
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -8343,7 +16874,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   const link = document.createElement("a");
+
+ 
+
+ 
 
  
 
@@ -8351,7 +16890,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   link.download = `ganancias-${selectedDate}.csv`;
+
+ 
+
+ 
 
  
 
@@ -8359,7 +16906,15 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   link.click();
+
+ 
+
+ 
 
  
 
@@ -8367,11 +16922,23 @@ function downloadIncomeExcel() {
 
  
 
+ 
+
+ 
+
   URL.revokeObjectURL(url);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8379,7 +16946,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   const services = Array.isArray(s.historyServices)
+
+ 
+
+ 
 
  
 
@@ -8387,7 +16962,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     : [];
+
+ 
+
+ 
 
  
 
@@ -8395,7 +16978,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   const weekStart = startOfCurrentWeek(now);
+
+ 
+
+ 
 
  
 
@@ -8403,7 +16994,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     now.getFullYear(),
+
+ 
+
+ 
 
  
 
@@ -8411,11 +17010,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     1
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -8423,7 +17034,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   let week = 0;
+
+ 
+
+ 
 
  
 
@@ -8431,7 +17050,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   let total = 0;
+
+ 
+
+ 
 
  
 
@@ -8439,7 +17066,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     .map(service => {
+
+ 
+
+ 
 
  
 
@@ -8447,7 +17082,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       const amount = getProviderEarning(service);
+
+ 
+
+ 
 
  
 
@@ -8455,7 +17098,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         service,
+
+ 
+
+ 
 
  
 
@@ -8463,7 +17114,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         amount
+
+ 
+
+ 
 
  
 
@@ -8471,7 +17130,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     })
+
+ 
+
+ 
 
  
 
@@ -8479,7 +17146,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+ 
+
+ 
 
  
 
@@ -8487,7 +17162,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     total += item.amount;
+
+ 
+
+ 
 
  
 
@@ -8495,11 +17178,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       today += item.amount;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -8507,11 +17202,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       week += item.amount;
 
  
 
+ 
+
+ 
+
     }
+
+ 
+
+ 
 
  
 
@@ -8519,7 +17226,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       month += item.amount;
+
+ 
+
+ 
 
  
 
@@ -8527,7 +17242,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -8535,7 +17258,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   setText("incomeWeek", formatMoney(week));
+
+ 
+
+ 
 
  
 
@@ -8543,7 +17274,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   setText("incomeTotal", formatMoney(total));
+
+ 
+
+ 
 
  
 
@@ -8551,7 +17290,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     s.incomeDate || todayDateInputValue();
+
+ 
+
+ 
 
  
 
@@ -8559,11 +17306,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     localDateInputValue(item.date) === selectedIncomeDate
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -8571,7 +17330,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   const empty = $("incomeEmpty");
+
+ 
+
+ 
 
  
 
@@ -8579,7 +17346,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   setHidden("incomeEmpty", movements.length > 0);
+
+ 
+
+ 
 
  
 
@@ -8587,7 +17362,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
   if (!movements.length) {
+
+ 
+
+ 
 
  
 
@@ -8595,11 +17378,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     return;
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8607,7 +17402,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     .map(item => {
+
+ 
+
+ 
 
  
 
@@ -8615,7 +17418,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       const folio =
+
+ 
+
+ 
 
  
 
@@ -8623,7 +17434,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         service.folio ||
+
+ 
+
+ 
 
  
 
@@ -8631,7 +17450,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       const serviceType = formatServiceType(
+
+ 
+
+ 
 
  
 
@@ -8639,7 +17466,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         service.servicio?.nombre ||
+
+ 
+
+ 
 
  
 
@@ -8647,11 +17482,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         service.tipo
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -8659,7 +17506,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         ? "Servicio público"
+
+ 
+
+ 
 
  
 
@@ -8667,7 +17522,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       const dateText = item.date.toLocaleDateString("es-MX", {
+
+ 
+
+ 
 
  
 
@@ -8675,7 +17538,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         month: "2-digit",
+
+ 
+
+ 
 
  
 
@@ -8683,7 +17554,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       });
+
+ 
+
+ 
 
  
 
@@ -8691,7 +17570,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         hour: "2-digit",
+
+ 
+
+ 
 
  
 
@@ -8699,7 +17586,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       });
+
+ 
+
+ 
 
  
 
@@ -8707,7 +17602,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
         <article class="income-item">
+
+ 
+
+ 
 
  
 
@@ -8715,7 +17618,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
             <div>
+
+ 
+
+ 
 
  
 
@@ -8723,7 +17634,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
               <strong>${escapeHtml(folio)}</strong>
+
+ 
+
+ 
 
  
 
@@ -8731,11 +17650,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
             <strong class="income-amount">${escapeHtml(formatMoney(item.amount))}</strong>
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -8743,7 +17674,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
             <span>${escapeHtml(vehicleClass)}</span>
+
+ 
+
+ 
 
  
 
@@ -8751,7 +17690,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
           </div>
+
+ 
+
+ 
 
  
 
@@ -8759,7 +17706,15 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
       `;
+
+ 
+
+ 
 
  
 
@@ -8767,11 +17722,23 @@ function renderIncome() {
 
  
 
+ 
+
+ 
+
     .join("");
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8779,7 +17746,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
   latitude1,
+
+ 
+
+ 
 
  
 
@@ -8787,7 +17762,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
   latitude2,
+
+ 
+
+ 
 
  
 
@@ -8795,7 +17778,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
 ) {
+
+ 
+
+ 
 
  
 
@@ -8803,11 +17794,23 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
   const latitudeDifference =
 
  
 
+ 
+
+ 
+
     degreesToRadians(
+
+ 
+
+ 
 
  
 
@@ -8815,7 +17818,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8823,7 +17834,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     degreesToRadians(
+
+ 
+
+ 
 
  
 
@@ -8831,7 +17850,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8839,7 +17866,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     degreesToRadians(latitude1);
+
+ 
+
+ 
 
  
 
@@ -8847,7 +17882,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     degreesToRadians(latitude2);
+
+ 
+
+ 
 
  
 
@@ -8855,7 +17898,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     Math.sin(latitudeDifference / 2) ** 2 +
+
+ 
+
+ 
 
  
 
@@ -8863,7 +17914,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     Math.cos(secondLatitude) *
+
+ 
+
+ 
 
  
 
@@ -8871,7 +17930,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
   const angularDistance =
+
+ 
+
+ 
 
  
 
@@ -8879,7 +17946,15 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     Math.atan2(
+
+ 
+
+ 
 
  
 
@@ -8887,11 +17962,23 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
       Math.sqrt(1 - haversine)
 
  
 
+ 
+
+ 
+
     );
+
+ 
+
+ 
 
  
 
@@ -8899,11 +17986,23 @@ function calculateDistanceKm(
 
  
 
+ 
+
+ 
+
     angularDistance;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8911,7 +18010,15 @@ function degreesToRadians(value) {
 
  
 
+ 
+
+ 
+
   return value *
+
+ 
+
+ 
 
  
 
@@ -8919,11 +18026,23 @@ function degreesToRadians(value) {
 
  
 
+ 
+
+ 
+
     180;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8931,7 +18050,15 @@ function estimateMinutes(distanceKm) {
 
  
 
+ 
+
+ 
+
   if (!Number.isFinite(distanceKm)) {
+
+ 
+
+ 
 
  
 
@@ -8939,7 +18066,15 @@ function estimateMinutes(distanceKm) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -8947,7 +18082,15 @@ function estimateMinutes(distanceKm) {
 
  
 
+ 
+
+ 
+
     5,
+
+ 
+
+ 
 
  
 
@@ -8955,7 +18098,15 @@ function estimateMinutes(distanceKm) {
 
  
 
+ 
+
+ 
+
       (distanceKm / 35) * 60
+
+ 
+
+ 
 
  
 
@@ -8963,11 +18114,23 @@ function estimateMinutes(distanceKm) {
 
  
 
+ 
+
+ 
+
   );
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -8975,7 +18138,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   if (!s.provider) return;
+
+ 
+
+ 
 
  
 
@@ -8983,7 +18154,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   const name =
+
+ 
+
+ 
 
  
 
@@ -8991,7 +18170,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.nombre ||
+
+ 
+
+ 
 
  
 
@@ -8999,7 +18186,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     "Proveedor AS CLICK";
+
+ 
+
+ 
 
  
 
@@ -9007,7 +18202,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.correo ||
+
+ 
+
+ 
 
  
 
@@ -9015,11 +18218,23 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     s.user?.email ||
 
  
 
+ 
+
+ 
+
     "—";
+
+ 
+
+ 
 
  
 
@@ -9027,7 +18242,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.telefono ||
+
+ 
+
+ 
 
  
 
@@ -9035,11 +18258,23 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.phone ||
 
  
 
+ 
+
+ 
+
     "—";
+
+ 
+
+ 
 
  
 
@@ -9047,7 +18282,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.tipoServicio ||
+
+ 
+
+ 
 
  
 
@@ -9055,7 +18298,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.servicio ||
+
+ 
+
+ 
 
  
 
@@ -9063,7 +18314,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -9071,7 +18330,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.calificacion ??
+
+ 
+
+ 
 
  
 
@@ -9079,7 +18346,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     5
+
+ 
+
+ 
 
  
 
@@ -9087,7 +18362,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText("profileName", name);
+
+ 
+
+ 
 
  
 
@@ -9095,7 +18378,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText("profileRating", rating);
+
+ 
+
+ 
 
  
 
@@ -9103,7 +18394,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText("profilePhone", phone);
+
+ 
+
+ 
 
  
 
@@ -9111,7 +18410,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText("profileProviderType", providerType);
+
+ 
+
+ 
 
  
 
@@ -9119,7 +18426,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.foto ||
+
+ 
+
+ 
 
  
 
@@ -9127,11 +18442,23 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.photoURL ||
 
  
 
+ 
+
+ 
+
     "";
+
+ 
+
+ 
 
  
 
@@ -9139,7 +18466,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   const placeholder = $("profilePhotoPlaceholder");
+
+ 
+
+ 
 
  
 
@@ -9147,7 +18482,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     image.onerror = () => {
+
+ 
+
+ 
 
  
 
@@ -9155,11 +18498,23 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
       placeholder?.classList.remove("hidden");
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -9167,7 +18522,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
       image.classList.remove("hidden");
+
+ 
+
+ 
 
  
 
@@ -9175,7 +18538,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     };
+
+ 
+
+ 
 
  
 
@@ -9183,7 +18554,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   } else {
+
+ 
+
+ 
 
  
 
@@ -9191,11 +18570,23 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     placeholder?.classList.remove("hidden");
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -9203,7 +18594,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.unidad ||
+
+ 
+
+ 
 
  
 
@@ -9211,7 +18610,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     {};
+
+ 
+
+ 
 
  
 
@@ -9219,7 +18626,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     vehicle.tipoUnidad ||
+
+ 
+
+ 
 
  
 
@@ -9227,11 +18642,23 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.tipoUnidad ||
 
  
 
+ 
+
+ 
+
     "—";
+
+ 
+
+ 
 
  
 
@@ -9239,7 +18666,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     vehicle.marca ||
+
+ 
+
+ 
 
  
 
@@ -9247,7 +18682,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     "";
+
+ 
+
+ 
 
  
 
@@ -9255,7 +18698,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     vehicle.modelo ||
+
+ 
+
+ 
 
  
 
@@ -9263,7 +18714,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     "";
+
+ 
+
+ 
 
  
 
@@ -9271,7 +18730,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     [brand, model].filter(Boolean).join(" · ") ||
+
+ 
+
+ 
 
  
 
@@ -9279,7 +18746,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText("profileVehicleType", vehicleType);
+
+ 
+
+ 
 
  
 
@@ -9287,7 +18762,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -9295,7 +18778,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     vehicle.color ||
+
+ 
+
+ 
 
  
 
@@ -9303,7 +18794,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     "—"
+
+ 
+
+ 
 
  
 
@@ -9311,7 +18810,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   setText(
+
+ 
+
+ 
 
  
 
@@ -9319,7 +18826,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     vehicle.placas ||
+
+ 
+
+ 
 
  
 
@@ -9327,7 +18842,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.placasUnidad ||
+
+ 
+
+ 
 
  
 
@@ -9335,7 +18858,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -9343,7 +18874,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     "profileVehicleEconomic",
+
+ 
+
+ 
 
  
 
@@ -9351,7 +18890,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     vehicle.economico ||
+
+ 
+
+ 
 
  
 
@@ -9359,7 +18906,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.economico ||
+
+ 
+
+ 
 
  
 
@@ -9367,7 +18922,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -9375,7 +18938,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.tipoServicio ||
+
+ 
+
+ 
 
  
 
@@ -9383,7 +18954,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     provider.servicio ||
+
+ 
+
+ 
 
  
 
@@ -9391,7 +18970,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
@@ -9399,7 +18986,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     normalizedType === "grua" ||
+
+ 
+
+ 
 
  
 
@@ -9407,7 +19002,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
     normalizedType === "ajustador";
+
+ 
+
+ 
 
  
 
@@ -9415,7 +19018,15 @@ function renderProviderProfile() {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9423,7 +19034,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
   const normalized =
+
+ 
+
+ 
 
  
 
@@ -9431,7 +19050,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
       .trim()
+
+ 
+
+ 
 
  
 
@@ -9439,11 +19066,23 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
       .normalize("NFD")
 
  
 
+ 
+
+ 
+
       .replace(
+
+ 
+
+ 
 
  
 
@@ -9451,7 +19090,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
         ""
+
+ 
+
+ 
 
  
 
@@ -9459,7 +19106,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
       .replace(
+
+ 
+
+ 
 
  
 
@@ -9467,11 +19122,23 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
         "_"
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -9479,7 +19146,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
     grua: "grua",
+
+ 
+
+ 
 
  
 
@@ -9487,7 +19162,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
     auxilio: "auxilio_vial",
+
+ 
+
+ 
 
  
 
@@ -9495,7 +19178,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
     ajustador: "ajustador",
+
+ 
+
+ 
 
  
 
@@ -9503,7 +19194,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
     abogado: "abogado",
+
+ 
+
+ 
 
  
 
@@ -9511,7 +19210,15 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
   };
+
+ 
+
+ 
 
  
 
@@ -9519,11 +19226,23 @@ function normalizeServiceType(value) {
 
  
 
+ 
+
+ 
+
     normalized;
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9531,7 +19250,15 @@ function formatServiceType(value) {
 
  
 
+ 
+
+ 
+
   const names = {
+
+ 
+
+ 
 
  
 
@@ -9539,7 +19266,15 @@ function formatServiceType(value) {
 
  
 
+ 
+
+ 
+
     auxilio_vial: "Auxilio vial",
+
+ 
+
+ 
 
  
 
@@ -9547,7 +19282,15 @@ function formatServiceType(value) {
 
  
 
+ 
+
+ 
+
     abogado: "Abogado"
+
+ 
+
+ 
 
  
 
@@ -9555,7 +19298,15 @@ function formatServiceType(value) {
 
  
 
+ 
+
+ 
+
   return names[
+
+ 
+
+ 
 
  
 
@@ -9563,11 +19314,23 @@ function formatServiceType(value) {
 
  
 
+ 
+
+ 
+
   ] || "Servicio";
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9575,7 +19338,15 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
   const list = $("activityList");
+
+ 
+
+ 
 
  
 
@@ -9583,7 +19354,15 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
   const element =
+
+ 
+
+ 
 
  
 
@@ -9591,7 +19370,15 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
   element.className =
+
+ 
+
+ 
 
  
 
@@ -9599,7 +19386,15 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
   element.innerHTML =
+
+ 
+
+ 
 
  
 
@@ -9607,7 +19402,15 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
     `<div>` +
+
+ 
+
+ 
 
  
 
@@ -9615,7 +19418,15 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
     `<p>${escapeHtml(description)}</p>` +
+
+ 
+
+ 
 
  
 
@@ -9623,11 +19434,23 @@ function activity(title, description) {
 
  
 
+ 
+
+ 
+
   list.prepend(element);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9635,7 +19458,15 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
   const element = $("toast");
+
+ 
+
+ 
 
  
 
@@ -9643,7 +19474,15 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
     console.log(message);
+
+ 
+
+ 
 
  
 
@@ -9651,7 +19490,15 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -9659,7 +19506,15 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
   element.classList.add("show");
+
+ 
+
+ 
 
  
 
@@ -9667,11 +19522,23 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
   toast.timer = setTimeout(
 
  
 
+ 
+
+ 
+
     () =>
+
+ 
+
+ 
 
  
 
@@ -9679,7 +19546,15 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
     2800
+
+ 
+
+ 
 
  
 
@@ -9687,7 +19562,15 @@ function toast(message) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9695,7 +19578,15 @@ function escapeHtml(value) {
 
  
 
+ 
+
+ 
+
   return String(value ?? "")
+
+ 
+
+ 
 
  
 
@@ -9703,7 +19594,15 @@ function escapeHtml(value) {
 
  
 
+ 
+
+ 
+
     .replaceAll("<", "&lt;")
+
+ 
+
+ 
 
  
 
@@ -9711,7 +19610,15 @@ function escapeHtml(value) {
 
  
 
+ 
+
+ 
+
     .replaceAll('"', "&quot;")
+
+ 
+
+ 
 
  
 
@@ -9719,7 +19626,15 @@ function escapeHtml(value) {
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9727,11 +19642,23 @@ function escapeAttribute(value) {
 
  
 
+ 
+
+ 
+
   return escapeHtml(value);
 
  
 
+ 
+
+ 
+
 }
+
+ 
+
+ 
 
  
 
@@ -9739,7 +19666,15 @@ const viewTitles = {
 
  
 
+ 
+
+ 
+
   dashboard: "Panel del proveedor",
+
+ 
+
+ 
 
  
 
@@ -9747,7 +19682,15 @@ const viewTitles = {
 
  
 
+ 
+
+ 
+
   historial: "Historial",
+
+ 
+
+ 
 
  
 
@@ -9755,7 +19698,15 @@ const viewTitles = {
 
  
 
+ 
+
+ 
+
   perfil: "Mi perfil"
+
+ 
+
+ 
 
  
 
@@ -9763,11 +19714,23 @@ const viewTitles = {
 
  
 
+ 
+
+ 
+
 function openView(viewName) {
 
  
 
+ 
+
+ 
+
   document
+
+ 
+
+ 
 
  
 
@@ -9775,7 +19738,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
     .forEach(item => {
+
+ 
+
+ 
 
  
 
@@ -9783,7 +19754,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
         "active",
+
+ 
+
+ 
 
  
 
@@ -9791,11 +19770,23 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
       );
 
  
 
+ 
+
+ 
+
     });
+
+ 
+
+ 
 
  
 
@@ -9803,7 +19794,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
     .querySelectorAll(".app-view")
+
+ 
+
+ 
 
  
 
@@ -9811,7 +19810,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
       const active =
+
+ 
+
+ 
 
  
 
@@ -9819,7 +19826,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
       view.hidden = !active;
+
+ 
+
+ 
 
  
 
@@ -9827,7 +19842,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
         "active",
+
+ 
+
+ 
 
  
 
@@ -9835,7 +19858,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
       );
+
+ 
+
+ 
 
  
 
@@ -9843,7 +19874,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
   const title =
+
+ 
+
+ 
 
  
 
@@ -9851,7 +19890,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
   if (title) {
+
+ 
+
+ 
 
  
 
@@ -9859,7 +19906,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
       viewTitles[viewName] ||
+
+ 
+
+ 
 
  
 
@@ -9867,7 +19922,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
   }
+
+ 
+
+ 
 
  
 
@@ -9875,7 +19938,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
     top: 0,
+
+ 
+
+ 
 
  
 
@@ -9883,7 +19954,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -9891,7 +19970,15 @@ function openView(viewName) {
 
  
 
+ 
+
+ 
+
 document
+
+ 
+
+ 
 
  
 
@@ -9899,7 +19986,15 @@ document
 
  
 
+ 
+
+ 
+
   .forEach(button => {
+
+ 
+
+ 
 
  
 
@@ -9907,7 +20002,15 @@ document
 
  
 
+ 
+
+ 
+
       "click",
+
+ 
+
+ 
 
  
 
@@ -9915,7 +20018,15 @@ document
 
  
 
+ 
+
+ 
+
         openView(
+
+ 
+
+ 
 
  
 
@@ -9923,7 +20034,15 @@ document
 
  
 
+ 
+
+ 
+
         )
+
+ 
+
+ 
 
  
 
@@ -9931,7 +20050,15 @@ document
 
  
 
+ 
+
+ 
+
   });
+
+ 
+
+ 
 
  
 
@@ -9939,7 +20066,15 @@ if ("serviceWorker" in navigator) {
 
  
 
+ 
+
+ 
+
   addEventListener(
+
+ 
+
+ 
 
  
 
@@ -9947,7 +20082,15 @@ if ("serviceWorker" in navigator) {
 
  
 
+ 
+
+ 
+
     () =>
+
+ 
+
+ 
 
  
 
@@ -9955,7 +20098,15 @@ if ("serviceWorker" in navigator) {
 
  
 
+ 
+
+ 
+
         .register("./service-worker.js?v=4")
+
+ 
+
+ 
 
  
 
@@ -9963,7 +20114,15 @@ if ("serviceWorker" in navigator) {
 
  
 
+ 
+
+ 
+
   );
+
+ 
+
+ 
 
  
 
