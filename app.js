@@ -11320,6 +11320,13 @@ async function finishActiveService() {
 
  
 
+        ocupado: false,
+
+ 
+
+ 
+
+ 
         estadoConexion: "disponible",
 
  
