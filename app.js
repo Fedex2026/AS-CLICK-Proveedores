@@ -1,4 +1,4 @@
-AS CLICK PROVEEDOR - bloqueo administrativo
+AS CLICK PROVEEDORES - ORIGINAL RESTAURADO
 
 import { auth, db, messaging } from "./firebase-config.js";
 
@@ -436,10 +436,6 @@ const s = {
 
  
 
-  unsubscribeProviderProfile: null,
-
- 
-
  
 
  
@@ -837,144 +833,6 @@ function setHidden(id, hidden) {
  
 
  
-
- 
-
-function providerBlockUntilMs(provider = {}) {
-
-  const hasta = provider.bloqueoHasta;
-
-  if (!hasta) return 0;
-
-  if (typeof hasta?.toDate === "function") return hasta.toDate().getTime();
-
-  if (typeof hasta?.seconds === "number") return hasta.seconds * 1000;
-
-  const ms = new Date(hasta).getTime();
-
-  return Number.isFinite(ms) ? ms : 0;
-
-}
-
- 
-
-function providerIsBlocked(provider = s.provider) {
-
-  if (!provider || provider.bloqueoAdmin !== true) return false;
-
-  const hastaMs = providerBlockUntilMs(provider);
-
-  if (!hastaMs) return true;
-
-  return hastaMs > Date.now();
-
-}
-
- 
-
-function blockedProviderMessage() {
-
-  const motivo = String(s.provider?.bloqueoMotivo || "Pendiente de aclaración").trim();
-
-  const hastaMs = providerBlockUntilMs(s.provider);
-
-  if (hastaMs > Date.now()) {
-
-    return `Cuenta bloqueada por administración. Motivo: ${motivo}. Bloqueo hasta ${new Date(hastaMs).toLocaleString("es-MX")}.`;
-
-  }
-
-  return `Cuenta bloqueada por administración. Motivo: ${motivo}. Debes esperar la reactivación del administrador.`;
-
-}
-
- 
-
-function applyProviderBlockState() {
-
-  if (!providerIsBlocked()) return false;
-
-  s.available = false;
-
-  hideService();
-
-  stopLocation();
-
-  renderAvailability();
-
-  setText("availabilityText", "Bloqueado");
-
-  setText("providerStatus", "Bloqueado");
-
-  setText("locationText", blockedProviderMessage());
-
-  const toggle = $("availabilityToggle");
-
-  if (toggle) toggle.disabled = true;
-
-  return true;
-
-}
-
- 
-
-function listenProviderProfile() {
-
-  if (!s.user) return;
-
-  if (s.unsubscribeProviderProfile) {
-
-    s.unsubscribeProviderProfile();
-
-    s.unsubscribeProviderProfile = null;
-
-  }
-
- 
-
-  s.unsubscribeProviderProfile = onSnapshot(
-
-    doc(db, "proveedores", s.user.uid),
-
-    snapshot => {
-
-      if (!snapshot.exists()) return;
-
-      s.provider = { id: snapshot.id, ...snapshot.data() };
-
- 
-
-      if (providerIsBlocked()) {
-
-        applyProviderBlockState();
-
-        return;
-
-      }
-
- 
-
-      s.available = s.provider.disponible === true;
-
-    listenProviderProfile();
-
-      renderProviderProfile();
-
-      renderAvailability();
-
- 
-
-    applyProviderBlockState();
-
-      evaluateAvailableServices();
-
-    },
-
-    error => console.error("Error escuchando estado del proveedor:", error)
-
-  );
-
-}
 
  
 
@@ -3084,19 +2942,13 @@ function bindClick(id, handler) {
 
 async function toggleAvailability() {
 
-  if (!s.user) return;
+ 
 
  
 
-  if (providerIsBlocked()) {
+ 
 
-    applyProviderBlockState();
-
-    toast(blockedProviderMessage());
-
-    return;
-
-  }
+  if (!s.user) return;
 
  
 
@@ -3514,29 +3366,9 @@ async function toggleAvailability() {
 
 function renderAvailability() {
 
-  if (providerIsBlocked()) {
+ 
 
-    const toggle = $("availabilityToggle");
-
-    if (toggle) {
-
-      toggle.classList.remove("on");
-
-      toggle.classList.remove("is-on");
-
-      toggle.setAttribute("aria-pressed", "false");
-
-      toggle.disabled = true;
-
-    }
-
-    setText("availabilityText", "Bloqueado");
-
-    setText("providerStatus", "Bloqueado");
-
-    return;
-
-  }
+ 
 
  
 
@@ -4530,13 +4362,9 @@ function listenActiveService() {
 
 function evaluateAvailableServices() {
 
-  if (providerIsBlocked()) {
+ 
 
-    applyProviderBlockState();
-
-    return;
-
-  }
+ 
 
  
 
@@ -5604,19 +5432,13 @@ function formatLoadStatus(v){ return v === "con_carga" ? "Con carga" : v === "va
 
 async function submitTowQuote(currentRequest) {
 
-  if (!s.user || !s.provider) return;
+ 
 
  
 
-  if (providerIsBlocked()) {
+ 
 
-    applyProviderBlockState();
-
-    toast(blockedProviderMessage());
-
-    return;
-
-  }
+  if (!s.user || !s.provider) return;
 
  
 
@@ -8334,19 +8156,13 @@ function hideService() {
 
 async function acceptService() {
 
-  if (!s.current || !s.user) return;
+ 
 
  
 
-  if (providerIsBlocked()) {
+ 
 
-    applyProviderBlockState();
-
-    toast(blockedProviderMessage());
-
-    return;
-
-  }
+  if (!s.current || !s.user) return;
 
  
 
@@ -13916,13 +13732,9 @@ async function logout() {
 
 function clearRealtimeListeners() {
 
-  if (s.unsubscribeProviderProfile) {
+ 
 
-    s.unsubscribeProviderProfile();
-
-    s.unsubscribeProviderProfile = null;
-
-  }
+ 
 
  
 
