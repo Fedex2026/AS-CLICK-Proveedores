@@ -11296,7 +11296,7 @@ async function finishActiveService() {
 
  
 
-      doc(db, "proveedores", s.user.uid),
+      doc(db, "proveedores", s.provider?.id || s.user.uid),
 
  
 
