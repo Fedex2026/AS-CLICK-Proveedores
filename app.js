@@ -470,6 +470,78 @@ const s = {
 
  
 
+
+/* =========================================================
+   TEMA VISUAL AS CLICK · PROVEEDORES
+   Diseño blanco aprobado
+   SOLO APARIENCIA — NO MODIFICA LÓGICA, FIREBASE NI FUNCIONES
+   ========================================================= */
+function applyAsClickWhiteProviderTheme() {
+  if (document.getElementById("asClickWhiteProviderTheme")) return;
+
+  const style = document.createElement("style");
+  style.id = "asClickWhiteProviderTheme";
+  style.textContent = `
+    :root{
+      --asc-bg:#f6f8fb;--asc-surface:#fff;--asc-border:#e7edf3;
+      --asc-text:#10233d;--asc-muted:#718096;--asc-green:#16c784;
+      --asc-green-dark:#0ca66d;--asc-green-soft:#eafaf4;
+      --asc-blue:#1677e8;--asc-orange:#ff9f2f;--asc-red:#ef4444;
+      --asc-shadow:0 10px 30px rgba(16,35,61,.08);--asc-radius:20px;
+    }
+    html,body{background:var(--asc-bg)!important;color:var(--asc-text)!important}
+    body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif!important}
+    header,.header,.topbar,.app-header,.main-header,nav,.tabs,.top-nav,.bottom-nav,.app-nav{
+      background:rgba(255,255,255,.98)!important;color:var(--asc-text)!important;border-color:var(--asc-border)!important
+    }
+    .app-view,main,.main,.content,.main-content,.page-content,.dashboard-content{
+      background:var(--asc-bg)!important;color:var(--asc-text)!important
+    }
+    .card,.panel,.box,.widget,.section-card,.service-card,.profile-card,.availability-card,
+    .stats-card,.stat-card,.history-card,.income-card,#serviceCard,#activeServiceCard,#dashboardActiveService{
+      background:var(--asc-surface)!important;color:var(--asc-text)!important;
+      border:1px solid var(--asc-border)!important;border-radius:var(--asc-radius)!important;
+      box-shadow:0 5px 18px rgba(16,35,61,.07)!important
+    }
+    .nav-item{color:#65758b!important;border-radius:14px!important;transition:.2s ease!important}
+    .nav-item.active{color:var(--asc-green-dark)!important;background:var(--asc-green-soft)!important;
+      box-shadow:inset 0 -3px 0 var(--asc-green)!important}
+    h1,h2,h3,h4,h5,h6,.title,.heading,.card-title,.section-title,#welcomeTitle{color:var(--asc-text)!important}
+    p,.muted,.subtitle,.subtext,.caption,small,.secondary-text{color:var(--asc-muted)!important}
+    button{border-radius:14px!important;font-weight:800!important}
+    #availabilityToggle.on,#availabilityToggle.is-on{
+      background:var(--asc-green)!important;border-color:var(--asc-green)!important;
+      box-shadow:0 5px 15px rgba(22,199,132,.22)!important
+    }
+    #availabilityText,#providerStatus{font-weight:800!important}
+    input,select,textarea{background:#fff!important;color:var(--asc-text)!important;
+      border:1px solid #dfe7ef!important;border-radius:13px!important}
+    table{background:#fff!important;color:var(--asc-text)!important}
+    th{color:#64748b!important;background:#f8fafc!important}
+    td,th{border-color:var(--asc-border)!important}
+    .badge,.pill,.status-badge,#activeServiceStatusBadge{border-radius:999px!important}
+    #activeServiceStatusBadge{background:var(--asc-green-soft)!important;color:var(--asc-green-dark)!important;
+      border:1px solid rgba(22,199,132,.22)!important;font-weight:900!important}
+    #serviceCard,#activeServiceCard{overflow:hidden!important}
+    a{color:var(--asc-blue)}
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+    ::-webkit-scrollbar-track{background:transparent}
+    @media(max-width:700px){
+      body,.app-view,main,.main,.content,.main-content,.page-content,.dashboard-content{background:#fff!important}
+      .card,.panel,.box,.widget,.section-card,.service-card,.profile-card,.availability-card,
+      .stats-card,.stat-card,#serviceCard,#activeServiceCard{border-radius:18px!important}
+    }
+  `;
+  document.head.appendChild(style);
+  document.documentElement.classList.add("as-click-white-provider");
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", applyAsClickWhiteProviderTheme, { once:true });
+} else {
+  applyAsClickWhiteProviderTheme();
+}
+
 /* =========================================================
 
  
